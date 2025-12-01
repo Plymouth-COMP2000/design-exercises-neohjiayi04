@@ -30,4 +30,16 @@
     <string name="notification_icon">Notification icon</string>
     <string name="terms_icon">Terms icon</string>
     <string name="logout_icon">Logout icon</string>
+
+    <!-- Reservation Text -->
+    <string name="reservations_title">Reservations</string>
+    <string name="day_monday">Monday</string>
+    <string name="date_sample">25 Nov 2025</string>
+    <string name="time_sample">7:30pm - 8:30pm</string>
+    <!-- Status -->
+    <string name="status_confirmed">Confirmed</string>
+    <!-- Buttons -->
+    <string name="edit_reservation">Edit Reservation</string>
+    <string name="cancel_reservation">Cancel</string>
+
 </resources>
