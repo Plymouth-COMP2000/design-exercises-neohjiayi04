@@ -9,13 +9,13 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-
         android:layout_height="wrap_content">
 
         <!-- Header -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/gradient_bg"
             android:padding="16dp">
 
             <ImageView
@@ -26,16 +26,16 @@
                 android:src="@drawable/ic_back"
                 android:padding="6dp"
                 android:contentDescription="@string/back_button"
-                app:tint="@color/black" />
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="@string/edit_profile_title"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
         </RelativeLayout>
 
@@ -208,7 +208,7 @@
             android:layout_marginBottom="20dp"
             app:cardCornerRadius="14dp"
             app:cardElevation="5dp"
-            app:cardBackgroundColor="@color/green"
+            app:cardBackgroundColor="@color/primary"
             android:clickable="true"
             android:focusable="true">
 
