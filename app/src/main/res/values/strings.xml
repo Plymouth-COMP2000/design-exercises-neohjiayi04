@@ -30,6 +30,7 @@
     <string name="notification_icon">Notification icon</string>
     <string name="terms_icon">Terms icon</string>
     <string name="logout_icon">Logout icon</string>
+    <string name="edit_profile_picture">Edit Picture</string>
 
     <!-- Reservation Text -->
     <string name="reservations_title">Reservations</string>

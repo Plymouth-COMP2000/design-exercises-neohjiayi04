@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="#F8F9FA"
     android:fillViewport="true">
 
     <LinearLayout
@@ -13,278 +13,51 @@
         <!-- Header -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
+            android:layout_height="200dp"
+            android:background="@drawable/gradient_bg"
             android:padding="16dp">
 
             <ImageView
                 android:id="@+id/backButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_back"
-                android:contentDescription="@string/back_button" />
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/back_button"
+                android:padding="4dp"
+                android:src="@drawable/ic_back" />
 
-            <TextView
-                android:id="@+id/headerTitle"
+            <!-- Profile Image-->
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="Profile"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#000000" />
+                android:layout_centerInParent="true">
 
-            <TextView
-                android:id="@+id/editButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:text="Edit"
-                android:textSize="16sp"
-                android:textColor="#FF6B35" />
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/circle_frame"
+                    android:contentDescription="@string/profile_picture"
+                    android:elevation="6dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_profile" />
+
+                <ImageView
+                    android:id="@+id/editProfileImage"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_alignEnd="@id/profileImage"
+                    android:layout_alignBottom="@id/profileImage"
+                    android:background="@drawable/circle_frame"
+                    android:clickable="true"
+                    android:contentDescription="@string/edit_profile_picture"
+                    android:elevation="6dp"
+                    android:focusable="true"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_camera" />
+            </RelativeLayout>
         </RelativeLayout>
-
-        <!-- Profile Section -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp">
-
-            <ImageView
-                android:id="@+id/profileImage"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_profile"
-                android:layout_marginBottom="6dp"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/profile_picture" />
-
-            <TextView
-                android:id="@+id/userName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/profileImage"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:text="Sarah Wilson"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/memberSince"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/userName"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="4dp"
-                android:text="Member since 2023"
-                android:textSize="14sp"
-                android:textColor="#888888" />
-        </RelativeLayout>
-
-        <!-- Loyalty & Rewards -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#FFFFFF"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:text="Loyalty &amp; Rewards"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/membershipLevel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Gold Member"
-                    android:textSize="14sp"
-                    android:textColor="#000000" />
-
-                <TextView
-                    android:id="@+id/loyaltyPoints"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="750 / 1000 pts"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:layout_alignParentEnd="true" />
-            </RelativeLayout>
-
-            <ProgressBar
-                android:id="@+id/loyaltyProgressBar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:max="100"
-                android:progress="75"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:id="@+id/loyaltyDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="250 points to your next reward"
-                android:textSize="12sp"
-                android:textColor="#888888" />
-        </LinearLayout>
-
-        <!-- Settings Section -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#FFFFFF"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:text="Settings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_marginBottom="18dp" />
-
-            <!-- Password -->
-            <RelativeLayout
-                android:id="@+id/passwordOption"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:id="@+id/iconPassword"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_password"
-                    android:layout_centerVertical="true"
-                    android:contentDescription="@string/password_icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
-                    android:layout_toEndOf="@id/iconPassword"
-                    android:text="Password"
-                    android:textSize="15sp"
-                    android:textColor="#000000" />
-
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0" />
-
-            <!-- Notifications -->
-            <RelativeLayout
-                android:id="@+id/notificationOption"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:id="@+id/iconNotif"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_notification"
-                    android:layout_centerVertical="true"
-                    android:contentDescription="@string/notification_icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
-                    android:layout_toEndOf="@id/iconNotif"
-                    android:text="Notifications"
-                    android:textSize="15sp"
-                    android:textColor="#000000" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0" />
-
-            <!-- Terms -->
-            <RelativeLayout
-                android:id="@+id/termsOption"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
-                    android:text="Terms of Service"
-                    android:textSize="15sp"
-                    android:textColor="#000000" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0" />
-
-            <!-- Logout -->
-            <RelativeLayout
-                android:id="@+id/logoutOption"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:id="@+id/iconLogout"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_logout"
-                    android:layout_centerVertical="true"
-                    android:contentDescription="@string/logout_icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
-                    android:layout_toEndOf="@id/iconLogout"
-                    android:text="Logout"
-                    android:textColor="#D9534F"
-                    android:textSize="15sp" />
-            </RelativeLayout>
-
-        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
