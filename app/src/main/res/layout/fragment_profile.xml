@@ -43,20 +43,6 @@
                     android:elevation="6dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_profile" />
-
-                <ImageView
-                    android:id="@+id/editProfileImage"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_alignEnd="@id/profileImage"
-                    android:layout_alignBottom="@id/profileImage"
-                    android:background="@drawable/circle_frame"
-                    android:clickable="true"
-                    android:contentDescription="@string/edit_profile_picture"
-                    android:elevation="6dp"
-                    android:focusable="true"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_camera" />
             </RelativeLayout>
         </RelativeLayout>
         <!-- User Info Card -->
@@ -76,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="#FFFFFF"
-                android:padding="24dp">
+                android:padding="15dp">
 
                 <TextView
                     android:id="@+id/userName"
@@ -96,7 +82,7 @@
                     android:layout_marginTop="4dp"
                     android:text="sarah.wilson@email.com"
                     android:textSize="14sp"
-                    android:textColor="#7F8C8D" />
+                    android:textColor="#2C3E50" />
 
 
             </LinearLayout>
