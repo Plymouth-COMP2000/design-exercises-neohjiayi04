@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Base Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="orangeYellow">#F8A77C</color>
-    <color name="primary">#FF6B35</color>
-    <color name="primary_dark">#E85A2A</color>
-    <color name="accent">#FFA500</color>
+    <color name="green">#4CAF50</color>
+
+    <!-- Brand Palette -->
+    <color name="primary">#FF8811</color>       <!-- vibrant orange -->
+    <color name="primary_dark">#F4D06F</color>  <!-- warm yellow -->
+    <color name="accent">#9DD9D2</color>        <!-- soft teal -->
+    <color name="background">#FFF8F0</color>    <!-- light cream -->
+    <color name="surface">#392F5A</color>       <!-- deep indigo -->
+
+    <!-- Grays -->
     <color name="gray_light">#F5F5F5</color>
     <color name="gray_medium">#CCCCCC</color>
     <color name="gray_dark">#666666</color>
+
+    <!-- Text -->
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
-    <color name="green">#4CAF50</color>
-</resources>
+    <color name="hint">#BDC3C7</color>
+    <color name="button_text">#FFFFFF</color>
 
+    <!-- Legacy / Optional Shades -->
+    <color name="orangeYellow">#F8A77C</color>  <!-- soft orange accent -->
+
+</resources>
