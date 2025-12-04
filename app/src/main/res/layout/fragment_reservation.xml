@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@drawable/bg_gradient_light2">
 
     <!-- App Bar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         app:elevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_gradient_light"
             android:padding="16dp">
 
             <!-- Page Title -->
@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Reservation"
-                android:textSize="20sp"
+                android:textSize="25sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
                 app:layout_constraintTop_toTopOf="parent"
@@ -37,15 +37,15 @@
                 android:id="@+id/btnNotification"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_alignParentEnd="true"
                 android:layout_marginTop="8dp"
+                android:padding="4dp"
                 android:src="@drawable/ic_notification"
                 android:contentDescription="@string/nav_notification"
-                android:tint="#673012"
-                android:padding="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:onClick="openNotificationPage" />
-
+                android:onClick="openNotificationPage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                app:cardElevation="6dp"
                 app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
@@ -96,132 +96,251 @@
                         android:textColor="@color/text_secondary"
                         android:layout_marginBottom="20dp" />
 
-                    <!-- Date Field -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Date"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginBottom="8dp" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        app:boxBackgroundColor="@color/gray_light"
-                        app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="0dp"
-                        app:boxCornerRadiusTopStart="8dp"
-                        app:boxCornerRadiusTopEnd="8dp"
-                        app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etDate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Dec 24, 2024"
-                            android:focusable="false"
-                            android:clickable="true"
-                            android:inputType="none"
-                            android:textSize="15sp"
-                            android:textColor="@color/text_primary"
-                            android:background="@android:color/transparent" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Time Field -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Time"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginBottom="8dp" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        app:boxBackgroundColor="@color/gray_light"
-                        app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="0dp"
-                        app:boxCornerRadiusTopStart="8dp"
-                        app:boxCornerRadiusTopEnd="8dp"
-                        app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="7:30 PM"
-                            android:focusable="false"
-                            android:clickable="true"
-                            android:inputType="none"
-                            android:textSize="15sp"
-                            android:textColor="@color/text_primary"
-                            android:background="@android:color/transparent" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Number of Guests -->
+                    <!-- Date, Time, and Guests Row -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="20dp">
+                        android:layout_marginBottom="16dp">
 
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_people"
-                            android:tint="@color/text_primary"
-                            android:layout_marginEnd="8dp" />
-
-                        <TextView
+                        <!-- Date Column -->
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Number of guests"
-                            android:textSize="15sp"
-                            android:textColor="@color/text_primary" />
+                            android:orientation="vertical"
+                            android:layout_marginEnd="8dp">
 
-                        <!-- Decrease Button -->
-                        <ImageButton
-                            android:id="@+id/btnDecrease"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/ic_minus"
-                            android:background="@drawable/bg_guest_button"
-                            android:tint="@color/text_primary"
-                            android:contentDescription="Decrease" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Date"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginBottom="8dp" />
 
-                        <!-- Guest Count -->
-                        <TextView
-                            android:id="@+id/tvGuestCount"
-                            android:layout_width="48dp"
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:boxBackgroundColor="@color/gray_light"
+                                app:boxStrokeWidth="2dp"
+                                app:boxStrokeWidthFocused="0dp"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etDate"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:background="@android:color/transparent"
+                                    android:clickable="true"
+                                    android:focusable="false"
+                                    android:gravity="center"
+                                    android:inputType="none"
+                                    android:text="Dec 24"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="14sp"
+                                    android:paddingTop="0dp"
+                                    android:paddingBottom="0dp" />/>
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+
+                        <!-- Time Column -->
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="4"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"
-                            android:gravity="center" />
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp">
 
-                        <!-- Increase Button -->
-                        <ImageButton
-                            android:id="@+id/btnIncrease"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/ic_plus"
-                            android:background="@drawable/bg_guest_button"
-                            android:tint="@color/text_primary"
-                            android:contentDescription="Increase" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Time"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginBottom="8dp" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:boxBackgroundColor="@color/gray_light"
+                                app:boxStrokeWidth="2dp"
+                                app:boxStrokeWidthFocused="0dp"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etTime"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:paddingTop="0dp"
+                                    android:paddingBottom="0dp"
+                                    android:text="7:30 PM"
+                                    android:focusable="false"
+                                    android:clickable="true"
+                                    android:inputType="none"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_primary"
+                                    android:background="@android:color/transparent"
+                                    android:gravity="center" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+
+                        <!-- Guests Column -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.8"
+                            android:orientation="vertical"
+                            android:layout_marginStart="4dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Guests"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginBottom="8dp" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:boxBackgroundColor="@color/gray_light"
+                                app:boxStrokeWidth="2dp"
+                                app:boxStrokeWidthFocused="0dp"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etGuests"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:paddingTop="0dp"
+                                    android:paddingBottom="0dp"
+                                    android:text="4"
+                                    android:focusable="false"
+                                    android:clickable="true"
+                                    android:inputType="none"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_primary"
+                                    android:background="@android:color/transparent"
+                                    android:gravity="center" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
                     </LinearLayout>
+
+                    <!-- Table and Requests Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="20dp">
+
+                        <!-- Table Column -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginEnd="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Table"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginBottom="8dp" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:boxBackgroundColor="@color/gray_light"
+                                app:boxStrokeWidth="2dp"
+                                app:boxStrokeWidthFocused="0dp"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etTable"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:paddingTop="0dp"
+                                    android:paddingBottom="0dp"
+                                    android:text="Any"
+                                    android:focusable="false"
+                                    android:clickable="true"
+                                    android:inputType="none"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_primary"
+                                    android:background="@android:color/transparent"
+                                    android:gravity="center" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+
+                        <!-- Requests Column -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5"
+                            android:orientation="vertical"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Requests (Optional)"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginBottom="8dp" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:boxBackgroundColor="@color/gray_light"
+                                app:boxStrokeWidth="2dp"
+                                app:boxStrokeWidthFocused="0dp"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etRequests"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:paddingTop="0dp"
+                                    android:paddingBottom="0dp"
+                                    android:hint="Add a note"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/text_primary"
+                                    android:textColorHint="@color/text_secondary"
+                                    android:background="@android:color/transparent" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
 
                     <!-- Reserve Button -->
                     <com.google.android.material.button.MaterialButton
@@ -264,7 +383,7 @@
                     android:text="Upcoming"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
+                    android:textColor="@color/primary"
                     android:gravity="center"
                     android:paddingBottom="8dp"
                     android:background="@drawable/tab_selected" />
@@ -359,7 +478,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/ic_edit"
-                                android:background="@drawable/bg_action_button"
+                                android:background="@drawable/button_bg_action"
                                 android:tint="@color/text_secondary"
                                 android:contentDescription="Edit"
                                 android:layout_marginEnd="8dp" />
@@ -370,7 +489,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/ic_cancel"
-                                android:background="@drawable/bg_action_button"
+                                android:background="@drawable/button_bg_action"
                                 android:tint="@color/text_secondary"
                                 android:contentDescription="Cancel" />
                         </LinearLayout>
@@ -448,7 +567,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/ic_edit"
-                                android:background="@drawable/bg_action_button"
+                                android:background="@drawable/button_bg_action"
                                 android:tint="@color/text_secondary"
                                 android:contentDescription="Edit"
                                 android:layout_marginEnd="8dp" />
@@ -459,7 +578,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/ic_cancel"
-                                android:background="@drawable/bg_action_button"
+                                android:background="@drawable/button_bg_action"
                                 android:tint="@color/text_secondary"
                                 android:contentDescription="Cancel" />
                         </LinearLayout>
