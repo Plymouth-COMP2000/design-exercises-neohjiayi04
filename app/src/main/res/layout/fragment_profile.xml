@@ -18,16 +18,19 @@
             android:background="@drawable/gradient_bg"
             android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/notification_icon"
+            <ImageButton
+                android:id="@+id/btnNotification"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="8dp"
+                android:src="@drawable/ic_notification"
                 android:contentDescription="@string/nav_notification"
                 android:tint="#673012"
                 android:padding="4dp"
-                android:src="@drawable/notification" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:onClick="openNotificationPage" />
+
 
             <!-- Profile Image-->
             <RelativeLayout
