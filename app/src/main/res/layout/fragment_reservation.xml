@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_gradient_light2">
@@ -67,22 +68,30 @@
                 android:id="@+id/bookingCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_margin="10dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
-                app:cardBackgroundColor="@color/white">
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/white"
+                android:clipToPadding="false"
+                android:clipChildren="false">
 
-                <LinearLayout
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="20dp">
 
-                    <!-- Header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginBottom="20dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Book Your Table"
+                        android:text="@string/book_table_title"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
@@ -91,12 +100,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select the details for your booking"
+                        android:text="@string/book_table_subtitle"
                         android:textSize="13sp"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginBottom="20dp" />
+                        android:textColor="@color/text_secondary" />
 
-                    <!-- Date, Time, and Guests Row -->
+                </LinearLayout>
+
+                <!-- Date, Time, and Guests Row -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -365,6 +375,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp" />
 
             <!-- Tabs -->
@@ -383,7 +394,7 @@
                     android:text="Upcoming"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary"
+                    android:textColor="@color/white"
                     android:gravity="center"
                     android:paddingBottom="8dp"
                     android:background="@drawable/tab_selected" />
@@ -418,8 +429,9 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp">
+                        android:layout_height="match_parent"
+                        android:padding="5dp"
+                        android:layout_margin="10dp">
 
                         <!-- Date and Time -->
                         <TextView
@@ -427,71 +439,84 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="Dec 25, 2024 at 7:30 PM"
+                            android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold"
-                            android:textColor="@color/text_primary"
-                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tvStatus1"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/tvStatus1" />
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <!-- Status Badge -->
                         <TextView
                             android:id="@+id/tvStatus1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Confirmed"
-                            android:textSize="11sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/white"
                             android:background="@drawable/badge_confirmed"
                             android:paddingStart="10dp"
-                            android:paddingEnd="10dp"
                             android:paddingTop="4dp"
+                            android:paddingEnd="10dp"
                             android:paddingBottom="4dp"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent" />
+                            android:text="Confirmed"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <!-- Pax Info -->
                         <TextView
                             android:id="@+id/tvPax1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="4 Pax"
-                            android:textSize="13sp"
-                            android:textColor="@color/text_secondary"
                             android:layout_marginTop="4dp"
-                            app:layout_constraintTop_toBottomOf="@id/tvDateTime1"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            android:text="4 Pax"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="15sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvDateTime1" />
+                        <!-- Table Info -->
+                        <TextView
+                            android:id="@+id/tvTable1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Table: 12"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="15sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvPax1" />
 
                         <!-- Action Buttons -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
                             android:orientation="horizontal"
-                            android:layout_marginTop="8dp"
-                            app:layout_constraintTop_toBottomOf="@id/tvPax1"
-                            app:layout_constraintEnd_toEndOf="parent">
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvPax1">
 
                             <!-- Edit Button -->
                             <ImageButton
                                 android:id="@+id/btnEdit1"
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
-                                android:src="@drawable/ic_edit"
+                                android:layout_marginEnd="8dp"
                                 android:background="@drawable/button_bg_action"
-                                android:tint="@color/text_secondary"
                                 android:contentDescription="Edit"
-                                android:layout_marginEnd="8dp" />
+                                android:src="@drawable/ic_edit"
+                                android:tint="@color/text_secondary" />
 
-                            <!-- Cancel Button -->
                             <ImageButton
                                 android:id="@+id/btnCancel1"
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
-                                android:src="@drawable/ic_cancel"
                                 android:background="@drawable/button_bg_action"
+                                android:contentDescription="Cancel"
+                                android:src="@drawable/ic_cancel"
                                 android:tint="@color/text_secondary"
-                                android:contentDescription="Cancel" />
+                                tools:layout_editor_absoluteX="317dp"
+                                tools:layout_editor_absoluteY="58dp" />
+
                         </LinearLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
@@ -508,7 +533,8 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp">
+                        android:padding="5dp"
+                        android:layout_margin="10dp">
 
                         <!-- Date and Time -->
                         <TextView
@@ -546,11 +572,24 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="2 Pax"
-                            android:textSize="13sp"
+                            android:textSize="15sp"
                             android:textColor="@color/text_secondary"
                             android:layout_marginTop="4dp"
                             app:layout_constraintTop_toBottomOf="@id/tvDateTime2"
                             app:layout_constraintStart_toStartOf="parent" />
+
+                        <!-- Table Info -->
+                        <TextView
+                            android:id="@+id/tvTable2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Table: 5"
+                            android:textSize="15sp"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginTop="2dp"
+                            app:layout_constraintTop_toBottomOf="@id/tvPax2"
+                            app:layout_constraintStart_toStartOf="parent" />
+
 
                         <!-- Action Buttons -->
                         <LinearLayout

@@ -26,7 +26,6 @@
                 android:layout_marginTop="8dp"
                 android:src="@drawable/ic_notification"
                 android:contentDescription="@string/nav_notification"
-                android:tint="#673012"
                 android:padding="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:onClick="openNotificationPage" />
