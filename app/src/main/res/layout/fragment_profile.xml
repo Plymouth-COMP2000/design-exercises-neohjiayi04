@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#F8F9FA"
+    android:background="@color/background"
     android:fillViewport="true">
 
     <LinearLayout
@@ -19,14 +19,15 @@
             android:padding="16dp">
 
             <ImageView
-                android:id="@+id/backButton"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_alignParentStart="true"
+                android:id="@+id/notification_icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="8dp"
-                android:contentDescription="@string/back_button"
+                android:contentDescription="@string/nav_notification"
+                android:tint="#673012"
                 android:padding="4dp"
-                android:src="@drawable/ic_back" />
+                android:src="@drawable/notification" />
 
             <!-- Profile Image-->
             <RelativeLayout
@@ -69,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="Sarah Wilson"
+                    android:text="@string/name"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="#2C3E50" />
@@ -80,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="4dp"
-                    android:text="sarah.wilson@email.com"
+                    android:text="@string/email"
                     android:textSize="14sp"
                     android:textColor="#2C3E50" />
 
@@ -95,7 +96,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="12dp"
-            android:text="ACCOUNT"
+            android:text="@string/section_account"
             android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="#95A5A6"
@@ -145,7 +146,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Edit Profile"
+                        android:text="@string/edit_profile"
                         android:textSize="16sp"
                         android:textColor="#2C3E50" />
                 </LinearLayout>
@@ -195,7 +196,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Reset Password"
+                        android:text="@string/reset_password_title"
                         android:textSize="16sp"
                         android:textColor="#2C3E50" />
                 </LinearLayout>
@@ -220,7 +221,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:text="NOTIFICATIONS"
+            android:text="@string/section_notification"
             android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="#95A5A6"
@@ -270,7 +271,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Reservation Confirmation"
+                                android:text="@string/reservation_confirmation"
                                 android:textSize="16sp"
                                 android:textColor="#2C3E50" />
 
@@ -278,7 +279,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Get notified when reservation is confirmed"
+                                android:text="@string/reservation_confirmation_desc"
                                 android:textSize="12sp"
                                 android:textColor="#95A5A6" />
                         </LinearLayout>
@@ -330,7 +331,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Reservation Modification"
+                                android:text="@string/reservation_modification"
                                 android:textSize="16sp"
                                 android:textColor="#2C3E50" />
 
@@ -338,7 +339,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Get notified of any changes to your booking"
+                                android:text="@string/reservation_modification_desc"
                                 android:textSize="12sp"
                                 android:textColor="#95A5A6" />
                         </LinearLayout>
@@ -390,7 +391,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Reservation Cancellation"
+                                android:text="@string/reservation_cancellation"
                                 android:textSize="16sp"
                                 android:textColor="#2C3E50" />
 
@@ -398,7 +399,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Get notified when reservation is cancelled"
+                                android:text="@string/reservation_modification_desc"
                                 android:textSize="12sp"
                                 android:textColor="#95A5A6" />
                         </LinearLayout>

@@ -122,20 +122,35 @@
                     android:stateListAnimator="@null"
                     android:layout_marginBottom="12dp" />
 
-                <!-- Create Account Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCreateAccount"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:text="@string/create_account"
-                    android:textColor="@color/primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textAllCaps="false"
-                    android:letterSpacing="0.05"
-                    app:cornerRadius="12dp"
-                    android:layout_marginBottom="24dp" />
+                <!-- Sign Up Link -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_account"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvSignUp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/create_account"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:padding="6dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground" />
+                </LinearLayout>
 
                 <!-- Spacer for vertical centering -->
                 <Space
