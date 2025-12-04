@@ -2,66 +2,65 @@
 
     <!-- App Info -->
     <string name="app_name">Dineo</string>
+    <!--Launch Page-->
+    <string name="logo_desc">App logo</string>
+    <string name="customer">Customer</string>
+    <string name="admin">Admin</string>
+    <string name="select_role_desc">Select Your Role to continue</string>
+
+    <!--login page-->
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="create_account">Create Account</string>
+    <string name="terms_privacy">By continuing, you agree to our Terms &amp; Privacy</string>
 
     <!-- Navigation -->
     <string name="nav_menu">Menu</string>
     <string name="nav_reservation">Reservation</string>
     <string name="nav_profile">Profile</string>
 
-    <!-- Common Labels -->
-    <string name="menu">Menu</string>
-    <string name="reservations">Reservations</string>
-    <string name="profile">Profile</string>
-    <string name="notifications">Notifications</string>
-    <string name="loyalty_points">Loyalty Points</string>
-
-    <!-- Home / Dashboard -->
-    <string name="welcome_back">Welcome back,</string>
-    <string name="search_dishes">Search for dishes...</string>
-    <string name="add_to_cart">Add to Cart</string>
-
-    <!-- Reservation Section -->
-    <string name="my_reservations">My Reservations</string>
-    <string name="add_reservation">Add New Reservation</string>
-    <string name="upcoming">Upcoming</string>
-    <string name="past">Past</string>
-    <string name="modify">Modify</string>
-    <string name="cancel">Cancel</string>
-    <string name="reservations_title">Reservations</string>
-    <string name="day_monday">Monday</string>
-    <string name="date_sample">25 Nov 2025</string>
-    <string name="time_sample">7:30pm - 8:30pm</string>
-    <string name="status_confirmed">Confirmed</string>
-    <string name="edit_reservation">Edit Reservation</string>
-    <string name="cancel_reservation">Cancel</string>
-
-    <!-- Account & Settings -->
-    <string name="account_settings">Account Settings</string>
-    <string name="privacy">Privacy</string>
-    <string name="faq">FAQ</string>
-    <string name="contact_support">Contact Support</string>
-    <string name="about_us">About Us</string>
-
-    <!-- User Profile -->
-    <string name="back_button">Back button</string>
-    <string name="profile_picture">Profile picture</string>
-    <string name="edit_profile_picture">Edit Picture</string>
-
-    <!-- Profile Options -->
+    <!--User Profile Page-->
+    <string name="arrow_right">Right Arrow</string>
+    <string name="confirmation_icon">Confirmation Icon</string>
+    <string name="modification_icon">Modification Icon</string>
+    <string name="cancellation_icon">Cancellation Icon</string>
+    <string name="password_icon">Confirmation Icon</string>
     <string name="edit_profile">Edit Profile</string>
-    <string name="reset_password">Reset Password</string>
-    <string name="points">Points</string>
-    <string name="reviews">Reviews</string>
+    <string name="logout_icon">Logout Icon</string>
 
-    <!-- Icons (content descriptions for accessibility) -->
-    <string name="password_icon">Password icon</string>
-    <string name="notification_icon">Notification icon</string>
-    <string name="terms_icon">Terms icon</string>
-    <string name="logout_icon">Logout icon</string>
-    <string name="edit_profile_icon">Edit profile icon</string>
-    <string name="arrow_right">Arrow pointing right</string>
-    <string name="confirmation_icon">Confirmation icon</string>
-    <string name="modification_icon">Modification icon</string>
-    <string name="cancellation_icon">Cancellation icon</string>
+
+    <string name="back_button">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="edit_profile_picture">Edit Profile Picture</string>
+    <string name="section_account">ACCOUNT</string>
+    <string name="label_full_name">Full Name</string>
+    <string name="label_email_address">Email Address</string>
+    <string name="label_phone_number">Phone Number</string>
+    <string name="hint_full_name">Enter your full name</string>
+    <string name="hint_email">Enter your email</string>
+    <string name="hint_phone">Enter your phone number</string>
+    <string name="name">Sarah Wilson</string>
+    <string name="email">sarah.wilson@email.com</string>
+    <string name="phone">+60 12-345 6789</string>
+    <string name="btn_save_changes">Save Changes</string>
+
+    <string name="back_button">Back</string>
+    <string name="reset_password_title">Reset Password</string>
+    <string name="reset_password_message">We’ve got you covered!\n Set a new password and continue enjoying Dineo.</string>
+    <string name="current_password_label">Current Password</string>
+    <string name="current_password_hint">Enter current password</string>
+    <string name="new_password_label">New Password</string>
+    <string name="new_password_hint">Enter new password</string>
+    <string name="confirm_password_label">Confirm New Password</string>
+    <string name="confirm_password_hint">Re-enter new password</string>
+    <string name="toggle_password">Toggle password visibility</string>
+    <string name="update_password">Update Password</string>
+    <string name="cancel">Cancel</string>
+
+
+
 
 </resources>
