@@ -61,12 +61,8 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="32dp"
-                    app:boxBackgroundColor="@color/white"
-                    app:boxCornerRadiusTopStart="14dp"
-                    app:boxCornerRadiusTopEnd="14dp"
-                    app:boxCornerRadiusBottomStart="0dp"
-                    app:boxCornerRadiusBottomEnd="0dp">
+                    android:layout_marginBottom="20dp"
+                    app:boxBackgroundColor="@color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/emailInput"
@@ -88,10 +84,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp"
                     app:boxBackgroundColor="@color/white"
-                    app:boxCornerRadiusTopStart="14dp"
-                    app:boxCornerRadiusTopEnd="14dp"
-                    app:boxCornerRadiusBottomStart="0dp"
-                    app:boxCornerRadiusBottomEnd="0dp"
                     app:endIconMode="password_toggle"
                     app:endIconTint="@color/primary">
 

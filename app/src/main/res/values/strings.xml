@@ -19,7 +19,6 @@
     <!--sign in page-->
     <string name="username">Username</string>
     <string name="sign_in">Sign In</string>
-    <string name="sign_in">Sign In</string>
     <string name="already_account">Already have an account? </string>
 
     <!-- Navigation -->
@@ -63,7 +62,6 @@
     <string name="phone">+60 12-345 6789</string>
     <string name="btn_save_changes">Save Changes</string>
 
-    <string name="back_button">Back</string>
     <string name="reset_password_title">Reset Password</string>
     <string name="reset_password_message">We’ve got you covered!\n Set a new password and continue enjoying Dineo.</string>
     <string name="current_password_label">Current Password</string>
@@ -74,9 +72,8 @@
     <string name="confirm_password_hint">Re-enter new password</string>
     <string name="toggle_password">Toggle password visibility</string>
     <string name="update_password">Update Password</string>
-    <string name="cancel">Cancel</string>
 
-<!-- Reservation Page -->
+    <!-- Reservation Page -->
     <string name="reservation_title">Reservation</string>
     <string name="new_reservation">New Reservation</string>
     <string name="book_table_title">Book Your Table</string>
@@ -110,7 +107,9 @@
 
     <string name="label_table_number">Table: %1$s</string>
 
-
+    <!--NOtification Page-->
+    <string name="notification_title">Notifications</string>
+    <string name="notification_subtitle">Updates about your reservations</string>
 
 
 </resources>
