@@ -2,41 +2,46 @@
 <resources>
 
     <!-- Base Colors -->
-    <color name="black">#FF1C1C1C</color>           <!-- slightly softer than pure black -->
+    <color name="black">#FF1C1C1C</color>      <!-- slightly softer than pure black -->
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#4CAF50</color>            <!-- success / action buttons -->
+    <color name="green">#4CAF50</color>        <!-- success / action buttons -->
 
     <!-- Brand Palette -->
-    <color name="primary">#FF8C42</color>          <!-- warm orange, more soft -->
-    <color name="primary_dark">#FFB971</color>     <!-- softer warm yellow -->
-    <color name="accent">#7FD8D2</color>           <!-- muted soft teal -->
-    <color name="background">#FFF9F4</color>       <!-- very light cream -->
-    <color name="surface">#42375F</color>          <!-- softer deep indigo -->
-    <color name="dark">#6e310b</color>            <!-- red for errors -->
+    <color name="primary">#FF8C42</color>      <!-- warm orange -->
+    <color name="primary_dark">#FFB971</color> <!-- softer warm yellow -->
+    <color name="accent">#7FD8D2</color>       <!-- muted soft teal -->
+    <color name="background">#FFF9F4</color>   <!-- very light cream -->
+    <color name="surface">#42375F</color>      <!-- deep indigo -->
+    <color name="dark">#6E310B</color>         <!-- dark red-brown (errors) -->
 
+    <!-- Grayscale Palette -->
+    <color name="gray_light">#F7F7F7</color>   <!-- light gray for backgrounds -->
+    <color name="gray_medium">#D1D1D1</color>  <!-- neutral divider gray -->
+    <color name="gray_dark">#7A7A7A</color>    <!-- dark gray for secondary text -->
 
-    <!-- Grays -->
-    <color name="gray_light">#F7F7F7</color>       <!-- soft light gray for backgrounds -->
-    <color name="gray_medium">#D1D1D1</color>      <!-- neutral divider gray -->
-    <color name="gray_dark">#7A7A7A</color>        <!-- dark gray for secondary text -->
-
-    <!-- Yellow -->
+    <!-- Yellow Variants -->
     <color name="yellow_pastel_butter">#FFF3B0</color>   <!-- pastel butter yellow -->
     <color name="yellow_soft_sunflower">#FFE599</color> <!-- soft sunflower yellow -->
-    <color name="yellow_lemon_chiffon">#FFFACD</color>  <!-- lemon chiffon (very light) -->
+    <color name="yellow_lemon_chiffon">#FFFACD</color>  <!-- very light lemon chiffon -->
     <color name="yellow_creamy_pale">#FFF8B5</color>   <!-- creamy pale yellow -->
     <color name="yellow_peachy_soft">#FFD580</color>   <!-- peachy soft yellow -->
 
+    <!-- Text Colors -->
+    <color name="text_primary">#2C2C2C</color>   <!-- comfortable dark text -->
+    <color name="text_secondary">#5E5E5E</color> <!-- softer secondary text -->
+    <color name="hint">#AAB2BD</color>           <!-- gentle hint text -->
+    <color name="button_text">#FFFFFF</color>    <!-- button text (white) -->
 
-    <!-- Text -->
-    <color name="text_primary">#2C2C2C</color>     <!-- comfortable dark text -->
-    <color name="text_secondary">#5E5E5E</color>   <!-- softer secondary text -->
-    <color name="hint">#AAB2BD</color>             <!-- gentle hint text -->
-    <color name="button_text">#FFFFFF</color>
+    <!-- Status / Feedback Colors -->
+    <color name="warning">#F2A65A</color>        <!-- soft orange for alerts -->
+    <color name="error">#E74C3C</color>          <!-- red for errors -->
+    <color name="success">#4CAF50</color>        <!-- green for success -->
 
-    <!-- Optional Accent Shades -->
-    <color name="warning">#F2A65A</color>          <!-- soft orange for alerts -->
-    <color name="error">#E74C3C</color>            <!-- red for errors -->
-    <color name="success">#4CAF50</color>          <!-- green success -->
+    <color name="icon_tint">#CCCCCC</color>        <!-- neutral icon tint -->
+
+    <!-- Material Design Defaults -->
+    <color name="colorPrimary">#2196F3</color>   <!-- blue primary -->
+    <color name="colorAccent">#FF9800</color>    <!-- orange accent -->
+    <color name="colorError">#F44336</color>     <!-- material red error -->
 
 </resources>

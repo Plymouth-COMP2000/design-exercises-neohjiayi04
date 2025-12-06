@@ -9,35 +9,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.YourAppTheme">
-
-        <!-- Launch Activity - This is the entry point -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".guest.ReservationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".guest.MenuActivity"
+            android:exported="false" /> <!-- Launch Activity - This is the entry point -->
         <activity
             android:name=".LaunchActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Login Activity -->
+        </activity> <!-- Login Activity -->
         <activity
             android:name=".LoginActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".LaunchActivity" />
-
-        <!-- Sign In Activity -->
+            android:parentActivityName=".LaunchActivity"
+            android:screenOrientation="portrait" /> <!-- Sign In Activity -->
         <activity
             android:name=".SignInActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".LoginActivity" />
-
-        <!-- Main Activity -->
+            android:parentActivityName=".LoginActivity"
+            android:screenOrientation="portrait" /> <!-- Main Activity -->
         <activity
             android:name=".guest.MainActivity"
             android:screenOrientation="portrait" />
-
     </application>
 
 </manifest>

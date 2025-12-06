@@ -12,7 +12,7 @@
     <string name="email_address">Email Address</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="no_account">Don't have an account?</string>
+    <string name="no_account">Do not have an account?</string>
     <string name="create_account">Create Account</string>
     <string name="terms_privacy">By continuing, you agree to our Terms &amp; Privacy</string>
 
@@ -59,7 +59,7 @@
     <string name="hint_phone">Enter your phone number</string>
     <string name="name">Sarah Wilson</string>
     <string name="email">sarah.wilson@email.com</string>
-    <string name="phone">+60 12-345 6789</string>
+    <string name="phone">+60 12–345 6789</string>
     <string name="btn_save_changes">Save Changes</string>
 
     <string name="reset_password_title">Reset Password</string>
@@ -80,6 +80,7 @@
     <string name="book_table_subtitle">Select the details for your booking</string>
     <string name="upcoming_reservations">Upcoming Reservations</string>
     <string name="finished_reservations">Finished Reservations</string>
+    <string name="calendar_icon">Calendar Icon</string>
 
     <string name="select_date">Select Date</string>
     <string name="select_time">Select Time</string>
@@ -107,9 +108,15 @@
 
     <string name="label_table_number">Table: %1$s</string>
 
-    <!--NOtification Page-->
+    <!--Notification Page-->
     <string name="notification_title">Notifications</string>
     <string name="notification_subtitle">Updates about your reservations</string>
+    <string name="no_notification">No notifications</string>
+    <string name="notification_empty">You're all caught up! No new notifications.</string>
+    <string name="notification_close">Close Notification</string>
+    <string name="notification_content">Notification message goes here</string>
+    <string name="notify_title">Notification Title</string>
+    <string name="notification_timestamps">5 mins</string>
 
 
 </resources>
