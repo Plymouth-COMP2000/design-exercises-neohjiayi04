@@ -1,355 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF5F0">
+    android:orientation="vertical"
+    android:background="@color/background">
 
-    <!-- Header -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <!-- Scrollable Content -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="4dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@drawable/gradient_bg"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
-            <ImageView
-                android:id="@+id/backButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_back"
-                android:tint="@color/white"
-                android:contentDescription="Back button"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackgroundBorderless" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="Edit Reservation"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
-        </RelativeLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Main Content -->
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:fillViewport="true"
-        android:paddingBottom="70dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Subtitle Section -->
-            <LinearLayout
+            <!-- Header -->
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:background="@drawable/gradient_bg"
+                android:padding="15dp">
+
+                <ImageButton
+                    android:id="@+id/backButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_back"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/white"
+                    android:contentDescription="Back" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/edit_profile_title"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
+            </RelativeLayout>
+
+            <!-- Profile Picture Section -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="163dp"
                 android:gravity="center"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp">
+                android:paddingTop="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Just let us the details and"
-                    android:textSize="13sp"
-                    android:textColor="#666666" />
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:elevation="6dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/circle_frame"
+                    android:contentDescription="@string/profile_picture"
+                    android:src="@drawable/ic_profile" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="we will handle the rest"
-                    android:textSize="13sp"
-                    android:textColor="#666666" />
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/editProfileImage"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignEnd="@id/profileImage"
+                    android:layout_alignBottom="@id/profileImage"
+                    android:background="@drawable/circle_frame"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/edit_profile_picture"
+                    android:elevation="8dp"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_camera"
+                    android:translationX="10dp"
+                    android:translationY="10dp" />
 
-            <!-- Form Card -->
+            </RelativeLayout>
+
+            <!--Profile Details-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/section_account"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Edit User Profile Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="2dp"
                 app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="24dp">
+                    android:padding="20dp"
+                    android:orientation="vertical">
 
-                    <!-- Section Title -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Your Reservation Details"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="#000000"
-                        android:layout_marginBottom="20dp" />
-
-                    <!-- Date and Time Row -->
+                    <!-- Full Name -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="20dp">
+                        android:orientation="vertical"
+                        android:layout_marginBottom="16dp">
 
-                        <!-- Date Column -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginEnd="12dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Date"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:textColor="#666666"
-                                android:layout_marginBottom="8dp" />
-
-                            <TextView
-                                android:id="@+id/tvDate"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="May 28, 2024"
-                                android:textSize="14sp"
-                                android:textColor="#000000" />
-                        </LinearLayout>
-
-                        <!-- Time Column -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginStart="12dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Time"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:textColor="#666666"
-                                android:layout_marginBottom="8dp" />
-
-                            <TextView
-                                android:id="@+id/tvTime"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="7:30 PM"
-                                android:textSize="14sp"
-                                android:textColor="#000000" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- Guests and Table Row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="20dp">
-
-                        <!-- Guests Column -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginEnd="12dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Guests"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:textColor="#666666"
-                                android:layout_marginBottom="8dp" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical">
-
-                                <TextView
-                                    android:id="@+id/btnDecrementGuests"
-                                    android:layout_width="28dp"
-                                    android:layout_height="28dp"
-                                    android:gravity="center"
-                                    android:text="−"
-                                    android:textSize="20sp"
-                                    android:textColor="#FF6B35"
-                                    android:clickable="true"
-                                    android:focusable="true"
-                                    android:background="?attr/selectableItemBackgroundBorderless" />
-
-                                <TextView
-                                    android:id="@+id/tvGuestCount"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:gravity="center"
-                                    android:text="4"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold"
-                                    android:textColor="#000000" />
-
-                                <TextView
-                                    android:id="@+id/btnIncrementGuests"
-                                    android:layout_width="28dp"
-                                    android:layout_height="28dp"
-                                    android:gravity="center"
-                                    android:text="+"
-                                    android:textSize="20sp"
-                                    android:textColor="#FF6B35"
-                                    android:clickable="true"
-                                    android:focusable="true"
-                                    android:background="?attr/selectableItemBackgroundBorderless" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <!-- Table Column -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginStart="12dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Table"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:textColor="#666666"
-                                android:layout_marginBottom="8dp" />
-
-                            <TextView
-                                android:id="@+id/tvTable"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Patio Seat #12"
-                                android:textSize="14sp"
-                                android:textColor="#000000" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- Special Requests Section -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Special Requests"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:textColor="#666666"
-                        android:layout_marginBottom="8dp" />
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#E0E0E0"
-                        app:cardBackgroundColor="#F9F9F9">
+                        <TextView
+                            android:text="@string/label_full_name"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="6dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
                         <EditText
-                            android:id="@+id/etSpecialRequests"
+                            android:id="@+id/editFullName"
                             android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:background="@android:color/transparent"
-                            android:gravity="start|top"
-                            android:hint="Add any special requests here..."
-                            android:text="Celebrating an anniversary."
-                            android:padding="14dp"
-                            android:textSize="13sp"
-                            android:textColor="#000000"
-                            android:textColorHint="#999999"
-                            android:inputType="textMultiLine"
-                            android:scrollbars="vertical" />
-                    </androidx.cardview.widget.CardView>
+                            android:layout_height="46dp"
+                            android:background="@drawable/edit_text_bg"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp"
+                            android:text="@string/name"
+                            android:hint="@string/hint_full_name"
+                            android:textSize="15sp"
+                            android:textColor="@color/text_primary"
+                            android:textColorHint="@color/hint"
+                            android:inputType="textPersonName" />
+                    </LinearLayout>
+
+                    <!-- Email -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:text="@string/label_email_address"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="6dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <EditText
+                            android:id="@+id/editEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="46dp"
+                            android:background="@drawable/edit_text_bg"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp"
+                            android:text="@string/email"
+                            android:hint="@string/hint_email"
+                            android:textSize="15sp"
+                            android:textColor="@color/text_primary"
+                            android:textColorHint="@color/hint"
+                            android:inputType="textEmailAddress" />
+                    </LinearLayout>
+
+                    <!-- Phone -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:text="@string/label_phone_number"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="6dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <EditText
+                            android:id="@+id/editPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="46dp"
+                            android:background="@drawable/edit_text_bg"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp"
+                            android:text="@string/phone"
+                            android:hint="@string/hint_phone"
+                            android:textSize="15sp"
+                            android:textColor="@color/text_primary"
+                            android:textColorHint="@color/hint"
+                            android:inputType="phone" />
+                    </LinearLayout>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Action Buttons Section -->
-            <LinearLayout
+            <!-- Save Button-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:paddingBottom="20dp">
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="5dp"
+                app:cardBackgroundColor="@color/success"
+                android:clickable="true"
+                android:focusable="true">
 
-                <!-- Save Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSaveChanges"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:text="Save Changes"
+                    android:layout_height="56dp"
+                    android:text="@string/btn_save_changes"
+                    android:gravity="center"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textAllCaps="false"
-                    app:cornerRadius="26dp"
-                    app:backgroundTint="#4CAF50"
-                    android:layout_marginBottom="12dp"
-                    app:elevation="2dp" />
+                    android:textColor="@color/button_text" />
+            </androidx.cardview.widget.CardView>
 
-                <!-- Cancel Button -->
-                <TextView
-                    android:id="@+id/btnCancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cancel"
-                    android:textSize="14sp"
-                    android:textColor="#666666"
-                    android:padding="12dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless" />
-            </LinearLayout>
+            <!-- Cancel Button -->
+            <TextView
+                android:id="@+id/cancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/cancel"
+                android:textColor="@color/text_secondary"
+                android:textSize="15sp"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
-    <!-- Bottom Navigation -->
+    <!--  Bottom Navigation -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_gravity="bottom"
         android:orientation="horizontal"
-        android:background="@color/white"
-        android:elevation="8dp">
+        android:background="#FFFFFF"
+        android:elevation="16dp">
 
-        <!-- Menu Tab -->
+        <!-- MENU ITEM -->
         <LinearLayout
             android:id="@+id/navMenu"
             android:layout_width="0dp"
@@ -357,29 +260,28 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:clickable="true"
-            android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:paddingVertical="8dp">
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
+                android:id="@+id/iconMenu"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/ic_menu"
-                android:tint="@color/text_secondary"
-                android:contentDescription="Menu" />
+                app:tint="@color/text_secondary"/>
 
             <TextView
+                android:id="@+id/textMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Menu"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="4dp" />
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/text_secondary"/>
         </LinearLayout>
 
-        <!-- Reservation Tab -->
+        <!-- RESERVATION ITEM -->
         <LinearLayout
             android:id="@+id/navReservation"
             android:layout_width="0dp"
@@ -387,29 +289,28 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:clickable="true"
-            android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:paddingVertical="8dp">
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:src="@drawable/ic_table"
-                android:tint="@color/primary"
-                android:contentDescription="Reservation" />
+                android:id="@+id/iconReservation"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_calendar"
+                app:tint="@color/text_secondary"/>
 
             <TextView
+                android:id="@+id/textReservation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reservation"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:layout_marginTop="4dp" />
+                android:text="Bookings"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/text_secondary"/>
         </LinearLayout>
 
-        <!-- Profile Tab -->
+        <!-- PROFILE ITEM (Active State) -->
         <LinearLayout
             android:id="@+id/navProfile"
             android:layout_width="0dp"
@@ -417,27 +318,27 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:clickable="true"
-            android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:paddingVertical="8dp">
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
+                android:id="@+id/iconProfile"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/ic_profile"
-                android:tint="@color/text_secondary"
-                android:contentDescription="Profile" />
+                app:tint="@color/primary"/> <!-- Active Color -->
 
             <TextView
+                android:id="@+id/textProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Profile"
-                android:textSize="11sp"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"
                 android:textStyle="bold"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="4dp" />
+                android:textColor="@color/primary"/> <!-- Active Color -->
         </LinearLayout>
     </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
