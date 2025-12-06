@@ -12,6 +12,8 @@
     <color name="accent">#7FD8D2</color>           <!-- muted soft teal -->
     <color name="background">#FFF9F4</color>       <!-- very light cream -->
     <color name="surface">#42375F</color>          <!-- softer deep indigo -->
+    <color name="dark">#6e310b</color>            <!-- red for errors -->
+
 
     <!-- Grays -->
     <color name="gray_light">#F7F7F7</color>       <!-- soft light gray for backgrounds -->
