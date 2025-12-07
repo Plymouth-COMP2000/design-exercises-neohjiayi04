@@ -16,7 +16,7 @@
             android:name=".guest.ReservationActivity"
             android:exported="false" />
         <activity
-            android:name=".guest.MenuActivity"
+            android:name=".guest.GuestMenuActivity"
             android:exported="false" /> <!-- Launch Activity - This is the entry point -->
         <activity
             android:name=".LaunchActivity"

@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import com.example.dineo.guest.MenuActivity;
+import com.example.dineo.guest.GuestMenuActivity;
 import com.example.dineo.guest.ReservationActivity;
 
 public class ProfileEditActivity extends AppCompatActivity {
@@ -104,7 +104,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Navigate to Menu activity
-                Intent intent = new Intent(ProfileEditActivity.this, MenuActivity.class);
+                Intent intent = new Intent(ProfileEditActivity.this, GuestMenuActivity.class);
                 startActivity(intent);
             }
         });

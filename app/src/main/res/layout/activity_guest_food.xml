@@ -10,14 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
-        android:background="#FFFFFF">
+        android:background="@color/white"
+        android:elevation="4dp">
 
         <ImageView
             android:id="@+id/ivBack"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_back"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:contentDescription="Back"/>
 
         <ImageView
             android:id="@+id/ivNotification"
@@ -25,13 +27,15 @@
             android:layout_height="32dp"
             android:src="@drawable/ic_notification"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:contentDescription="Notifications"/>
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,13 +44,22 @@
             android:padding="16dp">
 
             <!-- Food Image -->
-            <ImageView
-                android:id="@+id/ivFoodImage"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:src="@drawable/m2"
-                android:scaleType="centerCrop"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                xmlns:app="http://schemas.android.com/apk/res-auto">
+
+                <ImageView
+                    android:id="@+id/ivFoodImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/m2"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Food Image"/>
+            </androidx.cardview.widget.CardView>
 
             <!-- Food Name and Price -->
             <LinearLayout
@@ -63,7 +76,7 @@
                     android:text="Food Name"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="#000000"/>
+                    android:textColor="@color/text_primary"/>
 
                 <TextView
                     android:id="@+id/tvPrice"
@@ -72,7 +85,7 @@
                     android:text="RM 00.00"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="#000000"/>
+                    android:textColor="@color/primary"/>
             </LinearLayout>
 
             <!-- Details Section -->
@@ -82,7 +95,7 @@
                 android:text="Details"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:layout_marginBottom="8dp"/>
 
             <TextView
@@ -91,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:text="Text description of the food. This food is delicious, yummy, awesome and unforgettable. If you come, must try!!! You won't be regretted."
                 android:textSize="16sp"
-                android:textColor="#666666"
+                android:textColor="@color/text_secondary"
                 android:lineSpacingExtra="4dp"
                 android:layout_marginBottom="24dp"/>
 
@@ -102,7 +115,7 @@
                 android:text="Remarks"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:layout_marginBottom="12dp"/>
 
             <!-- Checkbox: Less Spicy -->
@@ -112,10 +125,10 @@
                 android:layout_height="wrap_content"
                 android:text="Less Spicy"
                 android:textSize="16sp"
-                android:textColor="#000000"
-                android:button="@drawable/custom_checkbox"
+                android:textColor="@color/text_primary"
                 android:paddingStart="12dp"
-                android:layout_marginBottom="4dp"/>
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="8dp"/>
 
             <!-- Checkbox: Less Salty -->
             <CheckBox
@@ -124,10 +137,10 @@
                 android:layout_height="wrap_content"
                 android:text="Less salty"
                 android:textSize="16sp"
-                android:textColor="#000000"
-                android:button="@drawable/custom_checkbox"
+                android:textColor="@color/text_primary"
                 android:paddingStart="12dp"
-                android:layout_marginBottom="4dp"/>
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="8dp"/>
 
             <!-- Checkbox: Less Sweet -->
             <CheckBox
@@ -136,19 +149,20 @@
                 android:layout_height="wrap_content"
                 android:text="Less sweet"
                 android:textSize="16sp"
-                android:textColor="#000000"
-                android:button="@drawable/custom_checkbox"
+                android:textColor="@color/text_primary"
                 android:paddingStart="12dp"
-                android:layout_marginBottom="4dp"/>
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="24dp"/>
 
         </LinearLayout>
     </ScrollView>
-    <!--  Bottom Navigation -->
+
+    <!-- Bottom Navigation -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:orientation="horizontal"
-        android:background="#FFFFFF"
+        android:background="@color/white"
         android:elevation="8dp">
 
         <!-- MENU -->
@@ -167,7 +181,8 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_menu"
-                android:tint="@color/text_secondary"/>
+                android:tint="@color/text_secondary"
+                android:contentDescription="Menu"/>
 
             <TextView
                 android:id="@+id/textMenu"
@@ -196,7 +211,8 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_table"
-                android:tint="@color/text_secondary"/>
+                android:tint="@color/text_secondary"
+                android:contentDescription="Reservation"/>
 
             <TextView
                 android:id="@+id/textReservation"
@@ -225,7 +241,8 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_profile"
-                android:tint="@color/text_secondary"/>
+                android:tint="@color/text_secondary"
+                android:contentDescription="Profile"/>
 
             <TextView
                 android:id="@+id/textProfile"

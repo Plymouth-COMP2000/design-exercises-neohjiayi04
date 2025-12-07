@@ -1,7 +1,7 @@
 package com.example.dineo;
 // 2. IMPORT ACTIVITIES FROM SUB-PACKAGES
 
-import com.example.dineo.guest.MenuActivity;
+import com.example.dineo.guest.GuestMenuActivity;
 import com.example.dineo.guest.ReservationActivity;
 
 
@@ -278,7 +278,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     /**Navigate to Menu screen*/
     private void navigateToMenu() {
-        Intent intent = new Intent(NotificationActivity.this, MenuActivity.class);
+        Intent intent = new Intent(NotificationActivity.this, GuestMenuActivity.class);
         intent.putExtra(EXTRA_USER_TYPE, userType); // Pass user type
         startActivity(intent);
         finish();

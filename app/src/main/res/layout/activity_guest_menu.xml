@@ -62,7 +62,7 @@
                     android:layout_height="24dp"
                     android:src="@drawable/ic_search"
                     android:layout_marginEnd="8dp"
-                    android:tint="#DE5935" />
+                    app:tint="#DE5935" />
 
                 <EditText
                     android:id="@+id/etSearch"
@@ -259,7 +259,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fried Rice"
+                        android:text="Fried Noodles"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#000000"/>
@@ -298,7 +298,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fried Rice"
+                        android:text="Chicken"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#000000"/>
@@ -306,7 +306,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="RM13.00"
+                        android:text="RM12.00"
                         android:textSize="14sp"
                         android:textColor="#666666"/>
                 </LinearLayout>
@@ -329,7 +329,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fried Rice"
+                        android:text="Curry Chicken"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#000000"/>
@@ -337,7 +337,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="RM13.00"
+                        android:text="RM13.50"
                         android:textSize="14sp"
                         android:textColor="#666666"/>
                 </LinearLayout>
@@ -368,7 +368,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fried Rice"
+                        android:text="Tofu Rice"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#000000"/>
@@ -376,7 +376,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="RM13.00"
+                        android:text="RM11.00"
                         android:textSize="14sp"
                         android:textColor="#666666"/>
                 </LinearLayout>
@@ -439,12 +439,12 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_menu"
-                android:tint="@color/primary" />
+                app:tint="@color/primary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Menu"
+                android:text="@string/nav_menu"
                 android:textColor="@color/primary"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp" />
@@ -464,12 +464,12 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_table"
-                android:tint="@color/text_secondary" />
+                app:tint="@color/text_secondary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reservation"
+                android:text="@string/nav_reservation"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp" />
@@ -489,16 +489,18 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_profile"
-                android:tint="@color/text_secondary" />
+                app:tint="@color/text_secondary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
+                android:text="@string/nav_profile"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

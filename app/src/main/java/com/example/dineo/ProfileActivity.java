@@ -1,8 +1,5 @@
 package com.example.dineo;
 
-import com.example.dineo.guest.MenuActivity;
-import com.example.dineo.guest.ReservationActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,7 +22,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Switch switchConfirmation, switchModification, switchCancellation;
     private CardView logoutButton;
     private LinearLayout navMenu, navReservation, navProfile;
-    private String userType; // "customer", "staff"
+    private String userType; // "customer", "admin", "staff", "guest"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,14 +97,14 @@ public class ProfileActivity extends AppCompatActivity {
         // Bottom Navigation
         navMenu.setOnClickListener(v -> {
             // Navigate to Menu activity
-            Intent intent = new Intent(ProfileActivity.this, MenuActivity.class);
-            startActivity(intent);
+            // Intent intent = new Intent(ProfileActivity.this, MenuActivity.class);
+            // startActivity(intent);
         });
 
         navReservation.setOnClickListener(v -> {
             // Navigate to Reservation activity
-            Intent intent = new Intent(ProfileActivity.this, ReservationActivity.class);
-            startActivity(intent);
+            // Intent intent = new Intent(ProfileActivity.this, ReservationActivity.class);
+            // startActivity(intent);
         });
 
         navProfile.setOnClickListener(v -> {
@@ -135,14 +132,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void openNotificationPage() {
         // Navigate to notification activity
-        Intent intent = new Intent(ProfileActivity.this, NotificationActivity.class);
-        startActivity(intent);
+        // Intent intent = new Intent(ProfileActivity.this, NotificationActivity.class);
+        // startActivity(intent);
     }
 
     private void saveNotificationPreference(String type, boolean enabled) {
         // TODO: Save to SharedPreferences or database
-        SharedPreferences prefs = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
-        prefs.edit().putBoolean(type, enabled).apply();
+        // Example:
+        // SharedPreferences prefs = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
+        // prefs.edit().putBoolean(type, enabled).apply();
     }
 
     private void showLogoutDialog() {
