@@ -35,6 +35,7 @@
     <string name="password_icon">Confirmation Icon</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="logout_icon">Logout Icon</string>
+    <string name="logout">Log Out</string>
 
     <string name="reservation_confirmation">Reservation Confirmation</string>
     <string name="reservation_confirmation_desc">Get notified when reservation is confirmed</string>
