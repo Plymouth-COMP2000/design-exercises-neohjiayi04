@@ -112,11 +112,12 @@
     <string name="notification_title">Notifications</string>
     <string name="notification_subtitle">Updates about your reservations</string>
     <string name="no_notification">No notifications</string>
-    <string name="notification_empty">You're all caught up! No new notifications.</string>
+    <string name="notification_empty">You are all caught up! No new notifications.</string>
     <string name="notification_close">Close Notification</string>
     <string name="notification_content">Notification message goes here</string>
     <string name="notify_title">Notification Title</string>
     <string name="notification_timestamps">5 mins</string>
+    <string name="clear">Clear All</string>
 
 
 </resources>

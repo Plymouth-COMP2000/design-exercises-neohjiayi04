@@ -21,13 +21,13 @@
             android:layout_height="24dp"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_back"
-            android:contentDescription="Back" />
+            android:contentDescription="@string/back_button" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Notifications"
+            android:text="@string/notification_title"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#000000" />
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:text="Clear All"
+            android:text="@string/clear"
             android:textSize="14sp"
             android:textColor="#FF6B35"
             android:clickable="true"
@@ -91,7 +91,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Menu"
+                android:text="@string/nav_menu"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
@@ -117,7 +117,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reservation"
+                android:text="@string/nav_reservation"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
@@ -143,7 +143,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
+                android:text="@string/nav_profile"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
