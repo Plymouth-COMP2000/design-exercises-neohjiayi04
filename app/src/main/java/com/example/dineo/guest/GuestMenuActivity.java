@@ -87,8 +87,8 @@ public class GuestMenuActivity extends AppCompatActivity {
         navReservation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to reservation edit activity
-                Intent intent = new Intent(GuestMenuActivity.this, GuestReservationEditActivity.class);
+                // Navigate to reservation activity
+                Intent intent = new Intent(GuestMenuActivity.this, GuestReservationActivity.class);
                 startActivity(intent);
             }
         });

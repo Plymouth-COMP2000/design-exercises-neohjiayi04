@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.dineo.guest.GuestMenuActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -88,10 +90,10 @@ public class LoginActivity extends AppCompatActivity {
         // For now, just show a success message
         Toast.makeText(this, "Login successful as " + userType, Toast.LENGTH_SHORT).show();
 
-        // Navigate to main activity (you'll need to create this)
-        // Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        // intent.putExtra("USER_TYPE", userType);
-        // startActivity(intent);
-        // finish();
+        // Navigate to main activity
+        Intent intent = new Intent(LoginActivity.this, GuestMenuActivity.class);
+        intent.putExtra("USER_TYPE", userType);
+        startActivity(intent);
+        finish();
     }
 }
