@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -13,8 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import com.example.dineo.api.ApiService;
+import com.example.dineo.guest.GuestMenuActivity;
+import com.example.dineo.guest.ReservationActivity;
+import com.example.dineo.utils.SessionManager;
+import org.json.JSONObject;
 
-public class ResetPasswordActivity extends AppCompatActivity {
+public class ProfileResetActivity extends AppCompatActivity {
 
     private ImageButton backButton;
     private EditText editCurrentPassword, editNewPassword, editConfirmPassword;
@@ -22,7 +26,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private CardView updatePasswordButton;
     private TextView cancelButton;
     private LinearLayout navMenu, navReservation, navProfile;
-    private String userType;
+
+    private SessionManager sessionManager;
+    private boolean isUpdating = false;
 
     private boolean isCurrentPasswordVisible = false;
     private boolean isNewPasswordVisible = false;
@@ -33,13 +39,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_reset);
 
-        // Get user type from intent
-        userType = getIntent().getStringExtra("USER_TYPE");
+        sessionManager = new SessionManager(this);
 
-        // Initialize views
         initializeViews();
-
-        // Set click listeners
         setupClickListeners();
     }
 
@@ -59,38 +61,36 @@ public class ResetPasswordActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        // Back button
         backButton.setOnClickListener(v -> finish());
 
-        // Password visibility toggles
-        toggleCurrentPassword.setOnClickListener(v -> togglePasswordVisibility(
-                editCurrentPassword, toggleCurrentPassword, 0));
+        toggleCurrentPassword.setOnClickListener(v ->
+                togglePasswordVisibility(editCurrentPassword, toggleCurrentPassword, 0));
 
-        toggleNewPassword.setOnClickListener(v -> togglePasswordVisibility(
-                editNewPassword, toggleNewPassword, 1));
+        toggleNewPassword.setOnClickListener(v ->
+                togglePasswordVisibility(editNewPassword, toggleNewPassword, 1));
 
-        toggleConfirmPassword.setOnClickListener(v -> togglePasswordVisibility(
-                editConfirmPassword, toggleConfirmPassword, 2));
+        toggleConfirmPassword.setOnClickListener(v ->
+                togglePasswordVisibility(editConfirmPassword, toggleConfirmPassword, 2));
 
-        // Update password button
-        updatePasswordButton.setOnClickListener(v -> updatePassword());
+        updatePasswordButton.setOnClickListener(v -> {
+            if (!isUpdating) {
+                updatePassword();
+            }
+        });
 
-        // Cancel button
         cancelButton.setOnClickListener(v -> finish());
 
-        // Bottom Navigation
         navMenu.setOnClickListener(v -> {
-            // Navigate to Menu activity
+            Intent intent = new Intent(ProfileResetActivity.this, GuestMenuActivity.class);
+            startActivity(intent);
         });
 
         navReservation.setOnClickListener(v -> {
-            // Navigate to Reservation activity
+            Intent intent = new Intent(ProfileResetActivity.this, ReservationActivity.class);
+            startActivity(intent);
         });
 
-        navProfile.setOnClickListener(v -> {
-            // Navigate back to Profile activity
-            finish();
-        });
+        navProfile.setOnClickListener(v -> finish());
     }
 
     private void togglePasswordVisibility(EditText editText, ImageView toggleIcon, int fieldIndex) {
@@ -121,7 +121,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
             toggleIcon.setImageResource(R.drawable.ic_eye_off);
         }
 
-        // Move cursor to end
         editText.setSelection(editText.getText().length());
     }
 
@@ -137,6 +136,14 @@ public class ResetPasswordActivity extends AppCompatActivity {
             return;
         }
 
+        // Verify current password matches stored password
+        String storedPassword = sessionManager.getPassword();
+        if (!currentPassword.equals(storedPassword)) {
+            editCurrentPassword.setError("Current password is incorrect");
+            editCurrentPassword.requestFocus();
+            return;
+        }
+
         if (TextUtils.isEmpty(newPassword)) {
             editNewPassword.setError("New password is required");
             editNewPassword.requestFocus();
@@ -145,6 +152,12 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         if (newPassword.length() < 6) {
             editNewPassword.setError("Password must be at least 6 characters");
+            editNewPassword.requestFocus();
+            return;
+        }
+
+        if (!isPasswordStrong(newPassword)) {
+            editNewPassword.setError("Password should contain letters and numbers");
             editNewPassword.requestFocus();
             return;
         }
@@ -167,11 +180,63 @@ public class ResetPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        // TODO: Verify current password and update to new password
-        // For now, just show success message
-        Toast.makeText(this, "Password updated successfully", Toast.LENGTH_SHORT).show();
+        // Disable button and show loading
+        isUpdating = true;
+        updatePasswordButton.setEnabled(false);
+        Toast.makeText(this, "Updating password...", Toast.LENGTH_SHORT).show();
 
-        // Go back to profile page
-        finish();
+        // Get user data from session
+        String username = sessionManager.getUsername();
+        String firstname = sessionManager.getFirstName();
+        String lastname = sessionManager.getLastName();
+        String email = sessionManager.getEmail();
+        String contact = sessionManager.getContact();
+        String usertype = sessionManager.getUserType();
+
+        // Call API to update user (including password)
+        ApiService.updateUserProfile(this, username, firstname, lastname, email, contact,
+                newPassword, usertype, new ApiService.ApiCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        isUpdating = false;
+                        updatePasswordButton.setEnabled(true);
+
+                        // Update password in session
+                        sessionManager.updatePassword(newPassword);
+
+                        Toast.makeText(ProfileResetActivity.this,
+                                "Password updated successfully", Toast.LENGTH_SHORT).show();
+
+                        // Clear password fields
+                        editCurrentPassword.setText("");
+                        editNewPassword.setText("");
+                        editConfirmPassword.setText("");
+
+                        // Go back to profile page
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        isUpdating = false;
+                        updatePasswordButton.setEnabled(true);
+
+                        Toast.makeText(ProfileResetActivity.this,
+                                "Failed to update password: " + error, Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private boolean isPasswordStrong(String password) {
+        boolean hasLetter = false;
+        boolean hasDigit = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isLetter(c)) hasLetter = true;
+            if (Character.isDigit(c)) hasDigit = true;
+            if (hasLetter && hasDigit) return true;
+        }
+
+        return hasLetter && hasDigit;
     }
 }

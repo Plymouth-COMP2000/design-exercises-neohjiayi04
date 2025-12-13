@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.dineo">
 
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,36 +15,58 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.YourAppTheme">
+
+        <!-- Main Activity -->
         <activity
-            android:name=".ProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".guest.ReservationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".guest.GuestMenuActivity"
-            android:exported="false" /> <!-- Launch Activity - This is the entry point -->
-        <activity
-            android:name=".LaunchActivity"
-            android:exported="true"
-            android:screenOrientation="portrait">
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Login Activity -->
+        </activity>
+
+        <!-- Staff Reservation Activities -->
         <activity
-            android:name=".LoginActivity"
-            android:parentActivityName=".LaunchActivity"
-            android:screenOrientation="portrait" /> <!-- Sign In Activity -->
+            android:name=".staff.StaffReservationActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.YourAppTheme" />
+
         <activity
-            android:name=".SignInActivity"
-            android:parentActivityName=".LoginActivity"
-            android:screenOrientation="portrait" /> <!-- Main Activity -->
+            android:name=".staff.StaffCalendarActivity"
+            android:exported="false"
+            android:theme="@style/Theme.YourAppTheme" />
+
         <activity
-            android:name=".guest.MainActivity"
-            android:screenOrientation="portrait" />
+            android:name=".staff.StaffReservationDetailsActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.YourAppTheme" />
+
+        <!-- Firebase Cloud Messaging Service -->
+        <service
+            android:name=".services.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- Firebase Messaging default notification icon and color -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_reservation" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/primary" />
+
+        <!-- Firebase Messaging default notification channel -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="reservation_notifications" />
+
     </application>
 
 </manifest>

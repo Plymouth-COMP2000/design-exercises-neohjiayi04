@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF5E6">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:id="@+id/header"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="MENU"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <ImageView
+            android:id="@+id/ivNotification"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_notification" />
+    </LinearLayout>
+
+    <!-- SEARCH BAR -->
+    <LinearLayout
+        android:id="@+id/searchContainer"
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/search_bar_bg"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_search" />
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:hint="Search"
+            android:layout_marginStart="10dp"
+            android:background="@android:color/transparent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- CATEGORY LABELS -->
+    <HorizontalScrollView
+        android:id="@+id/scrollLabels"
+        android:layout_below="@id/searchContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:id="@+id/categoryContainer"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingBottom="10dp">
+
+            <!-- EXAMPLE LABEL -->
+            <TextView
+                android:text="Label"
+                android:textSize="14sp"
+                android:padding="10dp"
+                android:background="@drawable/category_label_bg"
+                android:layout_marginEnd="8dp" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- MENU LIST -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerStaffMenu"
+        android:layout_below="@id/scrollLabels"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@id/bottomNav"
+        android:padding="20dp" />
+
+    <!-- ADD BUTTON -->
+    <ImageButton
+        android:id="@+id/btnAdd"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="90dp"
+        android:background="@drawable/fab_add_bg"
+        android:src="@drawable/ic_add"
+        android:tint="#000000" />
+
+    <!-- BOTTOM NAVIGATION -->
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="#FFFFFF"
+        android:elevation="8dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <ImageView android:src="@drawable/ic_dashboard" android:layout_width="22dp" android:layout_height="22dp"/>
+            <TextView android:text="Dashboard" android:textSize="12sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <ImageView android:src="@drawable/ic_menu_active" android:layout_width="22dp" android:layout_height="22dp"/>
+            <TextView android:text="Menu" android:textSize="12sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <ImageView android:src="@drawable/ic_reservation" android:layout_width="22dp" android:layout_height="22dp"/>
+            <TextView android:text="Reservations" android:textSize="12sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <ImageView android:src="@drawable/ic_profile" android:layout_width="22dp" android:layout_height="22dp"/>
+            <TextView android:text="Profile" android:textSize="12sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -2,16 +2,21 @@ package com.example.dineo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import com.example.dineo.api.ApiService;
+import com.example.dineo.guest.GuestMenuActivity;
+import com.example.dineo.guest.ReservationActivity;
+import com.example.dineo.utils.SessionManager;
+import org.json.JSONObject;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -22,30 +27,36 @@ public class ProfileActivity extends AppCompatActivity {
     private Switch switchConfirmation, switchModification, switchCancellation;
     private CardView logoutButton;
     private LinearLayout navMenu, navReservation, navProfile;
-    private String userType; // "customer", "admin", "staff", "guest"
+
+    private SessionManager sessionManager;
+    private String userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // Get user type from intent
-        userType = getIntent().getStringExtra("USER_TYPE");
-        if (userType == null) {
-            userType = "customer"; // default
+        sessionManager = new SessionManager(this);
+
+        if (!sessionManager.isLoggedIn()) {
+            navigateToLogin();
+            return;
         }
 
-        // Initialize views
+        userType = sessionManager.getUserType();
+
         initializeViews();
-
-        // Load user data
         loadUserData();
-
-        // Set click listeners
         setupClickListeners();
-
-        // Setup notification switches
         setupNotificationSwitches();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sessionManager.isLoggedIn()) {
+            loadUserDataFromSession();
+        }
     }
 
     private void initializeViews() {
@@ -66,45 +77,76 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        // TODO: Load actual user data from database/preferences
-        // For now, using placeholder data
-        userName.setText("John Doe");
-        userEmail.setText("john.doe@example.com");
-        userPhone.setText("011-3338887");
+        loadUserDataFromSession();
+
+        String username = sessionManager.getUsername();
+        if (username != null) {
+            ApiService.getUserProfile(this, username, new ApiService.ApiCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    try {
+                        JSONObject user = response.getJSONObject("user");
+                        String firstname = user.getString("firstname");
+                        String lastname = user.getString("lastname");
+                        String email = user.getString("email");
+                        String contact = user.getString("contact");
+
+                        sessionManager.updateUserProfile(firstname, lastname, email, contact);
+
+                        userName.setText(firstname + " " + lastname);
+                        userEmail.setText(email);
+                        userPhone.setText(contact);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onError(String error) {
+                    // Keep using session data if API fails
+                }
+            });
+        }
+    }
+
+    private void loadUserDataFromSession() {
+        userName.setText(sessionManager.getFullName());
+        userEmail.setText(sessionManager.getEmail());
+        userPhone.setText(sessionManager.getContact());
+
+        switchConfirmation.setChecked(sessionManager.getNotificationPreference("confirmation"));
+        switchModification.setChecked(sessionManager.getNotificationPreference("modification"));
+        switchCancellation.setChecked(sessionManager.getNotificationPreference("cancellation"));
     }
 
     private void setupClickListeners() {
-        // Notification button
         btnNotification.setOnClickListener(v -> openNotificationPage());
 
-        // Edit Profile
         editProfileOption.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, ProfileEditActivity.class);
-            intent.putExtra("USER_TYPE", userType);
             startActivity(intent);
         });
 
-        // Reset Password
         passwordOption.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, ResetPasswordActivity.class);
-            intent.putExtra("USER_TYPE", userType);
+            Intent intent = new Intent(ProfileActivity.this, ProfileResetActivity.class);
             startActivity(intent);
         });
 
-        // Logout
         logoutButton.setOnClickListener(v -> showLogoutDialog());
 
-        // Bottom Navigation
         navMenu.setOnClickListener(v -> {
-            // Navigate to Menu activity
-            // Intent intent = new Intent(ProfileActivity.this, MenuActivity.class);
-            // startActivity(intent);
+            Intent intent = new Intent(ProfileActivity.this, GuestMenuActivity.class);
+            startActivity(intent);
         });
 
         navReservation.setOnClickListener(v -> {
-            // Navigate to Reservation activity
-            // Intent intent = new Intent(ProfileActivity.this, ReservationActivity.class);
-            // startActivity(intent);
+            if ("staff".equals(userType) || "admin".equals(userType)) {
+                Toast.makeText(this, "Staff reservation management coming soon", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(ProfileActivity.this, ReservationActivity.class);
+                startActivity(intent);
+            }
         });
 
         navProfile.setOnClickListener(v -> {
@@ -113,34 +155,30 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setupNotificationSwitches() {
-        // Save notification preferences when switches are toggled
         switchConfirmation.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // TODO: Save preference
-            saveNotificationPreference("confirmation", isChecked);
+            sessionManager.setNotificationPreference("confirmation", isChecked);
+            Toast.makeText(this,
+                    "Confirmation notifications " + (isChecked ? "enabled" : "disabled"),
+                    Toast.LENGTH_SHORT).show();
         });
 
         switchModification.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // TODO: Save preference
-            saveNotificationPreference("modification", isChecked);
+            sessionManager.setNotificationPreference("modification", isChecked);
+            Toast.makeText(this,
+                    "Modification notifications " + (isChecked ? "enabled" : "disabled"),
+                    Toast.LENGTH_SHORT).show();
         });
 
         switchCancellation.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // TODO: Save preference
-            saveNotificationPreference("cancellation", isChecked);
+            sessionManager.setNotificationPreference("cancellation", isChecked);
+            Toast.makeText(this,
+                    "Cancellation notifications " + (isChecked ? "enabled" : "disabled"),
+                    Toast.LENGTH_SHORT).show();
         });
     }
 
     public void openNotificationPage() {
-        // Navigate to notification activity
-        // Intent intent = new Intent(ProfileActivity.this, NotificationActivity.class);
-        // startActivity(intent);
-    }
-
-    private void saveNotificationPreference(String type, boolean enabled) {
-        // TODO: Save to SharedPreferences or database
-        // Example:
-        // SharedPreferences prefs = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
-        // prefs.edit().putBoolean(type, enabled).apply();
+        Toast.makeText(this, "Notifications coming soon", Toast.LENGTH_SHORT).show();
     }
 
     private void showLogoutDialog() {
@@ -153,9 +191,13 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void performLogout() {
-        // TODO: Clear user session, tokens, etc.
-        // Navigate back to launch/login screen
-        Intent intent = new Intent(ProfileActivity.this, LaunchActivity.class);
+        sessionManager.logout();
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+        navigateToLogin();
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

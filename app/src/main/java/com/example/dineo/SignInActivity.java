@@ -3,14 +3,15 @@ package com.example.dineo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.dineo.api.ApiService;
 import com.example.dineo.guest.GuestMenuActivity;
+import com.example.dineo.utils.SessionManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import org.json.JSONObject;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -19,18 +20,15 @@ public class SignInActivity extends AppCompatActivity {
     private TextInputEditText etPassword;
     private MaterialButton btnSignIn;
     private TextView tvLogin;
-    private String userType;
+    private SessionManager sessionManager;
+    private boolean isRegistering = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        // Get user type from intent
-        userType = getIntent().getStringExtra("USER_TYPE");
-        if (userType == null) {
-            userType = "customer"; // default
-        }
+        sessionManager = new SessionManager(this);
 
         // Initialize views
         etUsername = findViewById(R.id.etUsername);
@@ -40,23 +38,17 @@ public class SignInActivity extends AppCompatActivity {
         tvLogin = findViewById(R.id.tvLogin);
 
         // Sign in button click
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnSignIn.setOnClickListener(v -> {
+            if (!isRegistering) {
                 performSignIn();
             }
         });
 
         // Login link click
-        tvLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate back to Login activity
-                Intent intent = new Intent(SignInActivity.this, LoginActivity.class);
-                intent.putExtra("USER_TYPE", userType);
-                startActivity(intent);
-                finish();
-            }
+        tvLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(SignInActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -102,14 +94,73 @@ public class SignInActivity extends AppCompatActivity {
             return;
         }
 
-        // TODO: Implement actual registration logic here
-        // For now, just show a success message
-        Toast.makeText(this, "Account created successfully as " + userType, Toast.LENGTH_SHORT).show();
+        // Check password strength
+        if (!isPasswordStrong(password)) {
+            etPassword.setError("Password should contain letters and numbers");
+            etPassword.requestFocus();
+            return;
+        }
 
-        // Navigate to menu activity
-        Intent intent = new Intent(SignInActivity.this, GuestMenuActivity.class);
-        intent.putExtra("USER_TYPE", userType);
-        startActivity(intent);
-        finish();
+        // Disable button and show loading
+        isRegistering = true;
+        btnSignIn.setEnabled(false);
+        btnSignIn.setText("Creating Account...");
+
+        // Split username into firstname and lastname (or use username as firstname)
+        String firstname = username;
+        String lastname = "";
+
+        // Call API to create user
+        ApiService.createUser(this, username, password, firstname, lastname,
+                email, "", "guest", new ApiService.ApiCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        isRegistering = false;
+                        btnSignIn.setEnabled(true);
+                        btnSignIn.setText("Sign In");
+
+                        Toast.makeText(SignInActivity.this,
+                                "Account created successfully!", Toast.LENGTH_SHORT).show();
+
+                        // Auto-login: Save session
+                        sessionManager.createLoginSession(username, password, firstname,
+                                lastname, email, "", "guest");
+
+                        // Navigate to profile
+                        Intent intent = new Intent(SignInActivity.this, GuestMenuActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        isRegistering = false;
+                        btnSignIn.setEnabled(true);
+                        btnSignIn.setText("Sign In");
+
+                        if (error.contains("already exists") || error.contains("duplicate")) {
+                            Toast.makeText(SignInActivity.this,
+                                    "Username or email already exists. Please try another.",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(SignInActivity.this,
+                                    "Failed to create account: " + error, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    private boolean isPasswordStrong(String password) {
+        boolean hasLetter = false;
+        boolean hasDigit = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isLetter(c)) hasLetter = true;
+            if (Character.isDigit(c)) hasDigit = true;
+            if (hasLetter && hasDigit) return true;
+        }
+
+        return hasLetter && hasDigit;
     }
 }

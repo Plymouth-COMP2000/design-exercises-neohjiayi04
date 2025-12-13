@@ -1,4 +1,4 @@
-package com.example.dineo;
+package com.example.dineo.staff;
 
 
 public class Reservation {

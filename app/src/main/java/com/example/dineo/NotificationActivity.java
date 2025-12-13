@@ -2,7 +2,7 @@ package com.example.dineo;
 // 2. IMPORT ACTIVITIES FROM SUB-PACKAGES
 
 import com.example.dineo.guest.GuestMenuActivity;
-import com.example.dineo.guest.ReservationActivity;
+import com.example.dineo.staff.guest.ReservationActivity;
 
 
 import android.content.Intent;

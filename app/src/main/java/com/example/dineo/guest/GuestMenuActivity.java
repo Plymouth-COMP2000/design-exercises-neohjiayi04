@@ -4,152 +4,116 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 
-import com.example.dineo.NotificationActivity;
-import com.example.dineo.ProfileActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.dineo.R;
+import com.example.dineo.adapters.MenuAdapter;
+import com.example.dineo.models.MenuItem;
+import com.google.firebase.database.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuestMenuActivity extends AppCompatActivity {
 
-    private ImageView ivNotification;
+    private RecyclerView recyclerView;
     private EditText etSearch;
-    private LinearLayout navMenu, navReservation, navProfile;
 
-    // Category buttons
-    private AppCompatButton btnAll, btnRice1, btnRice2, btnNoodle, btnMeat, btnVegetable, btnDrinks;
+    private MenuAdapter adapter;
+    private DatabaseReference menuRef;
+
+    private List<MenuItem> allItems = new ArrayList<>();
+    private List<MenuItem> filteredItems = new ArrayList<>();
+
+    private String selectedCategory = "All";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guest_menu);
 
-        // Initialize views
-        initializeViews();
-
-        // Set up listeners
-        setupListeners();
-    }
-
-    private void initializeViews() {
-        // Header
-        ivNotification = findViewById(R.id.ivNotification);
-
-        // Search
+        recyclerView = findViewById(R.id.recyclerMenu);
         etSearch = findViewById(R.id.etSearch);
 
-        // Bottom Navigation
-        navMenu = findViewById(R.id.navMenu);
-        navReservation = findViewById(R.id.navReservation);
-        navProfile = findViewById(R.id.navProfile);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
+        adapter = new MenuAdapter(this, filteredItems, item -> openFoodDetail(item));
+        recyclerView.setAdapter(adapter);
+
+        menuRef = FirebaseDatabase.getInstance().getReference("menu_items");
+
+        setupSearch();
+        loadMenuFromFirebase();
     }
 
-    private void setupListeners() {
-        // Notification icon click
-        ivNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to notifications activity
-                Intent intent = new Intent(GuestMenuActivity.this, NotificationActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        // Search functionality
+    private void setupSearch() {
         etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Implement search filter logic here
-                filterMenuItems(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        // Bottom Navigation
-        navMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Already on menu page
-            }
-        });
-
-        navReservation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to reservation activity
-                Intent intent = new Intent(GuestMenuActivity.this, GuestReservationActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        navProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to profile activity
-                Intent intent = new Intent(GuestMenuActivity.this, ProfileActivity.class);
-                startActivity(intent);
+                filterList(s.toString());
             }
         });
     }
 
-    private void filterMenuItems(String searchText) {
-        // Implement your search/filter logic here
-        if (searchText.isEmpty()) {
-            // Show all items
-        } else {
-            // Filter items that match the search text
+    private void loadMenuFromFirebase() {
+        menuRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                allItems.clear();
+
+                for (DataSnapshot s : snapshot.getChildren()) {
+                    MenuItem item = s.getValue(MenuItem.class);
+                    if (item != null) {
+                        item.setId(s.getKey());
+                        allItems.add(item);
+                    }
+                }
+
+                filteredItems = new ArrayList<>(allItems);
+                adapter.updateList(filteredItems);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void filterList(String query) {
+
+        String q = query.toLowerCase();
+        filteredItems.clear();
+
+        for (MenuItem item : allItems) {
+
+            boolean matchSearch = item.getName().toLowerCase().contains(q);
+            boolean matchCategory = selectedCategory.equals("All") ||
+                    item.getCategory().equalsIgnoreCase(selectedCategory);
+
+            if (matchSearch && matchCategory) {
+                filteredItems.add(item);
+            }
         }
+
+        adapter.updateList(filteredItems);
     }
 
-    // Method to handle category button clicks
-    public void onCategoryClick(View view) {
-        // Reset all buttons to default style
-        resetCategoryButtons();
-
-        // Set clicked button to selected style
-        AppCompatButton clickedButton = (AppCompatButton) view;
-        clickedButton.setBackgroundResource(R.drawable.label_hover_bg);
-        clickedButton.setTextColor(getResources().getColor(android.R.color.white));
-
-        // Filter items based on category
-        String category = clickedButton.getText().toString();
-        filterByCategory(category);
-    }
-
-    private void resetCategoryButtons() {
-        // Reset all category buttons to default style
-        // You would need to store references to all category buttons
-        // and loop through them to reset their appearance
-    }
-
-    private void filterByCategory(String category) {
-        // Implement category filter logic
-        if (category.equals("All")) {
-            // Show all items
-        } else {
-            // Show only items of selected category
-        }
-    }
-
-    // Method to handle food item clicks
-    public void onFoodItemClick(View view) {
-        // Navigate to food detail page or add to cart
-        Intent intent = new Intent(GuestMenuActivity.this, GuestFoodActivity.class);
-        intent.putExtra("food_name", "Nasi Lemak");
-        intent.putExtra("food_price", 12.50);
-        intent.putExtra("food_description", "Traditional Malaysian dish...");
-        intent.putExtra("food_image", R.drawable.m2);
+    private void openFoodDetail(MenuItem item) {
+        Intent intent = new Intent(this, GuestFoodActivity.class);
+        intent.putExtra("id", item.getId());
+        intent.putExtra("name", item.getName());
+        intent.putExtra("price", item.getPrice());
+        intent.putExtra("desc", item.getDescription());
+        intent.putExtra("img", item.getImageUrl());
         startActivity(intent);
     }
 }

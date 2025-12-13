@@ -57,7 +57,7 @@
 
                 <!-- Email Field -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/emailInputLayout"
+                    android:id="@+id/editEmail"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
 
                 <!-- Password Field -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/passwordInputLayout"
+                    android:id="@+id/editPassword"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -122,6 +122,14 @@
                     android:gravity="center"
                     android:layout_gravity="center"
                     android:layout_marginTop="6dp">
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:layout_width="wrap_content"

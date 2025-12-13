@@ -1,18 +1,20 @@
 package com.example.dineo.guest;
 
-import com.example.dineo.Reservation;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.dineo.R;
+import com.google.android.material.button.MaterialButton;
 import java.util.List;
 
 public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.ReservationViewHolder> {
 
+    private Context context;
     private List<Reservation> reservations;
     private OnReservationActionListener listener;
 
@@ -21,7 +23,9 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         void onCancel(Reservation reservation);
     }
 
-    public ReservationAdapter(List<Reservation> reservations, OnReservationActionListener listener) {
+    public ReservationAdapter(Context context, List<Reservation> reservations,
+                              OnReservationActionListener listener) {
+        this.context = context;
         this.reservations = reservations;
         this.listener = listener;
     }
@@ -29,15 +33,47 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     @NonNull
     @Override
     public ReservationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_reservation, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_reservation, parent, false);
         return new ReservationViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReservationViewHolder holder, int position) {
         Reservation reservation = reservations.get(position);
-        holder.bind(reservation, listener);
+
+        holder.tvReservationId.setText(reservation.getId());
+        holder.tvDate.setText(reservation.getDate());
+        holder.tvTime.setText(reservation.getTime());
+        holder.tvGuests.setText(reservation.getGuests() + " guests");
+        holder.tvTable.setText(reservation.getTable());
+
+        if (reservation.getRequests() != null && !reservation.getRequests().isEmpty()) {
+            holder.tvRequests.setVisibility(View.VISIBLE);
+            holder.tvRequests.setText("Requests: " + reservation.getRequests());
+        } else {
+            holder.tvRequests.setVisibility(View.GONE);
+        }
+
+        // Show/hide action buttons based on status
+        if ("Upcoming".equals(reservation.getStatus())) {
+            holder.btnEdit.setVisibility(View.VISIBLE);
+            holder.btnCancel.setVisibility(View.VISIBLE);
+
+            holder.btnEdit.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onEdit(reservation);
+                }
+            });
+
+            holder.btnCancel.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onCancel(reservation);
+                }
+            });
+        } else {
+            holder.btnEdit.setVisibility(View.GONE);
+            holder.btnCancel.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -51,36 +87,21 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     }
 
     static class ReservationViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvDateTime, tvPax, tvTable, tvStatus;
-        private ImageButton btnEdit, btnCancel;
+        CardView cardView;
+        TextView tvReservationId, tvDate, tvTime, tvGuests, tvTable, tvRequests;
+        MaterialButton btnEdit, btnCancel;
 
         public ReservationViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvDateTime = itemView.findViewById(R.id.tvDateTime);
-            tvPax = itemView.findViewById(R.id.tvPax);
+            cardView = itemView.findViewById(R.id.reservationCard);
+            tvReservationId = itemView.findViewById(R.id.tvReservationId);
+            tvDate = itemView.findViewById(R.id.tvDate);
+            tvTime = itemView.findViewById(R.id.tvTime);
+            tvGuests = itemView.findViewById(R.id.tvGuests);
             tvTable = itemView.findViewById(R.id.tvTable);
-            tvStatus = itemView.findViewById(R.id.tvStatus);
+            tvRequests = itemView.findViewById(R.id.tvRequests);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnCancel = itemView.findViewById(R.id.btnCancel);
-        }
-
-        public void bind(Reservation reservation, OnReservationActionListener listener) {
-            tvDateTime.setText(reservation.getDateTime());
-            tvPax.setText(reservation.getPax());
-            tvTable.setText(reservation.getTable());
-            tvStatus.setText(reservation.getStatus());
-
-            // Hide action buttons for finished reservations
-            if (reservation.getStatus().equals("Completed") || reservation.getStatus().equals("Cancelled")) {
-                btnEdit.setVisibility(View.GONE);
-                btnCancel.setVisibility(View.GONE);
-            } else {
-                btnEdit.setVisibility(View.VISIBLE);
-                btnCancel.setVisibility(View.VISIBLE);
-
-                btnEdit.setOnClickListener(v -> listener.onEdit(reservation));
-                btnCancel.setOnClickListener(v -> listener.onCancel(reservation));
-            }
         }
     }
 }

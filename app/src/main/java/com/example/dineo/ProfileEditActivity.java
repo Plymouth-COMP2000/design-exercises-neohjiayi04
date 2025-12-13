@@ -3,7 +3,6 @@ package com.example.dineo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -12,9 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-
+import com.example.dineo.api.ApiService;
 import com.example.dineo.guest.GuestMenuActivity;
 import com.example.dineo.guest.ReservationActivity;
+import com.example.dineo.utils.SessionManager;
+import org.json.JSONObject;
 
 public class ProfileEditActivity extends AppCompatActivity {
 
@@ -24,23 +25,19 @@ public class ProfileEditActivity extends AppCompatActivity {
     private CardView saveButton;
     private TextView cancelButton;
     private LinearLayout navMenu, navReservation, navProfile;
-    private String userType;
+
+    private SessionManager sessionManager;
+    private boolean isSaving = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
 
-        // Get user type from intent
-        userType = getIntent().getStringExtra("USER_TYPE");
+        sessionManager = new SessionManager(this);
 
-        // Initialize views
         initializeViews();
-
-        // Load current user data
         loadUserData();
-
-        // Set click listeners
         setupClickListeners();
     }
 
@@ -59,86 +56,50 @@ public class ProfileEditActivity extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        // TODO: Load actual user data from database/preferences
-        // For now, using placeholder data
-        editFullName.setText("John Doe");
-        editEmail.setText("john.doe@example.com");
-        editPhone.setText("011-3338887");
+        editFullName.setText(sessionManager.getFullName());
+        editEmail.setText(sessionManager.getEmail());
+        editPhone.setText(sessionManager.getContact());
     }
 
     private void setupClickListeners() {
-        // Back button
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        backButton.setOnClickListener(v -> finish());
 
-        // Edit profile image
-        editProfileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectProfileImage();
-            }
-        });
+        editProfileImage.setOnClickListener(v -> selectProfileImage());
 
-        // Save button
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        saveButton.setOnClickListener(v -> {
+            if (!isSaving) {
                 saveProfile();
             }
         });
 
-        // Cancel button
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
+        cancelButton.setOnClickListener(v -> finish());
+
+        navMenu.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileEditActivity.this, GuestMenuActivity.class);
+            startActivity(intent);
         });
 
-        // Bottom Navigation
-        navMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to Menu activity
-                Intent intent = new Intent(ProfileEditActivity.this, GuestMenuActivity.class);
-                startActivity(intent);
-            }
+        navReservation.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileEditActivity.this, ReservationActivity.class);
+            startActivity(intent);
         });
 
-        navReservation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to Reservation activity
-                Intent intent = new Intent(ProfileEditActivity.this, ReservationActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        navProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate back to Profile activity
-                finish();
-            }
-        });
+        navProfile.setOnClickListener(v -> finish());
     }
 
     private void selectProfileImage() {
-        // TODO: Implement image picker
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        // startActivityForResult(intent, REQUEST_IMAGE_PICK);
-        Toast.makeText(this, "Profile image selection coming soon", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Profile image upload coming soon", Toast.LENGTH_SHORT).show();
     }
 
     private void saveProfile() {
         String fullName = editFullName.getText().toString().trim();
         String email = editEmail.getText().toString().trim();
         String phone = editPhone.getText().toString().trim();
+
+        // Split full name into first and last name
+        String[] nameParts = fullName.split(" ", 2);
+        String firstname = nameParts[0];
+        String lastname = nameParts.length > 1 ? nameParts[1] : "";
 
         // Validate inputs
         if (TextUtils.isEmpty(fullName)) {
@@ -171,19 +132,48 @@ public class ProfileEditActivity extends AppCompatActivity {
             return;
         }
 
-        if (!android.util.Patterns.PHONE.matcher(phone).matches()) {
+        if (phone.length() < 8) {
             editPhone.setError("Please enter a valid phone number");
             editPhone.requestFocus();
             return;
         }
 
-        // TODO: Save data to database/server
-        // For now, just show success message
-        Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+        // Disable button and show loading
+        isSaving = true;
+        saveButton.setEnabled(false);
+        Toast.makeText(this, "Updating profile...", Toast.LENGTH_SHORT).show();
 
-        // Go back to profile page
-        finish();
+        // Get user data from session
+        String username = sessionManager.getUsername();
+        String password = sessionManager.getPassword();
+        String usertype = sessionManager.getUserType();
+
+        // Call API to update profile
+        ApiService.updateUserProfile(this, username, firstname, lastname, email, phone,
+                password, usertype, new ApiService.ApiCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        isSaving = false;
+                        saveButton.setEnabled(true);
+
+                        // Update session with new data
+                        sessionManager.updateUserProfile(firstname, lastname, email, phone);
+
+                        Toast.makeText(ProfileEditActivity.this,
+                                "Profile updated successfully", Toast.LENGTH_SHORT).show();
+
+                        // Go back to profile page
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        isSaving = false;
+                        saveButton.setEnabled(true);
+
+                        Toast.makeText(ProfileEditActivity.this,
+                                "Failed to update profile: " + error, Toast.LENGTH_LONG).show();
+                    }
+                });
     }
-
-
 }

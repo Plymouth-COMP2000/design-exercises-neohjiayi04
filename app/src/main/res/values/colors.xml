@@ -43,5 +43,15 @@
     <color name="colorPrimary">#2196F3</color>   <!-- blue primary -->
     <color name="colorAccent">#FF9800</color>    <!-- orange accent -->
     <color name="colorError">#F44336</color>     <!-- material red error -->
+    <!-- Status Colors for Upcoming -->
+    <color name="status_upcoming_text">#FF8C42</color>
+    <color name="status_upcoming_bg">#FFF4E6</color>
 
+    <!-- Status Colors for Seated -->
+    <color name="status_seated_text">#4CAF50</color>
+    <color name="status_seated_bg">#E8F5E9</color>
+
+    <!-- Status Colors for No-Show -->
+    <color name="status_noshow_text">#F44336</color>
+    <color name="status_noshow_bg">#FFEBEE</color>
 </resources>
