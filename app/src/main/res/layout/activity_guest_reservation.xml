@@ -3,72 +3,89 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/beige_background">
 
-    <!-- App Bar -->
+    <!-- Fixed Header -->
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp">
+        android:background="@color/white"
+        android:elevation="4dp"
+        app:elevation="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="@dimen/spacing_medium">
 
+            <!-- Reservation Title -->
             <TextView
-                android:id="@+id/tvPageTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Reservation"
-                android:textSize="25sp"
-                android:textStyle="bold"
+                android:text="RESERVATION"
                 android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toStartOf="@id/notification_button" />
 
-            <ImageButton
-                android:id="@+id/btnNotification"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="4dp"
-                android:src="@drawable/ic_notification"
-                android:contentDescription="@string/nav_notification"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:layout_constraintEnd_toEndOf="parent"
+            <!-- Notification Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/notification_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/orange_light"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_notification"
+                    android:layout_gravity="center"
+                    app:tint="@color/white"
+                    android:contentDescription="Notifications" />
+
+            </com.google.android.material.card.MaterialCardView>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Main Content -->
+    <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="70dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="@dimen/spacing_medium"
+            android:paddingBottom="100dp">
 
-            <!-- Book Your Table Section -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/bookingCard"
+            <!-- Book Your Table Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="8dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
                 app:cardBackgroundColor="@color/white"
-                android:clipToPadding="false"
-                android:clipChildren="false">
+                app:strokeWidth="2dp"
+                app:strokeColor="@color/text_primary"
+                android:layout_marginBottom="@dimen/spacing_large">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -76,42 +93,38 @@
                     android:orientation="vertical"
                     android:padding="20dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <!-- Title -->
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_marginBottom="20dp">
+                        android:text="Book Your Table"
+                        android:textColor="@color/text_primary"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="4dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/book_table_title"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"
-                            android:layout_marginBottom="4dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select the details for your booking"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="20dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/book_table_subtitle"
-                            android:textSize="13sp"
-                            android:textColor="@color/text_secondary" />
-                    </LinearLayout>
-
-                    <!-- Date, Time, and Guests Row -->
+                    <!-- Date and Time Row -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="16dp">
+                        android:layout_marginBottom="16dp"
+                        android:weightSum="3">
 
-                        <!-- Date Column -->
                         <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginEnd="8dp">
 
@@ -119,129 +132,89 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Date"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
                                 android:layout_marginBottom="8dp" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            <TextView
+                                android:id="@+id/tv_date"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:boxBackgroundColor="@color/gray_light"
-                                app:boxStrokeWidth="0dp"
-                                app:boxCornerRadiusTopStart="8dp"
-                                app:boxCornerRadiusTopEnd="8dp"
-                                app:boxCornerRadiusBottomStart="8dp"
-                                app:boxCornerRadiusBottomEnd="8dp">
+                                android:text="Dec 24"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp"
+                                android:textAlignment="center"
+                                android:padding="12dp"
+                                android:background="@drawable/input_background"
+                                android:clickable="true"
+                                android:focusable="true" />
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etDate"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="40dp"
-                                    android:background="@android:color/transparent"
-                                    android:clickable="true"
-                                    android:focusable="false"
-                                    android:gravity="center"
-                                    android:inputType="none"
-                                    android:hint="Select Date"
-                                    android:textColor="@color/text_primary"
-                                    android:textSize="14sp"
-                                    android:paddingTop="0dp"
-                                    android:paddingBottom="0dp" />
-                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
 
-                        <!-- Time Column -->
                         <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginStart="4dp"
-                            android:layout_marginEnd="8dp">
+                            android:layout_marginEnd="4dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Time"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
                                 android:layout_marginBottom="8dp" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            <TextView
+                                android:id="@+id/tv_time"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:boxBackgroundColor="@color/gray_light"
-                                app:boxStrokeWidth="0dp"
-                                app:boxCornerRadiusTopStart="8dp"
-                                app:boxCornerRadiusTopEnd="8dp"
-                                app:boxCornerRadiusBottomStart="8dp"
-                                app:boxCornerRadiusBottomEnd="8dp">
+                                android:text="7:30 PM"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp"
+                                android:textAlignment="center"
+                                android:padding="12dp"
+                                android:background="@drawable/input_background"
+                                android:clickable="true"
+                                android:focusable="true" />
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etTime"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="40dp"
-                                    android:paddingTop="0dp"
-                                    android:paddingBottom="0dp"
-                                    android:hint="Select Time"
-                                    android:focusable="false"
-                                    android:clickable="true"
-                                    android:inputType="none"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_primary"
-                                    android:background="@android:color/transparent"
-                                    android:gravity="center" />
-                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
 
-                        <!-- Guests Column -->
                         <LinearLayout
                             android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.8"
                             android:orientation="vertical"
-                            android:layout_marginStart="4dp">
+                            android:layout_marginStart="8dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Guests"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
                                 android:layout_marginBottom="8dp" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            <TextView
+                                android:id="@+id/tv_guests"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:boxBackgroundColor="@color/gray_light"
-                                app:boxStrokeWidth="0dp"
-                                app:boxCornerRadiusTopStart="8dp"
-                                app:boxCornerRadiusTopEnd="8dp"
-                                app:boxCornerRadiusBottomStart="8dp"
-                                app:boxCornerRadiusBottomEnd="8dp">
+                                android:text="4"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp"
+                                android:textAlignment="center"
+                                android:padding="12dp"
+                                android:background="@drawable/input_background"
+                                android:clickable="true"
+                                android:focusable="true" />
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etGuests"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="40dp"
-                                    android:paddingTop="0dp"
-                                    android:paddingBottom="0dp"
-                                    android:hint="4"
-                                    android:focusable="false"
-                                    android:clickable="true"
-                                    android:inputType="none"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_primary"
-                                    android:background="@android:color/transparent"
-                                    android:gravity="center" />
-                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
+
                     </LinearLayout>
 
                     <!-- Table and Requests Row -->
@@ -249,13 +222,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="20dp">
+                        android:layout_marginBottom="20dp"
+                        android:weightSum="2">
 
-                        <!-- Table Column -->
                         <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginEnd="8dp">
 
@@ -263,44 +236,30 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Table"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
                                 android:layout_marginBottom="8dp" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            <TextView
+                                android:id="@+id/tv_table"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:boxBackgroundColor="@color/gray_light"
-                                app:boxStrokeWidth="0dp"
-                                app:boxCornerRadiusTopStart="8dp"
-                                app:boxCornerRadiusTopEnd="8dp"
-                                app:boxCornerRadiusBottomStart="8dp"
-                                app:boxCornerRadiusBottomEnd="8dp">
+                                android:text="Any"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="16sp"
+                                android:textAlignment="center"
+                                android:padding="12dp"
+                                android:background="@drawable/input_background"
+                                android:clickable="true"
+                                android:focusable="true" />
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etTable"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="40dp"
-                                    android:paddingTop="0dp"
-                                    android:paddingBottom="0dp"
-                                    android:hint="Any"
-                                    android:focusable="false"
-                                    android:clickable="true"
-                                    android:inputType="none"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_primary"
-                                    android:background="@android:color/transparent"
-                                    android:gravity="center" />
-                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
 
-                        <!-- Requests Column -->
                         <LinearLayout
                             android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1.5"
                             android:orientation="vertical"
                             android:layout_marginStart="8dp">
 
@@ -308,191 +267,118 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Requests (Optional)"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
                                 android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
                                 android:layout_marginBottom="8dp" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            <EditText
+                                android:id="@+id/et_requests"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:boxBackgroundColor="@color/gray_light"
-                                app:boxStrokeWidth="0dp"
-                                app:boxCornerRadiusTopStart="8dp"
-                                app:boxCornerRadiusTopEnd="8dp"
-                                app:boxCornerRadiusBottomStart="8dp"
-                                app:boxCornerRadiusBottomEnd="8dp">
+                                android:hint="Add a note"
+                                android:textColorHint="@color/text_hint"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp"
+                                android:padding="12dp"
+                                android:background="@drawable/input_background"
+                                android:inputType="textCapSentences"
+                                android:maxLines="1" />
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etRequests"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="40dp"
-                                    android:paddingTop="0dp"
-                                    android:paddingBottom="0dp"
-                                    android:hint="Add a note"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/text_primary"
-                                    android:textColorHint="@color/text_secondary"
-                                    android:background="@android:color/transparent" />
-                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
+
                     </LinearLayout>
 
                     <!-- Reserve Button -->
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnReserve"
+                        android:id="@+id/btn_reserve"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:text="Reserve"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textAllCaps="false"
-                        app:cornerRadius="12dp"
-                        app:backgroundTint="@color/primary" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                        android:textColor="@color/white"
+                        app:backgroundTint="@color/orange_primary"
+                        app:cornerRadius="12dp" />
 
-            <!-- Reservation Records Section -->
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Reservation Record Section -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reservation Records"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:text="Reservation Record"
                 android:textColor="@color/text_primary"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="@dimen/spacing_medium" />
 
-            <!-- Tabs -->
+            <!-- Filter Tabs -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="@dimen/spacing_medium"
+                android:weightSum="2">
 
-                <TextView
-                    android:id="@+id/tabUpcoming"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_upcoming"
+                    style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_height="48dp"
                     android:text="Upcoming"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    android:gravity="center"
-                    android:padding="12dp"
-                    android:background="@drawable/tab_selected" />
+                    app:backgroundTint="@color/orange_primary"
+                    app:cornerRadius="8dp"
+                    android:layout_marginEnd="8dp" />
 
-                <TextView
-                    android:id="@+id/tabFinished"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_finished"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_height="48dp"
                     android:text="Finished"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     android:textColor="@color/text_secondary"
-                    android:gravity="center"
-                    android:padding="12dp" />
+                    app:strokeColor="@color/gray"
+                    app:cornerRadius="8dp"
+                    android:layout_marginStart="8dp" />
+
             </LinearLayout>
 
-            <!-- Reservation List -->
+            <!-- Reservations List -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/reservationRecyclerView"
+                android:id="@+id/rv_reservations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="80dp" />
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false" />
+
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Navigation -->
-    <LinearLayout
-        android:id="@+id/bottomNav"
+    <!-- Fixed Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:orientation="horizontal"
-        android:background="#FFFFFF"
-        android:elevation="16dp"
-        android:layout_gravity="bottom">
+        android:layout_height="@dimen/bottom_nav_height"
+        android:layout_gravity="bottom"
+        android:elevation="8dp"
+        android:background="@color/cream_light"
+        app:menu="@menu/bottom_nav_guest"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:itemIconSize="@dimen/icon_size"
+        app:itemTextAppearanceActive="@style/BottomNavTextStyle"
+        app:itemTextAppearanceInactive="@style/BottomNavTextStyle"
+        app:labelVisibilityMode="labeled" />
 
-        <LinearLayout
-            android:id="@+id/navMenu"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_menu"
-                app:tint="@color/text_secondary"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Menu"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/text_secondary"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/navReservation"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_calendar"
-                app:tint="@color/primary"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Reservation"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/navProfile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_profile"
-                app:tint="@color/text_secondary"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/text_secondary"/>
-        </LinearLayout>
-    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
