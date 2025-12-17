@@ -2,11 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.dineo">
 
-    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,11 +12,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.YourAppTheme">
+        android:theme="@style/AppTheme">
 
-        <!-- Main Activity -->
+        <!-- LAUNCHER ACTIVITY -->
         <activity
-            android:name=".MainActivity"
+            android:name=".auth.RoleSelectionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,46 +24,58 @@
             </intent-filter>
         </activity>
 
+        <!-- AUTH ACTIVITIES -->
+        <activity android:name=".auth.LoginActivity" />
+        <activity android:name=".auth.SignUpActivity" />
+
+        <!-- DASHBOARD -->
+        <activity android:name=".dashboard.DashboardActivity" />
+
+        <!-- MENU -->
+        <activity android:name=".menu.GuestMenuActivity" />
+
         <!-- Staff Reservation Activities -->
         <activity
-            android:name=".staff.StaffReservationActivity"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.YourAppTheme" />
+            android:name=".reservation.ReservationActivity"
+            android:label="Reservations"
+            android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".staff.StaffCalendarActivity"
-            android:exported="false"
-            android:theme="@style/Theme.YourAppTheme" />
+            android:name=".reservation.ReservationDetailsActivity"
+            android:label="Reservation Details"
+            android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".staff.StaffReservationDetailsActivity"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.YourAppTheme" />
+            android:name=".reservation.CalendarReservationsActivity"
+            android:label="Calendar"
+            android:theme="@style/AppTheme" />
 
-        <!-- Firebase Cloud Messaging Service -->
-        <service
-            android:name=".services.MyFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
+        <!-- Guest Reservation Activities -->
+        <activity
+            android:name=".reservation.GuestReservationActivity"
+            android:label="My Reservations"
+            android:theme="@style/AppTheme" />
 
-        <!-- Firebase Messaging default notification icon and color -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_reservation" />
+        <activity
+            android:name=".reservation.EditGuestReservationActivity"
+            android:label="Edit Reservation"
+            android:theme="@style/AppTheme" />
 
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/primary" />
+        <!-- Profile Activities -->
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:label="Profile"
+            android:theme="@style/AppTheme" />
 
-        <!-- Firebase Messaging default notification channel -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="reservation_notifications" />
+        <activity
+            android:name=".profile.EditProfileActivity"
+            android:label="Edit Profile"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".profile.ResetPasswordActivity"
+            android:label="Reset Password"
+            android:theme="@style/AppTheme" />
 
     </application>
 
