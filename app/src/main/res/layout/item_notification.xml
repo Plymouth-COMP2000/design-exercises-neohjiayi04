@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/cream_light"
+    app:strokeWidth="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Icon Background -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/white"
+            app:strokeWidth="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_check_circle"
+                android:layout_gravity="center"
+                app:tint="@color/orange_primary"
+                android:contentDescription="Notification Icon" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Reservation Confirmed"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginStart="12dp"
+            app:layout_constraintTop_toTopOf="@id/card_icon"
+            app:layout_constraintStart_toEndOf="@id/card_icon"
+            app:layout_constraintEnd_toStartOf="@id/iv_close" />
+
+        <!-- Message -->
+        <TextView
+            android:id="@+id/tv_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Your table is confirmed at T-Rex Grill for 7:00 PM on Friday."
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintStart_toEndOf="@id/card_icon"
+            app:layout_constraintEnd_toStartOf="@id/iv_close" />
+
+        <!-- Time Ago -->
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="5m ago"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_message"
+            app:layout_constraintStart_toEndOf="@id/card_icon"
+            app:layout_constraintBottom_toBottomOf="@id/card_icon" />
+
+        <!-- Close Button -->
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_close"
+            android:padding="2dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/text_hint"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="Dismiss" />
+
+        <!-- Unread Indicator (Optional) -->
+        <View
+            android:id="@+id/unread_indicator"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/orange_primary"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/card_icon"
+            app:layout_constraintStart_toStartOf="@id/card_icon" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
