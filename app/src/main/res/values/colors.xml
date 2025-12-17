@@ -1,57 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Primary Orange Theme -->
+    <color name="orange_primary">#FF6B35</color>
+    <color name="orange_primary_dark">#E85A2A</color>
+    <color name="orange_light">#FF8C61</color>
+    <color name="orange_accent">#FFA726</color>
 
-    <!-- Base Colors -->
-    <color name="black">#FF1C1C1C</color>      <!-- slightly softer than pure black -->
-    <color name="white">#FFFFFFFF</color>
-    <color name="green">#4CAF50</color>        <!-- success / action buttons -->
+    <!-- Complementary Colors -->
+    <color name="teal_accent">#26A69A</color>
+    <color name="deep_teal">#00796B</color>
 
-    <!-- Brand Palette -->
-    <color name="primary">#FF8C42</color>      <!-- warm orange -->
-    <color name="primary_dark">#FFB971</color> <!-- softer warm yellow -->
-    <color name="accent">#7FD8D2</color>       <!-- muted soft teal -->
-    <color name="background">#FFF9F4</color>   <!-- very light cream -->
-    <color name="surface">#42375F</color>      <!-- deep indigo -->
-    <color name="dark">#6E310B</color>         <!-- dark red-brown (errors) -->
+    <!-- Neutral Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="off_white">#FAFAFA</color>
+    <color name="light_gray">#F5F5F5</color>
+    <color name="gray">#E0E0E0</color>
+    <color name="dark_gray">#757575</color>
+    <color name="charcoal">#424242</color>
+    <color name="black">#212121</color>
 
-    <!-- Grayscale Palette -->
-    <color name="gray_light">#F7F7F7</color>   <!-- light gray for backgrounds -->
-    <color name="gray_medium">#D1D1D1</color>  <!-- neutral divider gray -->
-    <color name="gray_dark">#7A7A7A</color>    <!-- dark gray for secondary text -->
-
-    <!-- Yellow Variants -->
-    <color name="yellow_pastel_butter">#FFF3B0</color>   <!-- pastel butter yellow -->
-    <color name="yellow_soft_sunflower">#FFE599</color> <!-- soft sunflower yellow -->
-    <color name="yellow_lemon_chiffon">#FFFACD</color>  <!-- very light lemon chiffon -->
-    <color name="yellow_creamy_pale">#FFF8B5</color>   <!-- creamy pale yellow -->
-    <color name="yellow_peachy_soft">#FFD580</color>   <!-- peachy soft yellow -->
+    <!-- Background -->
+    <color name="background_light">#FAFAFA</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="beige_background">#F5EEDC</color>
 
     <!-- Text Colors -->
-    <color name="text_primary">#2C2C2C</color>   <!-- comfortable dark text -->
-    <color name="text_secondary">#5E5E5E</color> <!-- softer secondary text -->
-    <color name="hint">#AAB2BD</color>           <!-- gentle hint text -->
-    <color name="button_text">#FFFFFF</color>    <!-- button text (white) -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
 
-    <!-- Status / Feedback Colors -->
-    <color name="warning">#F2A65A</color>        <!-- soft orange for alerts -->
-    <color name="error">#E74C3C</color>          <!-- red for errors -->
-    <color name="success">#4CAF50</color>        <!-- green for success -->
+    <!-- Status Colors -->
+    <color name="success_green">#4CAF50</color>
+    <color name="error_red">#F44336</color>
 
-    <color name="icon_tint">#CCCCCC</color>        <!-- neutral icon tint -->
-
-    <!-- Material Design Defaults -->
-    <color name="colorPrimary">#2196F3</color>   <!-- blue primary -->
-    <color name="colorAccent">#FF9800</color>    <!-- orange accent -->
-    <color name="colorError">#F44336</color>     <!-- material red error -->
-    <!-- Status Colors for Upcoming -->
-    <color name="status_upcoming_text">#FF8C42</color>
-    <color name="status_upcoming_bg">#FFF4E6</color>
-
-    <!-- Status Colors for Seated -->
-    <color name="status_seated_text">#4CAF50</color>
-    <color name="status_seated_bg">#E8F5E9</color>
-
-    <!-- Status Colors for No-Show -->
-    <color name="status_noshow_text">#F44336</color>
-    <color name="status_noshow_bg">#FFEBEE</color>
+    <!-- Overlay -->
+    <color name="overlay_dark">#80000000</color>
+    <color name="overlay_light">#40000000</color>
 </resources>
