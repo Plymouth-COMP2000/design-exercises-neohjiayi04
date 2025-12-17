@@ -1,36 +1,47 @@
 package com.example.dineo.models;
 
 public class MenuItem {
-    private String id;
+    private int id;
     private String name;
     private String description;
-    private String category;
     private double price;
-    private String imageUrl;
+    private String category;
+    private String imagePath;
 
-    public MenuItem() {}
+    // Constructor without ID (for new items)
+    public MenuItem(String name, String description, double price,
+                    String category, String imagePath) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.imagePath = imagePath;
+    }
 
-    public MenuItem(String id, String name, String description, double price, String category, String imageUrl) {
+    // Constructor with ID (for existing items)
+    public MenuItem(int id, String name, String description, double price,
+                    String category, String imagePath) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
-        this.imageUrl = imageUrl;
+        this.imagePath = imagePath;
     }
 
-    // GETTERS + SETTERS
-    public String getId() { return id; }
+    // Getters
+    public int getId() { return id; }
     public String getName() { return name; }
     public String getDescription() { return description; }
-    public String getCategory() { return category; }
     public double getPrice() { return price; }
-    public String getImageUrl() { return imageUrl; }
+    public String getCategory() { return category; }
+    public String getImagePath() { return imagePath; }
 
-    public void setId(String id) { this.id = id; }
+    // Setters
+    public void setId(int id) { this.id = id; }
     public void setName(String name) { this.name = name; }
     public void setDescription(String description) { this.description = description; }
-    public void setCategory(String category) { this.category = category; }
     public void setPrice(double price) { this.price = price; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setCategory(String category) { this.category = category; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 }
