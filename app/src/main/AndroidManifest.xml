@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- IMPORTANT: Add Internet Permission for API calls -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- For image upload -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Dineo"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".activities.StaffReservationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EditMenuItemActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.StaffMenuActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddMenuItemActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.StaffDashboardActivity"
+            android:exported="false" /> <!-- LAUNCHER ACTIVITY - This shows first when app opens -->
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity> <!-- Other Activities -->
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MenuActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MenuDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ReservationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EditReservationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.NotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ResetPasswordActivity"
+            android:exported="false" />
+
+        <!-- Staff Activities -->
+        <activity android:name=".activities.StaffDashboardActivity" android:exported="false"/>
+        <activity android:name=".activities.AddMenuItemActivity" android:exported="false"/>
+        <activity android:name=".activities.EditMenuItemActivity" android:exported="false"/>
+        <activity android:name=".activities.StaffMenuActivity" android:exported="false"/>
+        <activity android:name=".activities.StaffReservationActivity" android:exported="false"/>
+    </application>
+
+</manifest>
