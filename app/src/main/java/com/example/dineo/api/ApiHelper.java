@@ -2,7 +2,6 @@ package com.example.dineo.api;
 
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -123,17 +122,29 @@ public class ApiHelper {
     }
 
     /**
-     * Get all users
+     * Login user via username and password directly
      */
-    public static String getAllUsers() {
+    public static String loginUser(String username, String password) {
         try {
-            URL url = new URL(BASE_URL + "read_all_users/" + STUDENT_ID);
-            Log.d(TAG, "Getting all users: " + url.toString());
+            URL url = new URL(BASE_URL + "login_user/" + STUDENT_ID); // Make sure API supports this endpoint
+            Log.d(TAG, "Logging in user: " + username);
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
             connection.setConnectTimeout(10000);
             connection.setReadTimeout(10000);
+
+            // JSON body
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("username", username);
+            jsonBody.put("password", password);
+
+            OutputStream os = connection.getOutputStream();
+            os.write(jsonBody.toString().getBytes("UTF-8"));
+            os.flush();
+            os.close();
 
             int responseCode = connection.getResponseCode();
             Log.d(TAG, "Response Code: " + responseCode);
@@ -148,54 +159,14 @@ public class ApiHelper {
                     response.append(line);
                 }
                 reader.close();
-                Log.d(TAG, "Users retrieved: " + response.toString());
-                return response.toString();
+                Log.d(TAG, "Login response: " + response.toString());
+                return response.toString(); // Should return user JSON
             } else {
                 return "Error: HTTP " + responseCode;
             }
 
         } catch (Exception e) {
-            Log.e(TAG, "Error getting users: " + e.getMessage());
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
-        }
-    }
-
-    /**
-     * Login user - Get all users and find matching credentials
-     */
-    public static String loginUser(String username, String password) {
-        try {
-            Log.d(TAG, "Attempting login for: " + username);
-
-            // Get all users
-            String allUsersResponse = getAllUsers();
-
-            if (allUsersResponse.startsWith("Error")) {
-                return allUsersResponse;
-            }
-
-            // Parse JSON response
-            JSONObject jsonResponse = new JSONObject(allUsersResponse);
-            JSONArray users = jsonResponse.getJSONArray("users");
-
-            // Find matching user
-            for (int i = 0; i < users.length(); i++) {
-                JSONObject user = users.getJSONObject(i);
-                String dbUsername = user.getString("username");
-                String dbPassword = user.getString("password");
-
-                if (dbUsername.equals(username) && dbPassword.equals(password)) {
-                    Log.d(TAG, "Login successful for: " + username);
-                    return user.toString(); // Return user object
-                }
-            }
-
-            Log.d(TAG, "Login failed: Invalid credentials");
-            return "Error: Invalid username or password";
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error during login: " + e.getMessage());
+            Log.e(TAG, "Login error: " + e.getMessage());
             e.printStackTrace();
             return "Error: " + e.getMessage();
         }
@@ -206,32 +177,30 @@ public class ApiHelper {
      */
     public static String getUserByEmail(String email) {
         try {
+            URL url = new URL(BASE_URL + "get_user_by_email/" + STUDENT_ID + "?email=" + email);
             Log.d(TAG, "Getting user by email: " + email);
 
-            // Get all users
-            String allUsersResponse = getAllUsers();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
 
-            if (allUsersResponse.startsWith("Error")) {
-                return allUsersResponse;
-            }
-
-            // Parse JSON response
-            JSONObject jsonResponse = new JSONObject(allUsersResponse);
-            JSONArray users = jsonResponse.getJSONArray("users");
-
-            // Find user by email
-            for (int i = 0; i < users.length(); i++) {
-                JSONObject user = users.getJSONObject(i);
-                String dbEmail = user.getString("email");
-
-                if (dbEmail.equals(email)) {
-                    Log.d(TAG, "User found: " + email);
-                    return user.toString();
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(connection.getInputStream())
+                );
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
                 }
+                reader.close();
+                Log.d(TAG, "User retrieved: " + response.toString());
+                return response.toString();
+            } else {
+                return "Error: HTTP " + responseCode;
             }
-
-            Log.d(TAG, "User not found: " + email);
-            return "Error: User not found";
 
         } catch (Exception e) {
             Log.e(TAG, "Error getting user: " + e.getMessage());
@@ -241,8 +210,7 @@ public class ApiHelper {
     }
 
     /**
-     * Update user
-     * Note: This requires the user_id from the database
+     * Update user by ID
      */
     public static String updateUser(String userId, String username, String password,
                                     String firstname, String lastname, String email,
@@ -258,7 +226,6 @@ public class ApiHelper {
             connection.setConnectTimeout(10000);
             connection.setReadTimeout(10000);
 
-            // Create JSON body
             JSONObject jsonBody = new JSONObject();
             jsonBody.put("username", username);
             jsonBody.put("password", password);
@@ -268,17 +235,12 @@ public class ApiHelper {
             jsonBody.put("contact", contact);
             jsonBody.put("usertype", usertype);
 
-            Log.d(TAG, "Request body: " + jsonBody.toString());
-
-            // Send request
             OutputStream os = connection.getOutputStream();
             os.write(jsonBody.toString().getBytes("UTF-8"));
             os.flush();
             os.close();
 
             int responseCode = connection.getResponseCode();
-            Log.d(TAG, "Response Code: " + responseCode);
-
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(connection.getInputStream())
@@ -303,7 +265,7 @@ public class ApiHelper {
     }
 
     /**
-     * Delete user
+     * Delete user by ID
      */
     public static String deleteUser(String userId) {
         try {
@@ -316,8 +278,6 @@ public class ApiHelper {
             connection.setReadTimeout(10000);
 
             int responseCode = connection.getResponseCode();
-            Log.d(TAG, "Response Code: " + responseCode);
-
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(connection.getInputStream())

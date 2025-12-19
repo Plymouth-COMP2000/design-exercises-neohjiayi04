@@ -300,24 +300,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Notification> notificationList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
+        // ✅ Use constants for table & column names
         Cursor cursor = db.query(
-                "notifications_table", // your table name
-                null,
-                "user_email=?",
+                TABLE_NOTIFICATION,                 // Correct table
+                null,                               // All columns
+                NOTIF_EMAIL + "=?",                  // Correct column
                 new String[]{userEmail},
                 null,
                 null,
-                "created_at DESC" // order by newest first
+                NOTIF_TIMESTAMP + " DESC"            // Correct column
         );
 
         if (cursor.moveToFirst()) {
             do {
                 Notification notification = new Notification();
-                notification.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                notification.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-                notification.setMessage(cursor.getString(cursor.getColumnIndexOrThrow("message")));
-                notification.setRead(cursor.getInt(cursor.getColumnIndexOrThrow("is_read")) == 1);
-                notification.setTimestamp(String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow("created_at"))));                // Add other fields as needed
+                notification.setId(cursor.getInt(cursor.getColumnIndexOrThrow(NOTIF_ID)));
+                notification.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(NOTIF_TITLE)));
+                notification.setMessage(cursor.getString(cursor.getColumnIndexOrThrow(NOTIF_MESSAGE)));
+                notification.setRead(cursor.getInt(cursor.getColumnIndexOrThrow(NOTIF_READ)) == 1);
+                notification.setTimestamp(cursor.getString(cursor.getColumnIndexOrThrow(NOTIF_TIMESTAMP)));
 
                 notificationList.add(notification);
             } while (cursor.moveToNext());
@@ -328,6 +329,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return notificationList;
     }
+
 
     public int markNotificationAsRead(int notificationId) {
         SQLiteDatabase db = this.getWritableDatabase();

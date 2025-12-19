@@ -2,24 +2,24 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF5EB"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@color/background_cream">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="32dp"
-        android:gravity="center">
+        android:padding="24dp"
+        android:gravity="center_horizontal">
 
         <!-- Logo -->
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:src="@drawable/ic_logo"
             android:contentDescription="Dineo Logo"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"/>
 
         <!-- App Name -->
         <TextView
@@ -27,9 +27,9 @@
             android:layout_height="wrap_content"
             android:text="Dineo Restaurant"
             android:textSize="28sp"
-            android:textColor="#FF6B35"
             android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
+            android:textColor="@color/orange_primary"
+            android:layout_marginBottom="8dp"/>
 
         <!-- Welcome Text -->
         <TextView
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:text="Welcome Back"
             android:textSize="14sp"
-            android:textColor="#999999"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="32dp"/>
 
         <!-- Tab Selector: Staff / Guest -->
@@ -45,10 +45,13 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
-            android:background="@android:color/white"
+            android:background="@color/white"
             android:elevation="3dp"
             android:layout_marginBottom="24dp"
-            android:padding="4dp">
+            android:padding="4dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:radius="12dp">
 
             <Button
                 android:id="@+id/btnStaffTab"
@@ -56,8 +59,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="STAFF"
-                android:textColor="#999999"
-                android:background="@android:color/white"
+                android:textColor="@color/text_hint"
+                android:backgroundTint="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:stateListAnimator="@null"
@@ -69,44 +72,55 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="GUEST"
-                android:textColor="@android:color/white"
-                android:background="#FF6B35"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/orange_primary"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:stateListAnimator="@null"
                 style="?android:attr/borderlessButtonStyle"/>
-
         </LinearLayout>
 
-        <!-- Email Field -->
-        <EditText
-            android:id="@+id/editTextEmail"
+        <!-- Input Container -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:elevation="3dp"
             android:padding="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@android:color/white"
-            android:elevation="2dp"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:textColorHint="#999999"/>
-
-        <!-- Password Field -->
-        <EditText
-            android:id="@+id/editTextPassword"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="16dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
             android:layout_marginBottom="24dp"
-            android:background="@android:color/white"
-            android:elevation="2dp"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:textColorHint="#999999"/>
+            android:radius="12dp">
+
+            <!-- Username Field -->
+            <EditText
+                android:id="@+id/editTextUsername"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="Username"
+                android:inputType="textPersonName"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:textSize="16sp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_hint"/>
+
+            <!-- Password Field -->
+            <EditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:layout_marginBottom="0dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:textSize="16sp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_hint"/>
+        </LinearLayout>
 
         <!-- Login Button -->
         <Button
@@ -114,12 +128,13 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="LOGIN"
-            android:textColor="@android:color/white"
-            android:backgroundTint="#FF6B35"
+            android:textColor="@color/button_text"
+            android:backgroundTint="@color/orange_primary"
             android:textSize="16sp"
             android:textStyle="bold"
             android:elevation="4dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:radius="12dp"/>
 
         <!-- Register Link -->
         <TextView
@@ -127,7 +142,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Don't have an account? Register"
-            android:textColor="#FF6B35"
+            android:textColor="@color/orange_primary"
             android:textSize="14sp"
             android:padding="8dp"
             android:clickable="true"
@@ -140,9 +155,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Selected Role: Guest"
-            android:textColor="#666666"
+            android:textColor="@color/text_secondary"
             android:textSize="12sp"
-            android:textStyle="italic"/>
-
+            android:textStyle="italic"
+            android:layout_marginTop="8dp"/>
     </LinearLayout>
 </ScrollView>
