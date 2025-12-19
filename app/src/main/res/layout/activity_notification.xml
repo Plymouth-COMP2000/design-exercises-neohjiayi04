@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="@color/background_cream">
 
-    <!-- Header -->
+    <!-- ========================= -->
+    <!-- Fixed Header -->
+    <!-- ========================= -->
     <RelativeLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:padding="16dp"
-        android:background="#FFF5EB">
+        android:background="@color/orange_light"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_alignParentTop="true">
 
         <ImageView
             android:id="@+id/imageViewBack"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@android:drawable/ic_menu_revert"
-            android:layout_centerVertical="true"/>
+            app:tint="@color/text_primary"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:contentDescription="Back"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -25,6 +34,7 @@
             android:text="Notifications"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:layout_centerInParent="true"/>
 
         <TextView
@@ -33,29 +43,54 @@
             android:layout_height="wrap_content"
             android:text="Clear All"
             android:textSize="14sp"
-            android:textColor="#FF9966"
+            android:textColor="@color/orange_primary"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:padding="4dp"/>
     </RelativeLayout>
 
-    <!-- Notifications List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewNotifications"
+    <!-- ========================= -->
+    <!-- Scrollable Content -->
+    <!-- ========================= -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"/>
+        android:orientation="vertical"
+        android:layout_marginTop="56dp"
+        android:layout_marginBottom="60dp">
 
-    <!-- Empty State -->
-    <TextView
-        android:id="@+id/textViewEmptyState"
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewNotifications"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"/>
+
+        <!-- Empty State -->
+        <TextView
+            android:id="@+id/textViewEmptyState"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="No notifications yet"
+            android:textSize="16sp"
+            android:textColor="@color/text_hint"
+            android:gravity="center"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <!-- ========================= -->
+    <!-- Fixed Bottom Navigation -->
+    <!-- ========================= -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="No notifications yet"
-        android:textSize="16sp"
-        android:textColor="#999999"
-        android:gravity="center"
-        android:visibility="gone"/>
-
-
-</LinearLayout>
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        android:background="@color/surface"
+        android:elevation="8dp"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@color/selector_bottom_nav"
+        app:itemTextColor="@color/selector_bottom_nav"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

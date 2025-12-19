@@ -8,4 +8,27 @@
 
 
     <style name="Theme.DINEO" parent="Base.Theme.DINEO" />
+
+
+    <!-- styles.xml -->
+    <style name="SettingsRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+    </style>
+
+    <style name="SettingsRowLogout" parent="SettingsRow">
+        <item name="android:textColor">#F44336</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">#EEEEEE</item>
+    </style>
+
 </resources>

@@ -127,8 +127,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        app:itemIconTint="#FF9966"
-        app:itemTextColor="#FF9966"
+        app:itemIconTint="@color/selector_bottom_nav"
+        app:itemTextColor="@color/selector_bottom_nav"
         app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

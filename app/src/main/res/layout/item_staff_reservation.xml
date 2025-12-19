@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_margin="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    android:foreground="?attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,11 +15,12 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Customer Name and Time -->
+        <!-- Customer Name and Status -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/textViewCustomerName"
@@ -25,53 +28,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="John Doe"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#000000"/>
+                android:textColor="@color/text_primary"/>
 
-            <TextView
-                android:id="@+id/textViewDateTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="7:30pm"
-                android:textSize="14sp"
-                android:textColor="#666666"/>
-        </LinearLayout>
-
-        <!-- Guests and Table -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/textViewGuests"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="4 Pax"
-                android:textSize="14sp"
-                android:textColor="#666666"
-                android:layout_marginEnd="16dp"/>
-
-            <TextView
-                android:id="@+id/textViewTable"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Table: 12"
-                android:textSize="14sp"
-                android:textColor="#666666"/>
-        </LinearLayout>
-
-        <!-- Status and Action Buttons -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical">
-
-            <!-- Status Badge -->
             <TextView
                 android:id="@+id/textViewStatus"
                 android:layout_width="wrap_content"
@@ -79,42 +39,123 @@
                 android:text="Confirmed"
                 android:textSize="12sp"
                 android:textColor="@android:color/white"
-                android:background="#4CAF50"
+                android:background="@drawable/bg_status_confirmed"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
-                android:layout_marginEnd="12dp"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <!-- Action Buttons -->
-            <Button
-                android:id="@+id/btnConfirm"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Confirm"
-                android:textSize="12sp"
-                android:backgroundTint="#4CAF50"
-                android:textColor="@android:color/white"
-                android:layout_marginEnd="8dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"/>
-
-            <Button
-                android:id="@+id/btnCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Cancel"
-                android:textSize="12sp"
-                android:backgroundTint="#F44336"
-                android:textColor="@android:color/white"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"/>
+                android:layout_marginStart="8dp"/>
         </LinearLayout>
 
+        <!-- Guests, Table and Date/Time -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@android:drawable/ic_menu_agenda"
+                    android:tint="@color/text_hint"
+                    android:layout_marginEnd="4dp"/>
+
+                <TextView
+                    android:id="@+id/textViewGuests"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4 Pax"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@android:drawable/ic_menu_sort_by_size"
+                    android:tint="@color/text_hint"
+                    android:layout_marginEnd="4dp"/>
+
+                <TextView
+                    android:id="@+id/textViewTable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Table: 12"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:orientation="horizontal"
+                android:gravity="end|center_vertical">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@android:drawable/ic_menu_recent_history"
+                    android:tint="@color/text_hint"
+                    android:layout_marginEnd="4dp"/>
+
+                <TextView
+                    android:id="@+id/textViewDateTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="7:30pm"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="CONFIRM"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:cornerRadius="20dp"
+                android:backgroundTint="@color/status_confirmed"
+                android:textColor="@android:color/white"
+                android:layout_marginEnd="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="CANCEL"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:cornerRadius="20dp"
+                android:backgroundTint="@color/status_cancelled"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

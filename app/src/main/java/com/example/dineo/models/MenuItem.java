@@ -1,93 +1,67 @@
 package com.example.dineo.models;
 
 /**
- * MenuItem Model - Represents a menu item
- * Student ID: BSSE2506008
+ * MenuItem model - null-safe getters
  */
 public class MenuItem {
-    private int id;
-    private String name;
-    private double price;
-    private String imageUrl;
-    private String description;
-    private String category;
 
-    // Constructors
-    public MenuItem() {
-    }
+    private int id = -1;
+    private String name = "";
+    private double price = 0.0;
+    private String description = "";
+    private String category = "";
+    private String imageUrl = "";
 
-    public MenuItem(int id, String name, double price, String imageUrl, String description, String category) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-        this.description = description;
-        this.category = category;
-    }
-
-    // Getters
     public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    // Setters
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name != null ? name : "";
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public double getPrice() {
+        return price >= 0 ? price : 0.0;
+    }
+
     public void setPrice(double price) {
         this.price = price;
     }
 
-    public String getPriceFormatted() {
-        return String.format("RM %.2f", price);
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public String getDescription() {
+        return description != null ? description : "";
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    public String getCategory() {
+        return category != null ? category : "";
+    }
+
     public void setCategory(String category) {
         this.category = category;
     }
 
-    @Override
-    public String toString() {
-        return "MenuItem{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", description='" + description + '\'' +
-                ", category='" + category + '\'' +
-                '}';
+    public String getImageUrl() {
+        return imageUrl != null ? imageUrl : "";
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    // Optional: formatted price for display
+    public String getPriceFormatted() {
+        return String.format("RM %.2f", getPrice());
     }
 }

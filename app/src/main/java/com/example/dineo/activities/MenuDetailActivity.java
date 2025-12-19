@@ -3,9 +3,6 @@ package com.example.dineo.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,14 +17,12 @@ import com.example.dineo.models.MenuItem;
 import java.util.List;
 
 /**
- * Menu Detail Activity - Display food details with customization
- * Student ID: BSSE2506008
+ * MenuDetailActivity - Browse-only food details safely
  */
 public class MenuDetailActivity extends AppCompatActivity {
 
     private ImageView imageViewBack, imageViewNotification, imageViewFood;
     private TextView textViewFoodName, textViewPrice, textViewDescription, textViewCategory;
-    // REMOVED: Customization checkboxes and order button (not needed for browse-only menu)
 
     private DatabaseHelper databaseHelper;
     private MenuItem menuItem;
@@ -38,13 +33,10 @@ public class MenuDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_detail);
 
-        // Initialize database
         databaseHelper = new DatabaseHelper(this);
 
-        // Initialize views
         initializeViews();
 
-        // Get menu item ID from intent
         int menuItemId = getIntent().getIntExtra("MENU_ITEM_ID", -1);
 
         if (menuItemId != -1) {
@@ -54,10 +46,7 @@ public class MenuDetailActivity extends AppCompatActivity {
             finish();
         }
 
-        // Setup click listeners
         setupClickListeners();
-
-        // Load notification count
         loadNotificationCount();
     }
 
@@ -65,40 +54,26 @@ public class MenuDetailActivity extends AppCompatActivity {
         imageViewBack = findViewById(R.id.imageViewBack);
         imageViewNotification = findViewById(R.id.imageViewNotification);
         imageViewFood = findViewById(R.id.imageViewFood);
-        textViewFoodName = findViewById(R.id.textViewFoodName);
+        textViewFoodName = findViewById(R.id.textViewMenuName);
         textViewPrice = findViewById(R.id.textViewPrice);
         textViewDescription = findViewById(R.id.textViewDescription);
         textViewCategory = findViewById(R.id.textViewCategory);
-        // REMOVED: No customization or order button
     }
 
     private void setupClickListeners() {
-        // Back button
-        imageViewBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        imageViewBack.setOnClickListener(v -> finish());
 
-        // Notification bell
-        imageViewNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MenuDetailActivity.this, NotificationActivity.class);
-                startActivity(intent);
-            }
+        imageViewNotification.setOnClickListener(v -> {
+            startActivity(new Intent(MenuDetailActivity.this, NotificationActivity.class));
         });
-
-        // REMOVED: Order button - this is browse-only
     }
 
     private void loadMenuItem(int menuItemId) {
-        // Get all menu items and find the one with matching ID
         List<MenuItem> menuItems = databaseHelper.getAllMenuItems();
 
+        menuItem = null;
         for (MenuItem item : menuItems) {
-            if (item.getId() == menuItemId) {
+            if (item != null && item.getId() == menuItemId) {
                 menuItem = item;
                 break;
             }
@@ -113,60 +88,53 @@ public class MenuDetailActivity extends AppCompatActivity {
     }
 
     private void displayMenuItem() {
-        // Set food name
-        textViewFoodName.setText(menuItem.getName());
+        // Food name
+        textViewFoodName.setText(menuItem.getName() != null ? menuItem.getName() : "Unknown Dish");
 
-        // Set price with formatting
-        textViewPrice.setText(String.format("RM %.2f", menuItem.getPrice()));
+        // Price
+        textViewPrice.setText(menuItem.getPrice() >= 0 ? String.format("RM %.2f", menuItem.getPrice()) : "Price N/A");
 
-        // Set description
+        // Description
         if (menuItem.getDescription() != null && !menuItem.getDescription().isEmpty()) {
             textViewDescription.setText(menuItem.getDescription());
         } else {
-            textViewDescription.setText("Delicious " + menuItem.getName() + " made with the finest ingredients. A must-try dish that will leave you wanting more!");
+            textViewDescription.setText("Delicious " + textViewFoodName.getText() + " made with the finest ingredients.");
         }
 
-        // Set category
+        // Category
         if (menuItem.getCategory() != null && !menuItem.getCategory().isEmpty()) {
             textViewCategory.setText(menuItem.getCategory());
-            textViewCategory.setVisibility(View.VISIBLE);
+            textViewCategory.setVisibility(TextView.VISIBLE);
         } else {
-            textViewCategory.setVisibility(View.GONE);
+            textViewCategory.setVisibility(TextView.GONE);
         }
 
-        // Load image with Glide
-        if (menuItem.getImageUrl() != null && !menuItem.getImageUrl().isEmpty()) {
+        // Image with Glide (safe)
+        String imageUrl = menuItem.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(this)
-                    .load(menuItem.getImageUrl())
+                    .load(imageUrl)
                     .placeholder(android.R.drawable.ic_menu_gallery)
                     .error(android.R.drawable.ic_menu_gallery)
                     .centerCrop()
                     .into(imageViewFood);
         } else {
-            // Use default placeholder
             imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery);
         }
     }
-
-    // REMOVED - No order function needed
-    // This is just a browse menu screen for guests
 
     private void loadNotificationCount() {
         SharedPreferences prefs = getSharedPreferences("DinoPrefs", MODE_PRIVATE);
         String userEmail = prefs.getString("userEmail", "");
 
-        if (!userEmail.isEmpty()) {
+        if (userEmail != null && !userEmail.isEmpty()) {
             unreadCount = databaseHelper.getUnreadNotificationCount(userEmail);
-
-            // Optional: Show badge on notification icon if you have a badge view
-            // For now, just store the count
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload notification count when returning to this screen
         loadNotificationCount();
     }
 }

@@ -62,7 +62,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
                     .centerCrop()
                     .into(holder.imageViewMenu);
         } else {
-            // Use default placeholder if no image URL
+            // Default placeholder
             holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
         }
 
@@ -79,9 +79,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         return menuItems.size();
     }
 
-    // Update list (for search/filter)
+    // Update list for search/filter
     public void updateList(List<MenuItem> newList) {
-        this.menuItems = newList;
+        this.menuItems.clear();
+        this.menuItems.addAll(newList);
         notifyDataSetChanged();
     }
 
