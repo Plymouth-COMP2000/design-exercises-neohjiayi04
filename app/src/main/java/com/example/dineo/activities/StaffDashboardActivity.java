@@ -111,12 +111,12 @@ public class StaffDashboardActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigation() {
-        bottomNavigationView.setSelectedItemId(R.id.nav_dashboard);
+        bottomNavigationView.setSelectedItemId(R.id.nav_staff_dashboard);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_dashboard) {
+            if (itemId == R.id.nav_staff_dashboard) {
                 return true;
             } else if (itemId == R.id.nav_menu) {
                 startActivity(new Intent(StaffDashboardActivity.this, StaffMenuActivity.class));

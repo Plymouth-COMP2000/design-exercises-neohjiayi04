@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background">
+    android:background="#FFF5EB">
 
     <!-- Header -->
     <RelativeLayout
@@ -12,39 +13,17 @@
         android:layout_height="56dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:background="@color/orange_light">
+        android:background="@android:color/white"
+        android:elevation="4dp">
 
-        <!-- Calendar Icon (Top Left) -->
-        <ImageView
-            android:id="@+id/imageViewCalendar"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_my_calendar"
-            android:tint="@color/orange_primary"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="Select Date"/>
-
-        <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="RESERVATIONS"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/text_primary"
+            android:textColor="#333333"
             android:layout_centerInParent="true"/>
-
-        <!-- Notification Icon (Top Right) -->
-        <ImageView
-            android:id="@+id/imageViewNotification"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_popup_reminder"
-            android:tint="@color/orange_primary"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="Notifications"/>
     </RelativeLayout>
 
     <!-- Tabs -->
@@ -52,16 +31,18 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/orange_light"
-        app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/orange_primary"
-        app:tabTextColor="@color/text_secondary"
-        app:tabIndicatorColor="@color/orange_primary">
+        android:background="@android:color/white"
+        android:elevation="2dp"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="#FF9966"
+        app:tabTextColor="#666666"
+        app:tabIndicatorColor="#FF9966"
+        app:tabIndicatorHeight="3dp">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All"/>
+            android:text="Pending"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -71,7 +52,7 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pending"/>
+            android:text="Seated"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -93,7 +74,7 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/orange_light"
+        android:background="@android:color/white"
         android:elevation="8dp"
         app:menu="@menu/staff_bottom_nav_menu"
         app:itemIconTint="@color/selector_bottom_nav"

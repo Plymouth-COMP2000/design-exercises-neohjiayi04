@@ -32,7 +32,7 @@ public class MenuActivity extends AppCompatActivity {
     private RecyclerView recyclerViewMenu;
     private BottomNavigationView bottomNavigationView;
 
-    private Button btnCategoryAll, btnCategoryAppetizers, btnCategoryMain,
+    private Button btnCategoryAll, btnCategoryMain,
             btnCategoryDesserts, btnCategoryBeverages;
 
     private DatabaseHelper databaseHelper;
@@ -54,7 +54,6 @@ public class MenuActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         btnCategoryAll = findViewById(R.id.btnCategoryAll);
-        btnCategoryAppetizers = findViewById(R.id.btnCategoryAppetizers);
         btnCategoryMain = findViewById(R.id.btnCategoryMain);
         btnCategoryDesserts = findViewById(R.id.btnCategoryDesserts);
         btnCategoryBeverages = findViewById(R.id.btnCategoryBeverages);
@@ -92,13 +91,8 @@ public class MenuActivity extends AppCompatActivity {
             updateCategoryButtons();
             filterMenuItems(editTextSearch.getText().toString());
         });
-        btnCategoryAppetizers.setOnClickListener(v -> {
-            currentCategory = "Appetizers";
-            updateCategoryButtons();
-            filterMenuItems(editTextSearch.getText().toString());
-        });
         btnCategoryMain.setOnClickListener(v -> {
-            currentCategory = "Main Course";
+            currentCategory = "Main Food";
             updateCategoryButtons();
             filterMenuItems(editTextSearch.getText().toString());
         });
@@ -119,15 +113,13 @@ public class MenuActivity extends AppCompatActivity {
         int orangeColor = 0xFFFF9966;
 
         btnCategoryAll.setBackgroundColor(grayColor);
-        btnCategoryAppetizers.setBackgroundColor(grayColor);
         btnCategoryMain.setBackgroundColor(grayColor);
         btnCategoryDesserts.setBackgroundColor(grayColor);
         btnCategoryBeverages.setBackgroundColor(grayColor);
 
         switch (currentCategory) {
             case "All": btnCategoryAll.setBackgroundColor(orangeColor); break;
-            case "Appetizers": btnCategoryAppetizers.setBackgroundColor(orangeColor); break;
-            case "Main Course": btnCategoryMain.setBackgroundColor(orangeColor); break;
+            case "Main Food": btnCategoryMain.setBackgroundColor(orangeColor); break;
             case "Desserts": btnCategoryDesserts.setBackgroundColor(orangeColor); break;
             case "Beverages": btnCategoryBeverages.setBackgroundColor(orangeColor); break;
         }
@@ -206,8 +198,8 @@ public class MenuActivity extends AppCompatActivity {
     // Sample menu items for first launch
     private void addSampleMenuItems() {
         // Add only safe non-null categories
-        addMenuItem("Fried Rice", 13.00, "Delicious fried rice", "Main Course", "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400");
-        addMenuItem("Nasi Lemak", 9.50, "Traditional Malaysian dish", "Main Course", "https://images.unsplash.com/photo-1596040033229-a0b3b4dc9937?w=400");
+        addMenuItem("Fried Rice", 13.00, "Delicious fried rice", "Main Food", "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400");
+        addMenuItem("Nasi Lemak", 9.50, "Traditional Malaysian dish", "Main Food", "https://images.unsplash.com/photo-1596040033229-a0b3b4dc9937?w=400");
         addMenuItem("Satay", 12.00, "Grilled meat skewers", "Appetizers", "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400");
         addMenuItem("Ice Cream", 5.00, "Creamy vanilla ice cream", "Desserts", "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400");
         addMenuItem("Teh Tarik", 3.00, "Malaysian milk tea", "Beverages", "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400");

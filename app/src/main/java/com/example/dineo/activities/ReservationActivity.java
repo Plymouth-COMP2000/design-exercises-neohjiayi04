@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * ReservationActivity - Complete Version with BottomNavigationView
+ * ReservationActivity - Corrected Version
  * Student ID: BSSE2506008
  */
 public class ReservationActivity extends AppCompatActivity {
@@ -47,10 +47,8 @@ public class ReservationActivity extends AppCompatActivity {
 
     private ReservationAdapter reservationAdapter;
     private DatabaseHelper databaseHelper;
-    private List<Reservation> reservations;
+    private List<Reservation> reservationList; // Renamed for clarity
 
-    private String selectedDate = "";
-    private String selectedTime = "";
     private String userEmail = "";
     private String userName = "";
 
@@ -62,27 +60,27 @@ public class ReservationActivity extends AppCompatActivity {
         // Initialize database
         databaseHelper = new DatabaseHelper(this);
 
-        // Get user info
+        // Get user info from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("DinoPrefs", MODE_PRIVATE);
         userEmail = prefs.getString("userEmail", "");
         userName = prefs.getString("userName", "Guest");
 
-        // Initialize views
+        // Initialize all views from the layout
         initializeViews();
 
-        // Setup listeners
+        // Set up listeners for buttons and other clickable views
         setupClickListeners();
 
-        // Setup table spinner
+        // Populate the table selection spinner
         setupTableSpinner();
 
-        // Setup tabs
+        // Configure the "Upcoming" and "Finished" tabs
         setupTabs();
 
-        // Setup bottom navigation
+        // Configure the bottom navigation bar
         setupBottomNavigation();
 
-        // Load reservations
+        // Load initial data for the "upcoming" tab
         loadReservations("upcoming");
     }
 
@@ -100,14 +98,17 @@ public class ReservationActivity extends AppCompatActivity {
 
         // Setup RecyclerView
         recyclerViewReservations.setLayoutManager(new LinearLayoutManager(this));
-        reservations = new ArrayList<>();
+        reservationList = new ArrayList<>();
     }
 
     private void setupClickListeners() {
-        imageViewNotification.setOnClickListener(v -> {
-            // Navigate to notifications
-            Toast.makeText(this, "Notifications clicked", Toast.LENGTH_SHORT).show();
-        });
+        // Since imageViewNotification exists in your XML, this should no longer crash
+        if (imageViewNotification != null) {
+            imageViewNotification.setOnClickListener(v -> {
+                // Navigate to a future notifications activity if you have one
+                Toast.makeText(this, "Notifications clicked", Toast.LENGTH_SHORT).show();
+            });
+        }
 
         btnReserve.setOnClickListener(v -> createReservation());
         editTextDate.setOnClickListener(v -> showDatePicker());
@@ -154,42 +155,51 @@ public class ReservationActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigation() {
-        bottomNavigationView.setSelectedItemId(R.id.nav_reservation);
+        // Set the listener FIRST
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
+
+            // If the user taps the icon for the current activity, do nothing.
             if (itemId == R.id.nav_reservation) {
                 return true;
-            } else if (itemId == R.id.nav_menu) {
-                startActivity(new Intent(this, MenuActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-                return true;
-            } else if (itemId == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+            }
+
+            // Navigate to MenuActivity
+            if (itemId == R.id.nav_menu) {
+                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Prevent creating new instances
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
             }
+
+            // Navigate to ProfileActivity
+            if (itemId == R.id.nav_profile) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Prevent creating new instances
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                return true;
+            }
+
             return false;
         });
 
-        // Highlight the reservation item by default
+        // Set the default selected item LAST, after the listener is ready
         bottomNavigationView.setSelectedItemId(R.id.nav_reservation);
     }
 
     private void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    calendar.set(selectedYear, selectedMonth, selectedDay);
+                (view, year, month, day) -> {
+                    calendar.set(year, month, day);
                     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-                    selectedDate = sdf.format(calendar.getTime());
-                    editTextDate.setText(selectedDate);
-                }, year, month, day);
+                    editTextDate.setText(sdf.format(calendar.getTime()));
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
 
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         datePickerDialog.show();
@@ -197,28 +207,25 @@ public class ReservationActivity extends AppCompatActivity {
 
     private void showTimePicker() {
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                (view, selectedHour, selectedMinute) -> {
-                    calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
-                    calendar.set(Calendar.MINUTE, selectedMinute);
+                (view, hourOfDay, minute) -> {
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    calendar.set(Calendar.MINUTE, minute);
                     SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.getDefault());
-                    selectedTime = sdf.format(calendar.getTime());
-                    editTextTime.setText(selectedTime);
-                }, hour, minute, false);
+                    editTextTime.setText(sdf.format(calendar.getTime()));
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                false);
 
         timePickerDialog.show();
     }
 
     private void createReservation() {
+        // --- FORM VALIDATION ---
         String date = editTextDate.getText().toString().trim();
         String time = editTextTime.getText().toString().trim();
         String guestsStr = editTextGuests.getText().toString().trim();
-        String tableSelection = spinnerTable.getSelectedItem().toString();
-        String specialRequests = editTextSpecialRequests.getText().toString().trim();
-
         if (date.isEmpty()) { editTextDate.setError("Please select a date"); return; }
         if (time.isEmpty()) { editTextTime.setError("Please select a time"); return; }
         if (guestsStr.isEmpty()) { editTextGuests.setError("Please enter number of guests"); return; }
@@ -230,13 +237,20 @@ public class ReservationActivity extends AppCompatActivity {
         } catch (NumberFormatException e) {
             editTextGuests.setError("Please enter a valid number"); return;
         }
+        // --- END VALIDATION ---
+
+        String specialRequests = editTextSpecialRequests.getText().toString().trim();
+
+        // **FIX for NumberFormatException**: Get the text of the selected item, not the position.
+        // The database column for table should be TEXT/VARCHAR, not INTEGER.
+        String tableSelection = spinnerTable.getSelectedItem().toString();
 
         Reservation reservation = new Reservation();
         reservation.setCustomerName(userName);
         reservation.setDate(date);
         reservation.setTime(time);
         reservation.setNumberOfGuests(guests);
-        reservation.setTableNumber(tableSelection);
+        reservation.setTableNumber(tableSelection); // Save the full text, e.g., "Indoor - Table 1"
         reservation.setSpecialRequests(specialRequests);
         reservation.setStatus("Pending");
         reservation.setUserEmail(userEmail);
@@ -244,31 +258,27 @@ public class ReservationActivity extends AppCompatActivity {
         long result = databaseHelper.addReservation(reservation);
 
         if (result > 0) {
-            createNotification();
+            // Success
+            createNotification("Reservation Created", "Your reservation for " + date + " at " + time + " has been created.");
             showSuccessDialog();
             clearInputs();
-            loadReservations("upcoming");
+            loadReservations("upcoming"); // Refresh the list
         } else {
+            // Failure
             Toast.makeText(this, "Failed to create reservation", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void createNotification() {
-        String timestamp = new SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.getDefault())
-                .format(new Date());
-        databaseHelper.addNotification(
-                "Reservation Created",
-                "Your reservation for " + selectedDate + " at " + selectedTime + " has been created successfully.",
-                timestamp,
-                "reservation",
-                userEmail
-        );
+    private void createNotification(String title, String message, String... extras) {
+        String timestamp = new SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.getDefault()).format(new Date());
+        String type = (extras.length > 0) ? extras[0] : "reservation";
+        databaseHelper.addNotification(title, message, timestamp, type, userEmail);
     }
 
     private void showSuccessDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("✅ Booking Successful!")
-                .setMessage("Your reservation has been created successfully. We will inform you about the confirmation shortly.")
+                .setMessage("Your reservation has been created. We will inform you about the confirmation shortly.")
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
                 .show();
@@ -280,36 +290,46 @@ public class ReservationActivity extends AppCompatActivity {
         editTextGuests.setText("");
         editTextSpecialRequests.setText("");
         spinnerTable.setSelection(0);
-        selectedDate = "";
-        selectedTime = "";
     }
 
     private void loadReservations(String type) {
         List<Reservation> allReservations = databaseHelper.getUserReservations(userEmail);
-        reservations.clear();
+        reservationList.clear();
         for (Reservation res : allReservations) {
             String status = res.getStatus();
-            if (type.equals("upcoming")) {
-                if (status.equals("Pending") || status.equals("Confirmed")) reservations.add(res);
-            } else {
-                if (status.equals("Cancelled") || status.equals("Completed")) reservations.add(res);
+            if ("upcoming".equals(type)) {
+                if ("Pending".equals(status) || "Confirmed".equals(status)) {
+                    reservationList.add(res);
+                }
+            } else { // "finished"
+                if ("Cancelled".equals(status) || "Completed".equals(status)) {
+                    reservationList.add(res);
+                }
             }
         }
 
-        reservationAdapter = new ReservationAdapter(this, reservations, new ReservationAdapter.OnReservationClickListener() {
-            @Override
-            public void onCancelClick(Reservation reservation) { cancelReservation(reservation); }
+        // Re-use the adapter if it exists, otherwise create a new one
+        if (reservationAdapter == null) {
+            reservationAdapter = new ReservationAdapter(this, reservationList, new ReservationAdapter.OnReservationClickListener() {
+                @Override
+                public void onCancelClick(Reservation reservation) {
+                    cancelReservation(reservation);
+                }
 
-            @Override
-            public void onEditClick(Reservation reservation) {
-                Toast.makeText(ReservationActivity.this, "Edit not available", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        recyclerViewReservations.setAdapter(reservationAdapter);
+                @Override
+                public void onEditClick(Reservation reservation) {
+                    // This can be implemented in the future
+                    Toast.makeText(ReservationActivity.this, "Edit feature is not available.", Toast.LENGTH_SHORT).show();
+                }
+            });
+            recyclerViewReservations.setAdapter(reservationAdapter);
+        } else {
+            // Just notify the adapter that the data has changed
+            reservationAdapter.notifyDataSetChanged();
+        }
     }
 
-    private void cancelReservation(Reservation reservation) {
+    private void cancelReservation(final Reservation reservation) {
         new AlertDialog.Builder(this)
                 .setTitle("Cancel Reservation")
                 .setMessage("Are you sure you want to cancel this reservation?")
@@ -317,15 +337,14 @@ public class ReservationActivity extends AppCompatActivity {
                     int result = databaseHelper.cancelReservation(reservation.getId());
                     if (result > 0) {
                         Toast.makeText(this, "Reservation cancelled", Toast.LENGTH_SHORT).show();
-                        String timestamp = new SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.getDefault()).format(new Date());
-                        databaseHelper.addNotification(
+                        createNotification(
                                 "Reservation Cancelled",
-                                "Your reservation for " + reservation.getDate() + " at " + reservation.getTime() + " has been cancelled.",
-                                timestamp,
-                                "reservation",
-                                userEmail
+                                "Your reservation for " + reservation.getDate() + " has been cancelled.",
+                                "cancellation"
                         );
-                        loadReservations("upcoming");
+                        // Refresh the currently visible list
+                        String currentTab = (tabLayout.getSelectedTabPosition() == 0) ? "upcoming" : "finished";
+                        loadReservations(currentTab);
                     } else {
                         Toast.makeText(this, "Failed to cancel reservation", Toast.LENGTH_SHORT).show();
                     }

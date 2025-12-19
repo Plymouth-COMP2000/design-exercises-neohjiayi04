@@ -6,52 +6,57 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.dineo.models.MenuItem;
 import com.example.dineo.models.Reservation;
+import com.example.dineo.models.MenuItem;
 import com.example.dineo.models.Notification;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DatabaseHelper - SQLite DB for Dineo app
- * Handles menu items, reservations, and notifications
- */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "dineo.db";
-    private static final int DATABASE_VERSION = 2; // Increase when schema changes
+    private static final int DATABASE_VERSION = 2; // INCREASED VERSION
 
-    // Menu table
-    private static final String TABLE_MENU = "menu";
-    private static final String COL_MENU_ID = "id";
-    private static final String COL_MENU_NAME = "name";
-    private static final String COL_MENU_PRICE = "price";
-    private static final String COL_MENU_DESC = "description";
-    private static final String COL_MENU_CATEGORY = "category";
-    private static final String COL_MENU_IMAGE = "imageUrl";
-
-    // Reservation table
+    // Table Names
     private static final String TABLE_RESERVATION = "reservation";
-    private static final String COL_RES_ID = "id";
-    private static final String COL_RES_CUSTOMER = "customerName";
-    private static final String COL_RES_DATE = "date";
-    private static final String COL_RES_TIME = "time";
-    private static final String COL_RES_GUESTS = "numberOfGuests";
-    private static final String COL_RES_TABLE = "tableNumber";
-    private static final String COL_RES_REQUESTS = "specialRequests";
-    private static final String COL_RES_STATUS = "status";
-    private static final String COL_RES_USER_EMAIL = "userEmail";
-
-    // Notification table
+    private static final String TABLE_MENU = "menu";
     private static final String TABLE_NOTIFICATION = "notification";
-    private static final String COL_NOTIF_ID = "id";
-    private static final String COL_NOTIF_TITLE = "title";
-    private static final String COL_NOTIF_MESSAGE = "message";
-    private static final String COL_NOTIF_TIMESTAMP = "timestamp";
-    private static final String COL_NOTIF_TYPE = "type";
-    private static final String COL_NOTIF_USER_EMAIL = "userEmail";
-    private static final String COL_NOTIF_READ = "isRead";
+    private static final String TABLE_USER = "user";
+
+    // Reservation Columns
+    private static final String RES_ID = "id";
+    private static final String RES_NAME = "customerName";
+    private static final String RES_EMAIL = "userEmail";
+    private static final String RES_DATE = "date";
+    private static final String RES_TIME = "time";
+    private static final String RES_GUESTS = "numberOfGuests";
+    private static final String RES_TABLE = "tableNumber";
+    private static final String RES_SPECIAL = "specialRequests";
+    private static final String RES_STATUS = "status";
+
+    // Menu Columns
+    private static final String MENU_ID = "id";
+    private static final String MENU_NAME = "name";
+    private static final String MENU_CATEGORY = "category";
+    private static final String MENU_PRICE = "price";
+    private static final String MENU_DESC = "description";
+    private static final String MENU_IMAGE = "imageUrl";
+
+    // Notification Columns
+    private static final String NOTIF_ID = "id";
+    private static final String NOTIF_TITLE = "title";
+    private static final String NOTIF_MESSAGE = "message";
+    private static final String NOTIF_TIMESTAMP = "timestamp";
+    private static final String NOTIF_TYPE = "type";
+    private static final String NOTIF_EMAIL = "userEmail";
+    private static final String NOTIF_READ = "isRead";
+
+    // User Columns
+    private static final String USER_ID = "id";
+    private static final String USER_EMAIL = "email";
+    private static final String USER_PASSWORD = "password";
+    private static final String USER_NAME = "name";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -59,239 +64,337 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Menu table
-        String createMenuTable = "CREATE TABLE " + TABLE_MENU + " (" +
-                COL_MENU_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL_MENU_NAME + " TEXT, " +
-                COL_MENU_PRICE + " REAL, " +
-                COL_MENU_DESC + " TEXT, " +
-                COL_MENU_CATEGORY + " TEXT, " +
-                COL_MENU_IMAGE + " TEXT)";
-        db.execSQL(createMenuTable);
+        // Create Reservation Table
+        String CREATE_RESERVATION_TABLE = "CREATE TABLE " + TABLE_RESERVATION + " (" +
+                RES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                RES_NAME + " TEXT," +
+                RES_EMAIL + " TEXT," +
+                RES_DATE + " TEXT," +
+                RES_TIME + " TEXT," +
+                RES_GUESTS + " INTEGER," +
+                RES_TABLE + " TEXT," +
+                RES_SPECIAL + " TEXT," +
+                RES_STATUS + " TEXT)";
+        db.execSQL(CREATE_RESERVATION_TABLE);
 
-        // Reservation table
-        String createReservationTable = "CREATE TABLE " + TABLE_RESERVATION + " (" +
-                COL_RES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL_RES_CUSTOMER + " TEXT, " +
-                COL_RES_DATE + " TEXT, " +
-                COL_RES_TIME + " TEXT, " +
-                COL_RES_GUESTS + " INTEGER, " +
-                COL_RES_TABLE + " TEXT, " +
-                COL_RES_REQUESTS + " TEXT, " +
-                COL_RES_STATUS + " TEXT, " +
-                COL_RES_USER_EMAIL + " TEXT)";
-        db.execSQL(createReservationTable);
+        // Create Menu Table
+        String CREATE_MENU_TABLE = "CREATE TABLE " + TABLE_MENU + " (" +
+                MENU_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                MENU_NAME + " TEXT NOT NULL," +
+                MENU_CATEGORY + " TEXT," +
+                MENU_PRICE + " REAL," +
+                MENU_DESC + " TEXT," +
+                MENU_IMAGE + " TEXT)";
+        db.execSQL(CREATE_MENU_TABLE);
 
-        // Notification table
-        String createNotificationTable = "CREATE TABLE " + TABLE_NOTIFICATION + " (" +
-                COL_NOTIF_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL_NOTIF_TITLE + " TEXT, " +
-                COL_NOTIF_MESSAGE + " TEXT, " +
-                COL_NOTIF_TIMESTAMP + " TEXT, " +
-                COL_NOTIF_TYPE + " TEXT, " +
-                COL_NOTIF_USER_EMAIL + " TEXT, " +
-                COL_NOTIF_READ + " INTEGER DEFAULT 0)";
-        db.execSQL(createNotificationTable);
+        // Create Notification Table
+        String CREATE_NOTIF_TABLE = "CREATE TABLE " + TABLE_NOTIFICATION + " (" +
+                NOTIF_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                NOTIF_TITLE + " TEXT," +
+                NOTIF_MESSAGE + " TEXT," +
+                NOTIF_TIMESTAMP + " TEXT," +
+                NOTIF_TYPE + " TEXT," +
+                NOTIF_EMAIL + " TEXT," +
+                NOTIF_READ + " INTEGER DEFAULT 0)";
+        db.execSQL(CREATE_NOTIF_TABLE);
+
+        // Create User Table
+        String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + " (" +
+                USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                USER_EMAIL + " TEXT UNIQUE," +
+                USER_PASSWORD + " TEXT," +
+                USER_NAME + " TEXT)";
+        db.execSQL(CREATE_USER_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop tables and recreate
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESERVATION);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATION);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         onCreate(db);
     }
 
-    // ================= MenuItem Methods =================
-    public long addMenuItem(MenuItem item) {
+    // ---------------- RESERVATION METHODS ----------------
+
+    public long addReservation(Reservation reservation) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COL_MENU_NAME, item.getName());
-        values.put(COL_MENU_PRICE, item.getPrice());
-        values.put(COL_MENU_DESC, item.getDescription());
-        values.put(COL_MENU_CATEGORY, item.getCategory());
-        values.put(COL_MENU_IMAGE, item.getImageUrl());
-        return db.insert(TABLE_MENU, null, values);
+        values.put(RES_NAME, reservation.getCustomerName());
+        values.put(RES_EMAIL, reservation.getUserEmail());
+        values.put(RES_DATE, reservation.getDate());
+        values.put(RES_TIME, reservation.getTime());
+        values.put(RES_GUESTS, reservation.getNumberOfGuests());
+        values.put(RES_TABLE, reservation.getTableNumber());
+        values.put(RES_SPECIAL, reservation.getSpecialRequests());
+        values.put(RES_STATUS, reservation.getStatus());
+
+        long id = db.insert(TABLE_RESERVATION, null, values);
+        db.close();
+        return id;
     }
 
-    public int updateMenuItem(MenuItem item) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_MENU_NAME, item.getName());
-        values.put(COL_MENU_PRICE, item.getPrice());
-        values.put(COL_MENU_DESC, item.getDescription());
-        values.put(COL_MENU_CATEGORY, item.getCategory());
-        values.put(COL_MENU_IMAGE, item.getImageUrl());
-        return db.update(TABLE_MENU, values, COL_MENU_ID + "=?", new String[]{String.valueOf(item.getId())});
-    }
-
-    public int deleteMenuItem(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_MENU, COL_MENU_ID + "=?", new String[]{String.valueOf(id)});
-    }
-
-    public List<MenuItem> getAllMenuItems() {
-        List<MenuItem> items = new ArrayList<>();
+    public List<Reservation> getUserReservations(String email) {
+        List<Reservation> reservations = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_MENU, null);
+        Cursor cursor = db.query(TABLE_RESERVATION, null, RES_EMAIL + "=?",
+                new String[]{email}, null, null, RES_DATE + " ASC, " + RES_TIME + " ASC");
+
         if (cursor.moveToFirst()) {
             do {
-                MenuItem item = new MenuItem();
-                item.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MENU_ID)));
-                item.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_MENU_NAME)));
-                item.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_MENU_PRICE)));
-                item.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(COL_MENU_DESC)));
-                item.setCategory(cursor.getString(cursor.getColumnIndexOrThrow(COL_MENU_CATEGORY)));
-                item.setImageUrl(cursor.getString(cursor.getColumnIndexOrThrow(COL_MENU_IMAGE)));
-                items.add(item);
+                Reservation res = new Reservation();
+                res.setId(cursor.getInt(cursor.getColumnIndexOrThrow(RES_ID)));
+                res.setCustomerName(cursor.getString(cursor.getColumnIndexOrThrow(RES_NAME)));
+                res.setUserEmail(cursor.getString(cursor.getColumnIndexOrThrow(RES_EMAIL)));
+                res.setDate(cursor.getString(cursor.getColumnIndexOrThrow(RES_DATE)));
+                res.setTime(cursor.getString(cursor.getColumnIndexOrThrow(RES_TIME)));
+                res.setNumberOfGuests(cursor.getInt(cursor.getColumnIndexOrThrow(RES_GUESTS)));
+                res.setTableNumber(cursor.getString(cursor.getColumnIndexOrThrow(RES_TABLE)));
+                res.setSpecialRequests(cursor.getString(cursor.getColumnIndexOrThrow(RES_SPECIAL)));
+                res.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(RES_STATUS)));
+
+                reservations.add(res);
             } while (cursor.moveToNext());
         }
         cursor.close();
-        return items;
+        db.close();
+        return reservations;
     }
 
-    // ================= Reservation Methods =================
-    public long addReservation(Reservation res) {
+    public List<Reservation> getAllReservations() {
+        List<Reservation> reservations = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_RESERVATION, null, null, null, null, null,
+                RES_DATE + " ASC, " + RES_TIME + " ASC");
+
+        if (cursor.moveToFirst()) {
+            do {
+                Reservation res = new Reservation();
+                res.setId(cursor.getInt(cursor.getColumnIndexOrThrow(RES_ID)));
+                res.setCustomerName(cursor.getString(cursor.getColumnIndexOrThrow(RES_NAME)));
+                res.setUserEmail(cursor.getString(cursor.getColumnIndexOrThrow(RES_EMAIL)));
+                res.setDate(cursor.getString(cursor.getColumnIndexOrThrow(RES_DATE)));
+                res.setTime(cursor.getString(cursor.getColumnIndexOrThrow(RES_TIME)));
+                res.setNumberOfGuests(cursor.getInt(cursor.getColumnIndexOrThrow(RES_GUESTS)));
+                res.setTableNumber(cursor.getString(cursor.getColumnIndexOrThrow(RES_TABLE)));
+                res.setSpecialRequests(cursor.getString(cursor.getColumnIndexOrThrow(RES_SPECIAL)));
+                res.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(RES_STATUS)));
+
+                reservations.add(res);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return reservations;
+    }
+
+    public int updateReservationStatus(int reservationId, String newStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COL_RES_CUSTOMER, res.getCustomerName());
-        values.put(COL_RES_DATE, res.getDate());
-        values.put(COL_RES_TIME, res.getTime());
-        values.put(COL_RES_GUESTS, res.getNumberOfGuests());
-        values.put(COL_RES_TABLE, res.getTableNumber());
-        values.put(COL_RES_REQUESTS, res.getSpecialRequests());
-        values.put(COL_RES_STATUS, res.getStatus());
-        values.put(COL_RES_USER_EMAIL, res.getUserEmail());
-        return db.insert(TABLE_RESERVATION, null, values);
+        values.put(RES_STATUS, newStatus);
+        int rows = db.update(TABLE_RESERVATION, values, RES_ID + "=?",
+                new String[]{String.valueOf(reservationId)});
+        db.close();
+        return rows;
+    }
+
+    public int cancelReservation(int reservationId) {
+        return updateReservationStatus(reservationId, "Cancelled");
+    }
+
+    public int markReservationSeated(int reservationId) {
+        return updateReservationStatus(reservationId, "Seated");
     }
 
     public int updateReservation(Reservation res) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COL_RES_CUSTOMER, res.getCustomerName());
-        values.put(COL_RES_DATE, res.getDate());
-        values.put(COL_RES_TIME, res.getTime());
-        values.put(COL_RES_GUESTS, res.getNumberOfGuests());
-        values.put(COL_RES_TABLE, res.getTableNumber());
-        values.put(COL_RES_REQUESTS, res.getSpecialRequests());
-        values.put(COL_RES_STATUS, res.getStatus());
-        values.put(COL_RES_USER_EMAIL, res.getUserEmail());
-        return db.update(TABLE_RESERVATION, values, COL_RES_ID + "=?", new String[]{String.valueOf(res.getId())});
+        values.put(RES_NAME, res.getCustomerName());
+        values.put(RES_DATE, res.getDate());
+        values.put(RES_TIME, res.getTime());
+        values.put(RES_GUESTS, res.getNumberOfGuests());
+        values.put(RES_TABLE, res.getTableNumber());
+        values.put(RES_SPECIAL, res.getSpecialRequests());
+        values.put(RES_STATUS, res.getStatus());
+
+        int rows = db.update(TABLE_RESERVATION, values, RES_ID + "=?",
+                new String[]{String.valueOf(res.getId())});
+        db.close();
+        return rows;
     }
 
-    public int cancelReservation(int id) {
+    // ---------------- MENU METHODS ----------------
+
+    public long addMenuItem(MenuItem item) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COL_RES_STATUS, "Cancelled");
-        return db.update(TABLE_RESERVATION, values, COL_RES_ID + "=?", new String[]{String.valueOf(id)});
+        values.put(MENU_NAME, item.getName());
+        values.put(MENU_CATEGORY, item.getCategory());
+        values.put(MENU_PRICE, item.getPrice());
+        values.put(MENU_DESC, item.getDescription());
+        values.put(MENU_IMAGE, item.getImageUrl());
+
+        long id = db.insert(TABLE_MENU, null, values);
+        db.close();
+        return id;
     }
 
-    public int deleteReservation(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_RESERVATION, COL_RES_ID + "=?", new String[]{String.valueOf(id)});
-    }
-
-    public List<Reservation> getUserReservations(String email) {
-        List<Reservation> list = new ArrayList<>();
+    public List<MenuItem> getAllMenuItems() {
+        List<MenuItem> menuItems = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_RESERVATION + " WHERE " + COL_RES_USER_EMAIL + "=?", new String[]{email});
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_MENU, null);
+
         if (cursor.moveToFirst()) {
             do {
-                Reservation res = new Reservation();
-                res.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_RES_ID)));
-                res.setCustomerName(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_CUSTOMER)));
-                res.setDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_DATE)));
-                res.setTime(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_TIME)));
-                res.setNumberOfGuests(cursor.getInt(cursor.getColumnIndexOrThrow(COL_RES_GUESTS)));
-                res.setTableNumber(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_TABLE)));
-                res.setSpecialRequests(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_REQUESTS)));
-                res.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_STATUS)));
-                res.setUserEmail(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_USER_EMAIL)));
-                list.add(res);
+                MenuItem item = new MenuItem();
+                item.setId(cursor.getInt(cursor.getColumnIndexOrThrow(MENU_ID)));
+                item.setName(cursor.getString(cursor.getColumnIndexOrThrow(MENU_NAME)));
+                item.setCategory(cursor.getString(cursor.getColumnIndexOrThrow(MENU_CATEGORY)));
+                item.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow(MENU_PRICE)));
+                item.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(MENU_DESC)));
+                item.setImageUrl(cursor.getString(cursor.getColumnIndexOrThrow(MENU_IMAGE)));
+
+                menuItems.add(item);
             } while (cursor.moveToNext());
         }
         cursor.close();
-        return list;
+        db.close();
+        return menuItems;
     }
 
-    public List<Reservation> getAllReservations() {
-        List<Reservation> list = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_RESERVATION, null);
-        if (cursor.moveToFirst()) {
-            do {
-                Reservation res = new Reservation();
-                res.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_RES_ID)));
-                res.setCustomerName(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_CUSTOMER)));
-                res.setDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_DATE)));
-                res.setTime(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_TIME)));
-                res.setNumberOfGuests(cursor.getInt(cursor.getColumnIndexOrThrow(COL_RES_GUESTS)));
-                res.setTableNumber(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_TABLE)));
-                res.setSpecialRequests(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_REQUESTS)));
-                res.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_STATUS)));
-                res.setUserEmail(cursor.getString(cursor.getColumnIndexOrThrow(COL_RES_USER_EMAIL)));
-                list.add(res);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return list;
-    }
+    // ---------------- NOTIFICATION METHODS ----------------
 
-    // ================= Notification Methods =================
     public long addNotification(String title, String message, String timestamp, String type, String userEmail) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COL_NOTIF_TITLE, title);
-        values.put(COL_NOTIF_MESSAGE, message);
-        values.put(COL_NOTIF_TIMESTAMP, timestamp);
-        values.put(COL_NOTIF_TYPE, type);
-        values.put(COL_NOTIF_USER_EMAIL, userEmail);
-        values.put(COL_NOTIF_READ, 0);
-        return db.insert(TABLE_NOTIFICATION, null, values);
-    }
+        values.put(NOTIF_TITLE, title);
+        values.put(NOTIF_MESSAGE, message);
+        values.put(NOTIF_TIMESTAMP, timestamp);
+        values.put(NOTIF_TYPE, type);
+        values.put(NOTIF_EMAIL, userEmail);
+        values.put(NOTIF_READ, 0);
 
-    public List<Notification> getUserNotifications(String userEmail) {
-        List<Notification> list = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NOTIFICATION + " WHERE " + COL_NOTIF_USER_EMAIL + "=? ORDER BY " + COL_NOTIF_ID + " DESC", new String[]{userEmail});
-        if (cursor.moveToFirst()) {
-            do {
-                Notification n = new Notification();
-                n.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_NOTIF_ID)));
-                n.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(COL_NOTIF_TITLE)));
-                n.setMessage(cursor.getString(cursor.getColumnIndexOrThrow(COL_NOTIF_MESSAGE)));
-                n.setTimestamp(cursor.getString(cursor.getColumnIndexOrThrow(COL_NOTIF_TIMESTAMP)));
-                n.setType(cursor.getString(cursor.getColumnIndexOrThrow(COL_NOTIF_TYPE)));
-                n.setUserEmail(cursor.getString(cursor.getColumnIndexOrThrow(COL_NOTIF_USER_EMAIL)));
-                n.setRead(cursor.getInt(cursor.getColumnIndexOrThrow(COL_NOTIF_READ)) == 1);
-                list.add(n);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return list;
-    }
-
-    public int markNotificationAsRead(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_NOTIF_READ, 1);
-        return db.update(TABLE_NOTIFICATION, values, COL_NOTIF_ID + "=?", new String[]{String.valueOf(id)});
-    }
-
-    public int deleteNotification(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NOTIFICATION, COL_NOTIF_ID + "=?", new String[]{String.valueOf(id)});
+        long id = db.insert(TABLE_NOTIFICATION, null, values);
+        db.close();
+        return id;
     }
 
     public int getUnreadNotificationCount(String userEmail) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NOTIFICATION + " WHERE " + COL_NOTIF_USER_EMAIL + "=? AND " + COL_NOTIF_READ + "=0", new String[]{userEmail});
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM " + TABLE_NOTIFICATION +
+                        " WHERE " + NOTIF_EMAIL + "=? AND " + NOTIF_READ + "=0",
+                new String[]{userEmail});
+
         int count = 0;
         if (cursor.moveToFirst()) {
             count = cursor.getInt(0);
         }
         cursor.close();
+        db.close();
         return count;
+    }
+
+    public List<Notification> getUserNotifications(String userEmail) {
+        List<Notification> notificationList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                "notifications_table", // your table name
+                null,
+                "user_email=?",
+                new String[]{userEmail},
+                null,
+                null,
+                "created_at DESC" // order by newest first
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                Notification notification = new Notification();
+                notification.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                notification.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                notification.setMessage(cursor.getString(cursor.getColumnIndexOrThrow("message")));
+                notification.setRead(cursor.getInt(cursor.getColumnIndexOrThrow("is_read")) == 1);
+                notification.setTimestamp(String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow("created_at"))));                // Add other fields as needed
+
+                notificationList.add(notification);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return notificationList;
+    }
+
+    public int markNotificationAsRead(int notificationId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(NOTIF_READ, 1);
+        int rows = db.update(TABLE_NOTIFICATION, values, NOTIF_ID + "=?",
+                new String[]{String.valueOf(notificationId)});
+        db.close();
+        return rows;
+    }
+
+    public int deleteNotification(int notificationId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = db.delete(TABLE_NOTIFICATION, NOTIF_ID + "=?",
+                new String[]{String.valueOf(notificationId)});
+        db.close();
+        return rows;
+    }
+
+    // ---------------- MENU ITEM METHODS ----------------
+
+    public int updateMenuItem(MenuItem item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MENU_NAME, item.getName());
+        values.put(MENU_CATEGORY, item.getCategory());
+        values.put(MENU_PRICE, item.getPrice());
+        values.put(MENU_DESC, item.getDescription());
+        values.put(MENU_IMAGE, item.getImageUrl());
+
+        int rows = db.update(TABLE_MENU, values, MENU_ID + "=?",
+                new String[]{String.valueOf(item.getId())});
+        db.close();
+        return rows;
+    }
+
+    public int deleteMenuItem(int menuItemId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = db.delete(TABLE_MENU, MENU_ID + "=?",
+                new String[]{String.valueOf(menuItemId)});
+        db.close();
+        return rows;
+    }
+
+    // ---------------- USER METHODS ----------------
+
+    public long addUser(String email, String password, String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(USER_EMAIL, email);
+        values.put(USER_PASSWORD, password);
+        values.put(USER_NAME, name);
+
+        long id = db.insert(TABLE_USER, null, values);
+        db.close();
+        return id;
+    }
+
+    public boolean checkUser(String email, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USER, null,
+                USER_EMAIL + "=? AND " + USER_PASSWORD + "=?",
+                new String[]{email, password}, null, null, null);
+
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        db.close();
+        return exists;
     }
 }

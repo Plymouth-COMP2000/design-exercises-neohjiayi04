@@ -64,7 +64,7 @@
             <Button
                 android:id="@+id/btnCategoryAll"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:text="All"
                 android:textSize="14sp"
                 android:layout_marginEnd="8dp"
@@ -72,20 +72,10 @@
                 android:textColor="@android:color/white" />
 
             <Button
-                android:id="@+id/btnCategoryAppetizers"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:text="Appetizers"
-                android:textSize="14sp"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="#E0E0E0"
-                android:textColor="#333333" />
-
-            <Button
                 android:id="@+id/btnCategoryMain"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:text="Main Course"
+                android:layout_height="48dp"
+                android:text="Main Food"
                 android:textSize="14sp"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#E0E0E0"
@@ -94,7 +84,7 @@
             <Button
                 android:id="@+id/btnCategoryDesserts"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:text="Desserts"
                 android:textSize="14sp"
                 android:layout_marginEnd="8dp"
@@ -104,7 +94,7 @@
             <Button
                 android:id="@+id/btnCategoryBeverages"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:text="Beverages"
                 android:textSize="14sp"
                 android:backgroundTint="#E0E0E0"

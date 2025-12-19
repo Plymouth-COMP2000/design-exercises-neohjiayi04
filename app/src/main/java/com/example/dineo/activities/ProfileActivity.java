@@ -205,7 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
             // Role-based navigation
             if ("STAFF".equalsIgnoreCase(userRole)) {
                 // Staff navigation
-                if (itemId == R.id.nav_dashboard) {
+                if (itemId == R.id.nav_staff_dashboard) {
                     startActivity(new Intent(ProfileActivity.this, StaffDashboardActivity.class));
                     overridePendingTransition(0, 0);
                     return true;

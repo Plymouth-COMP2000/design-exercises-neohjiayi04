@@ -145,7 +145,7 @@ public class StaffMenuActivity extends AppCompatActivity implements StaffMenuAda
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_dashboard) {
+            if (itemId == R.id.nav_staff_dashboard) {
                 startActivity(new Intent(StaffMenuActivity.this, StaffDashboardActivity.class));
                 overridePendingTransition(0, 0);
                 return true;

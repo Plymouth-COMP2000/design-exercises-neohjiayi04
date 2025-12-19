@@ -64,6 +64,7 @@
     <color name="warning_yellow">#FFC107</color>
     <color name="info_blue">#2196F3</color>
     <color name="teal_accent">#00BCD4</color>
+    <color name="status_pending">#FF9654</color>
 
     <!-- ========================= -->
     <!-- Button Colors             -->
