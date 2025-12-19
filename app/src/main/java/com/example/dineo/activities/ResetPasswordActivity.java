@@ -112,7 +112,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             // Update with new password
             return ApiHelper.updateUser(
-                    userId,
+                    String.valueOf(userId),
                     username,
                     newPassword,  // New password
                     firstname,

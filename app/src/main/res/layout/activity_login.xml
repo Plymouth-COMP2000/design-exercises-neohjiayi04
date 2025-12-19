@@ -30,11 +30,11 @@
 
         <!-- Email -->
         <EditText
-            android:id="@+id/editTextEmail"
+            android:id="@+id/editTextUsername"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:hint="Email Address"
-            android:inputType="textEmailAddress"
+            android:hint="Username"
+            android:inputType="textPersonName"
             android:padding="16dp"
             android:layout_marginBottom="16dp"
             android:background="@android:color/white"

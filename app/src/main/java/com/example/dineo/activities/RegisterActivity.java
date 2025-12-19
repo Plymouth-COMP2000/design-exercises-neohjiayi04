@@ -1,10 +1,14 @@
 package com.example.dineo.activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,13 +18,18 @@ import com.example.dineo.R;
 import com.example.dineo.api.ApiHelper;
 
 /**
- * Register Activity - Using ApiHelper pattern
+ * Register Activity with Role Selection
  * Student ID: BSSE2506008
  */
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText editTextUsername, editTextEmail, editTextPassword;
-    private Button btnSignIn;
+    private static final String TAG = "RegisterActivity";
+
+    private EditText editTextUsername, editTextPassword, editTextFirstname,
+            editTextLastname, editTextEmail, editTextContact;
+    private RadioGroup radioGroupUserType;
+    private RadioButton radioGuest, radioStaff;
+    private Button btnRegister;
     private TextView textViewLogin;
 
     @Override
@@ -30,48 +39,53 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Initialize views
         editTextUsername = findViewById(R.id.editTextUsername);
-        editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
-        btnSignIn = findViewById(R.id.btnSignIn);
+        editTextFirstname = findViewById(R.id.editTextFirstname);
+        editTextLastname = findViewById(R.id.editTextLastname);
+        editTextEmail = findViewById(R.id.editTextEmail);
+        editTextContact = findViewById(R.id.editTextContact);
+        radioGroupUserType = findViewById(R.id.radioGroupUserType);
+        radioGuest = findViewById(R.id.radioGuest);
+        radioStaff = findViewById(R.id.radioStaff);
+        btnRegister = findViewById(R.id.btnRegister);
         textViewLogin = findViewById(R.id.textViewLogin);
 
+        // Set default to Guest
+        radioGuest.setChecked(true);
+
         // Set click listeners
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
+        btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performRegister();
+                performRegistration();
             }
         });
 
         textViewLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                finish(); // Go back to login
             }
         });
     }
 
-    private void performRegister() {
+    private void performRegistration() {
         String username = editTextUsername.getText().toString().trim();
-        String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        String firstname = editTextFirstname.getText().toString().trim();
+        String lastname = editTextLastname.getText().toString().trim();
+        String email = editTextEmail.getText().toString().trim();
+        String contact = editTextContact.getText().toString().trim();
+
+        // Get selected user type
+        String usertype = radioGuest.isChecked() ? "GUEST" : "STAFF";
+
+        Log.d(TAG, "Registering as: " + usertype);
 
         // Validate inputs
         if (username.isEmpty()) {
             editTextUsername.setError("Username is required");
             editTextUsername.requestFocus();
-            return;
-        }
-
-        if (email.isEmpty()) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
-            return;
-        }
-
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError("Please enter a valid email");
-            editTextEmail.requestFocus();
             return;
         }
 
@@ -81,67 +95,59 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        if (password.length() < 6) {
-            editTextPassword.setError("Password must be at least 6 characters");
-            editTextPassword.requestFocus();
+        if (email.isEmpty()) {
+            editTextEmail.setError("Email is required");
+            editTextEmail.requestFocus();
             return;
         }
 
         // Show loading state
-        btnSignIn.setEnabled(false);
-        btnSignIn.setText("Creating account...");
+        btnRegister.setEnabled(false);
+        btnRegister.setText("Creating account...");
 
-        // Call API in background thread
-        new RegisterTask().execute(username, password, email);
+        // Call API in background
+        new RegisterTask().execute(username, password, firstname, lastname,
+                email, contact, usertype);
     }
 
-    // AsyncTask to handle API call
     private class RegisterTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
             String username = params[0];
             String password = params[1];
-            String email = params[2];
+            String firstname = params[2];
+            String lastname = params[3];
+            String email = params[4];
+            String contact = params[5];
+            String usertype = params[6];
 
-            // Split username into firstname and lastname (if possible)
-            String firstname = username;
-            String lastname = "";
-            if (username.contains(" ")) {
-                String[] parts = username.split(" ", 2);
-                firstname = parts[0];
-                lastname = parts[1];
+            Log.d(TAG, "Calling API to create user...");
+
+            try {
+                return ApiHelper.createUser(username, password, firstname,
+                        lastname, email, contact, usertype);
+            } catch (Exception e) {
+                Log.e(TAG, "API call failed: " + e.getMessage());
+                e.printStackTrace();
+                return "Error: " + e.getMessage();
             }
-
-            // Call API
-            // createUser(username, password, firstname, lastname, email, contact, usertype)
-            return ApiHelper.createUser(
-                    username,
-                    password,
-                    firstname,
-                    lastname,
-                    email,
-                    "",  // contact (empty for now)
-                    "GUEST"  // default role
-            );
         }
 
         @Override
         protected void onPostExecute(String result) {
-            btnSignIn.setEnabled(true);
-            btnSignIn.setText("Sign In");
+            btnRegister.setEnabled(true);
+            btnRegister.setText("Register");
+
+            Log.d(TAG, "Registration result: " + result);
 
             if (result.startsWith("Error")) {
-                // Registration failed
-                Toast.makeText(RegisterActivity.this, result, Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, result, Toast.LENGTH_LONG).show();
             } else {
-                // Registration successful
                 Toast.makeText(RegisterActivity.this,
-                        "Registration successful! Please login.",
-                        Toast.LENGTH_SHORT).show();
-
-                // Go back to login
-                finish();
+                        "Account created successfully! Please login.",
+                        Toast.LENGTH_LONG).show();
+                finish(); // Go back to login
             }
         }
     }

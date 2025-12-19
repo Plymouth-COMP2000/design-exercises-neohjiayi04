@@ -17,26 +17,27 @@ import com.example.dineo.adapters.MenuAdapter;
 import com.example.dineo.database.DatabaseHelper;
 import com.example.dineo.models.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Menu Activity - Display menu items with search and filter
+ * Menu Activity - Display menu items for guests
  * Student ID: BSSE2506008
  */
-public class MenuActivity extends AppCompatActivity implements MenuAdapter.OnMenuItemClickListener {
+public class MenuActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerViewMenu;
-    private MenuAdapter menuAdapter;
-    private DatabaseHelper databaseHelper;
-    private List<MenuItem> allMenuItems;
-    private List<MenuItem> filteredMenuItems;
-    private SearchView searchView;
-    private ChipGroup chipGroupCategories;
+    private static final String TAG = "MenuActivity";
+
     private ImageView imageViewNotification;
+    private SearchView searchView;
+    private RecyclerView recyclerViewMenu;
     private BottomNavigationView bottomNavigationView;
+
+    private DatabaseHelper databaseHelper;
+    private MenuAdapter menuAdapter;
+    private List<MenuItem> menuItems;
+    private List<MenuItem> filteredMenuItems;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -45,56 +46,23 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.OnMen
         setContentView(R.layout.activity_menu);
 
         // Initialize views
-        recyclerViewMenu = findViewById(R.id.recyclerViewMenu);
-        searchView = findViewById(R.id.searchView);
-        chipGroupCategories = findViewById(R.id.chipGroupCategories);
         imageViewNotification = findViewById(R.id.imageViewNotification);
+        searchView = findViewById(R.id.searchView);
+        recyclerViewMenu = findViewById(R.id.recyclerViewMenu);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-        // Initialize database
+        // Initialize
         databaseHelper = new DatabaseHelper(this);
         sharedPreferences = getSharedPreferences("DinoPrefs", MODE_PRIVATE);
 
         // Setup RecyclerView
         recyclerViewMenu.setLayoutManager(new GridLayoutManager(this, 2));
+        filteredMenuItems = new ArrayList<>();
 
         // Load menu items
         loadMenuItems();
 
         // Setup search
-        setupSearch();
-
-        // Setup category filters
-        setupCategoryFilters();
-
-        // Setup notification bell
-        imageViewNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MenuActivity.this, NotificationActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        // Setup bottom navigation
-        setupBottomNavigation();
-
-        // Add sample data if empty (for demonstration)
-        if (allMenuItems.isEmpty()) {
-            addSampleMenuItems();
-            loadMenuItems();
-        }
-    }
-
-    private void loadMenuItems() {
-        allMenuItems = databaseHelper.getAllMenuItems();
-        filteredMenuItems = new ArrayList<>(allMenuItems);
-
-        menuAdapter = new MenuAdapter(this, filteredMenuItems, this);
-        recyclerViewMenu.setAdapter(menuAdapter);
-    }
-
-    private void setupSearch() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -107,15 +75,51 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.OnMen
                 return true;
             }
         });
+
+        // Notification click
+        imageViewNotification.setOnClickListener(v -> {
+            Intent intent = new Intent(MenuActivity.this, NotificationActivity.class);
+            startActivity(intent);
+        });
+
+        // Setup bottom navigation
+        setupBottomNavigation();
+    }
+
+    private void loadMenuItems() {
+        menuItems = databaseHelper.getAllMenuItems();
+
+        // If no items in database, add sample items
+        if (menuItems.isEmpty()) {
+            addSampleMenuItems();
+            menuItems = databaseHelper.getAllMenuItems();
+        }
+
+        filteredMenuItems.clear();
+        filteredMenuItems.addAll(menuItems);
+
+        // Setup adapter
+        menuAdapter = new MenuAdapter(this, filteredMenuItems, menuItem -> {
+            // Click listener - go to detail
+            Intent intent = new Intent(MenuActivity.this, MenuDetailActivity.class);
+            intent.putExtra("MENU_ITEM_ID", menuItem.getId());
+            intent.putExtra("MENU_ITEM_NAME", menuItem.getName());
+            intent.putExtra("MENU_ITEM_PRICE", menuItem.getPrice());
+            intent.putExtra("MENU_ITEM_DESCRIPTION", menuItem.getDescription());
+            intent.putExtra("MENU_ITEM_IMAGE", menuItem.getImageUrl());
+            startActivity(intent);
+        });
+
+        recyclerViewMenu.setAdapter(menuAdapter);
     }
 
     private void filterMenuItems(String query) {
         filteredMenuItems.clear();
 
         if (query.isEmpty()) {
-            filteredMenuItems.addAll(allMenuItems);
+            filteredMenuItems.addAll(menuItems);
         } else {
-            for (MenuItem item : allMenuItems) {
+            for (MenuItem item : menuItems) {
                 if (item.getName().toLowerCase().contains(query.toLowerCase())) {
                     filteredMenuItems.add(item);
                 }
@@ -125,15 +129,57 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.OnMen
         menuAdapter.notifyDataSetChanged();
     }
 
-    private void setupCategoryFilters() {
-        chipGroupCategories.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(ChipGroup group, int checkedId) {
-                // Filter by category (implement based on your categories)
-                // For now, just reload all items
-                filterMenuItems("");
-            }
-        });
+    private void addSampleMenuItems() {
+        // Add sample menu items
+        MenuItem item1 = new MenuItem();
+        item1.setName("Fried Rice");
+        item1.setPrice(13.00);
+        item1.setDescription("Delicious fried rice with vegetables and chicken");
+        item1.setImageUrl("");
+        item1.setCategory("Main Course");
+        databaseHelper.addMenuItem(item1);
+
+        MenuItem item2 = new MenuItem();
+        item2.setName("Nasi Lemak");
+        item2.setPrice(9.50);
+        item2.setDescription("Traditional Malaysian rice dish with sambal");
+        item2.setImageUrl("");
+        item2.setCategory("Main Course");
+        databaseHelper.addMenuItem(item2);
+
+        MenuItem item3 = new MenuItem();
+        item3.setName("Chicken Rendang");
+        item3.setPrice(15.00);
+        item3.setDescription("Spicy and tender chicken in rich coconut sauce");
+        item3.setImageUrl("");
+        item3.setCategory("Main Course");
+        databaseHelper.addMenuItem(item3);
+
+        MenuItem item4 = new MenuItem();
+        item4.setName("Satay");
+        item4.setPrice(12.00);
+        item4.setDescription("Grilled meat skewers with peanut sauce");
+        item4.setImageUrl("");
+        item4.setCategory("Appetizers");
+        databaseHelper.addMenuItem(item4);
+
+        MenuItem item5 = new MenuItem();
+        item5.setName("Roti Canai");
+        item5.setPrice(3.50);
+        item5.setDescription("Crispy flatbread served with curry");
+        item5.setImageUrl("");
+        item5.setCategory("Appetizers");
+        databaseHelper.addMenuItem(item5);
+
+        MenuItem item6 = new MenuItem();
+        item6.setName("Laksa");
+        item6.setPrice(11.00);
+        item6.setDescription("Spicy noodle soup with coconut milk");
+        item6.setImageUrl("");
+        item6.setCategory("Main Course");
+        databaseHelper.addMenuItem(item6);
+
+        Toast.makeText(this, "Sample menu items added!", Toast.LENGTH_SHORT).show();
     }
 
     private void setupBottomNavigation() {
@@ -159,43 +205,8 @@ public class MenuActivity extends AppCompatActivity implements MenuAdapter.OnMen
     }
 
     @Override
-    public void onMenuItemClick(MenuItem menuItem) {
-        // Navigate to menu item detail
-        Intent intent = new Intent(this, MenuDetailActivity.class);
-        intent.putExtra("MENU_ITEM_ID", menuItem.getId());
-        startActivity(intent);
-    }
-
-    private void addSampleMenuItems() {
-        // Add sample menu items for demonstration
-        databaseHelper.addMenuItem(new MenuItem("Fried Rice", 13.00, "",
-                "Text description of the food. This food is delicious, yummy, awesome and unforgettable."));
-        databaseHelper.addMenuItem(new MenuItem("Nasi Lemak", 8.50, "",
-                "Traditional Malaysian fragrant rice dish cooked in coconut milk."));
-        databaseHelper.addMenuItem(new MenuItem("Chicken Rendang", 15.00, "",
-                "Spicy and tender chicken slow-cooked in aromatic spices."));
-        databaseHelper.addMenuItem(new MenuItem("Satay", 12.00, "",
-                "Grilled meat skewers served with peanut sauce."));
-        databaseHelper.addMenuItem(new MenuItem("Roti Canai", 3.50, "",
-                "Flaky flatbread served with curry dipping sauce."));
-        databaseHelper.addMenuItem(new MenuItem("Laksa", 11.00, "",
-                "Spicy noodle soup with a rich coconut-based broth."));
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        bottomNavigationView.setSelectedItemId(R.id.nav_menu);
-
-        // Update notification badge
-        updateNotificationBadge();
-    }
-
-    private void updateNotificationBadge() {
-        String userEmail = sharedPreferences.getString("userEmail", "");
-        int unreadCount = databaseHelper.getUnreadNotificationCount(userEmail);
-
-        // Show badge if there are unread notifications
-        // You can implement a custom badge view here
+        loadMenuItems();
     }
 }

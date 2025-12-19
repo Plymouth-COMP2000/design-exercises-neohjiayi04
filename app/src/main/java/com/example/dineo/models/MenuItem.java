@@ -1,24 +1,28 @@
 package com.example.dineo.models;
 
 /**
- * MenuItem Model - Stored locally in SQLite
+ * MenuItem Model
  * Student ID: BSSE2506008
  */
 public class MenuItem {
+
     private int id;
     private String name;
     private double price;
     private String imageUrl;
     private String description;
+    private String category;
 
-    // Constructors
-    public MenuItem() {}
+    public MenuItem() {
+    }
 
-    public MenuItem(String name, double price, String imageUrl, String description) {
+    public MenuItem(int id, String name, double price, String imageUrl, String description, String category) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
         this.description = description;
+        this.category = category;
     }
 
     // Getters
@@ -42,6 +46,10 @@ public class MenuItem {
         return description;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
     // Setters
     public void setId(int id) {
         this.id = id;
@@ -63,7 +71,11 @@ public class MenuItem {
         this.description = description;
     }
 
-    // Helper method
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    // Helper method for formatted price
     public String getPriceFormatted() {
         return String.format("RM %.2f", price);
     }

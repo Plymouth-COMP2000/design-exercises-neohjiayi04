@@ -246,4 +246,16 @@
 
         </LinearLayout>
     </ScrollView>
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFF5EB"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="#FF9966"
+        app:itemTextColor="#FF9966"
+        xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+
 </LinearLayout>
