@@ -9,7 +9,7 @@
     <!-- Header -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:padding="16dp"
         android:background="#FFF5EB">
 
@@ -17,16 +17,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="RESERVATION"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="#000000"
             android:layout_centerInParent="true"/>
 
+        <!-- BIGGER Notification Icon -->
         <ImageView
             android:id="@+id/imageViewNotification"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:src="@android:drawable/ic_popup_reminder"
-            android:layout_alignParentEnd="true"/>
+            android:tint="#FF9966"
+            android:padding="4dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
     </RelativeLayout>
 
     <ScrollView
@@ -40,86 +48,142 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Booking Form -->
+            <!-- COMPACT Booking Form - Half Page -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Book Your Table"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
+                android:textColor="#000000"
+                android:layout_marginBottom="12dp"/>
 
-            <EditText
-                android:id="@+id/editTextDate"
+            <!-- Compact 2-Column Layout -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Date"
-                android:focusable="false"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp"/>
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginBottom="8dp">
 
-            <EditText
-                android:id="@+id/editTextTime"
+                <!-- Date -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingEnd="4dp">
+
+                    <EditText
+                        android:id="@+id/editTextDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@android:color/white"
+                        android:padding="10dp"
+                        android:hint="Date"
+                        android:textSize="14sp"
+                        android:focusable="false"
+                        android:clickable="true"/>
+                </LinearLayout>
+
+                <!-- Time -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="4dp">
+
+                    <EditText
+                        android:id="@+id/editTextTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@android:color/white"
+                        android:padding="10dp"
+                        android:hint="Time"
+                        android:textSize="14sp"
+                        android:focusable="false"
+                        android:clickable="true"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Guests and Table Row -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Time"
-                android:focusable="false"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp"/>
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginBottom="8dp">
 
-            <EditText
-                android:id="@+id/editTextGuests"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Guests"
-                android:inputType="number"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp"/>
+                <!-- Guests -->
+                <EditText
+                    android:id="@+id/editTextGuests"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/white"
+                    android:padding="10dp"
+                    android:hint="Guests"
+                    android:textSize="14sp"
+                    android:inputType="number"
+                    android:layout_marginEnd="4dp"/>
 
-            <EditText
-                android:id="@+id/editTextTable"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Table (Optional)"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp"/>
+                <!-- Table Dropdown -->
+                <Spinner
+                    android:id="@+id/spinnerTable"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:hint="Table"
+                    android:background="@android:color/white"
+                    android:padding="10dp"
+                    android:layout_marginStart="4dp"/>
+            </LinearLayout>
 
+            <!-- Special Requests - Smaller -->
             <EditText
-                android:id="@+id/editTextRequests"
+                android:id="@+id/editTextSpecialRequests"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="60dp"
+                android:background="@android:color/white"
+                android:padding="10dp"
                 android:hint="Special Requests (Optional)"
+                android:textSize="14sp"
                 android:gravity="top"
-                android:padding="12dp"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="12dp"/>
 
+            <!-- Reserve Button -->
             <Button
                 android:id="@+id/btnReserve"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Reserve"
+                android:layout_height="48dp"
+                android:text="RESERVE"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 android:backgroundTint="#FF9966"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="16dp"/>
 
             <!-- Tabs -->
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:tabTextColor="#666666"
+                android:background="#FFF5EB"
                 app:tabSelectedTextColor="#FF9966"
-                app:tabIndicatorColor="#FF9966">
+                app:tabTextColor="#666666"
+                app:tabIndicatorColor="#FF9966"
+                android:layout_marginBottom="8dp">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Upcoming"/>
+                    android:text="UPCOMING"/>
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Finished"/>
+                    android:text="FINISHED"/>
             </com.google.android.material.tabs.TabLayout>
 
             <!-- Reservations List -->
@@ -127,7 +191,7 @@
                 android:id="@+id/recyclerViewReservations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"/>
+                android:nestedScrollingEnabled="false"/>
 
         </LinearLayout>
     </ScrollView>
@@ -137,7 +201,10 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFF5EB"
+        android:background="#FFFFFF"
+        android:elevation="8dp"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
         app:menu="@menu/bottom_nav_menu"/>
 
 </LinearLayout>

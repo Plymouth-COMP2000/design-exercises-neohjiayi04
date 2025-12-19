@@ -1,11 +1,10 @@
 package com.example.dineo.models;
 
 /**
- * MenuItem Model
+ * MenuItem Model - Represents a menu item
  * Student ID: BSSE2506008
  */
 public class MenuItem {
-
     private int id;
     private String name;
     private double price;
@@ -13,6 +12,7 @@ public class MenuItem {
     private String description;
     private String category;
 
+    // Constructors
     public MenuItem() {
     }
 
@@ -63,6 +63,10 @@ public class MenuItem {
         this.price = price;
     }
 
+    public String getPriceFormatted() {
+        return String.format("RM %.2f", price);
+    }
+
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
@@ -75,8 +79,15 @@ public class MenuItem {
         this.category = category;
     }
 
-    // Helper method for formatted price
-    public String getPriceFormatted() {
-        return String.format("RM %.2f", price);
+    @Override
+    public String toString() {
+        return "MenuItem{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", description='" + description + '\'' +
+                ", category='" + category + '\'' +
+                '}';
     }
 }

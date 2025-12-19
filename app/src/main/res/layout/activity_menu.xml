@@ -4,41 +4,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="#FFF5EB">
 
     <!-- Header -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:padding="16dp"
-        android:background="#FFF5EB">
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:padding="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="MENU"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="#000000"
-            android:layout_centerInParent="true"/>
+            android:textColor="#333333"
+            android:layout_centerVertical="true" />
 
         <ImageView
             android:id="@+id/imageViewNotification"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_popup_reminder"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:src="@android:drawable/ic_popup_reminder"
+            android:contentDescription="Notifications"
+            app:tint="#FF9966" />
     </RelativeLayout>
 
     <!-- Search Bar -->
-    <SearchView
-        android:id="@+id/searchView"
+    <EditText
+        android:id="@+id/editTextSearch"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_margin="16dp"
-        android:background="#FFE4C8"
-        android:queryHint="Search menu..."/>
+        android:background="@android:color/white"
+        android:padding="12dp"
+        android:hint="Search menu..."
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="8dp"
+        android:elevation="2dp" />
 
     <!-- Category Filter -->
     <HorizontalScrollView
@@ -49,84 +56,79 @@
         android:paddingEnd="16dp"
         android:paddingBottom="8dp">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupCategories"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:singleSelection="true"
-            app:chipSpacing="8dp">
+            android:orientation="horizontal">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipAll"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+            <Button
+                android:id="@+id/btnCategoryAll"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="All"
-                android:checked="true"
-                app:chipBackgroundColor="@color/chip_background_color"
-                app:chipStrokeColor="#FF9966"
-                app:chipStrokeWidth="1dp"/>
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#FF9966"
+                android:textColor="@android:color/white" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipAppetizers"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+            <Button
+                android:id="@+id/btnCategoryAppetizers"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="Appetizers"
-                app:chipBackgroundColor="@color/chip_background_color"
-                app:chipStrokeColor="#FF9966"
-                app:chipStrokeWidth="1dp"/>
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#E0E0E0"
+                android:textColor="#333333" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipMainCourse"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+            <Button
+                android:id="@+id/btnCategoryMain"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="Main Course"
-                app:chipBackgroundColor="@color/chip_background_color"
-                app:chipStrokeColor="#FF9966"
-                app:chipStrokeWidth="1dp"/>
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#E0E0E0"
+                android:textColor="#333333" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipDesserts"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+            <Button
+                android:id="@+id/btnCategoryDesserts"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="Desserts"
-                app:chipBackgroundColor="@color/chip_background_color"
-                app:chipStrokeColor="#FF9966"
-                app:chipStrokeWidth="1dp"/>
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#E0E0E0"
+                android:textColor="#333333" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipBeverages"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+            <Button
+                android:id="@+id/btnCategoryBeverages"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="Beverages"
-                app:chipBackgroundColor="@color/chip_background_color"
-                app:chipStrokeColor="#FF9966"
-                app:chipStrokeWidth="1dp"/>
+                android:textSize="14sp"
+                android:backgroundTint="#E0E0E0"
+                android:textColor="#333333" />
 
-        </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
     </HorizontalScrollView>
 
-    <!-- Menu Items -->
+    <!-- Menu RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMenu"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp"/>
+        android:padding="8dp" />
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:elevation="8dp"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:menu="@menu/bottom_nav_menu"/>
+        android:background="@android:color/white"
+        app:itemIconTint="#FF9966"
+        app:itemTextColor="#FF9966"
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

@@ -15,8 +15,6 @@ import java.util.List;
 /**
  * DatabaseHelper - Manages local SQLite database
  * Student ID: BSSE2506008
- * NOTE: Users are managed via API, not stored locally
- * Only Menu Items, Reservations, and Notifications are stored in local database
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -28,19 +26,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_RESERVATIONS = "reservations";
     private static final String TABLE_NOTIFICATIONS = "notifications";
 
+    // Reservation table columns
+    private static final String COLUMN_RESERVATION_ID = "id";
+    private static final String COLUMN_RESERVATION_CUSTOMER_NAME = "customer_name";
+    private static final String COLUMN_RESERVATION_DATE = "date";
+    private static final String COLUMN_RESERVATION_TIME = "time";
+    private static final String COLUMN_RESERVATION_TABLE_NUMBER = "table_number";
+    private static final String COLUMN_RESERVATION_GUESTS = "number_of_guests";
+    private static final String COLUMN_RESERVATION_STATUS = "status";
+    private static final String COLUMN_RESERVATION_USER_EMAIL = "user_email";
+    private static final String COLUMN_RESERVATION_SPECIAL_REQUESTS = "special_requests";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Create menu items table
+        // Create menu items table WITH CATEGORY
         String createMenuTable = "CREATE TABLE " + TABLE_MENU_ITEMS + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT, " +
                 "price REAL, " +
                 "image_url TEXT, " +
-                "description TEXT)";
+                "description TEXT, " +
+                "category TEXT)";
         db.execSQL(createMenuTable);
 
         // Create reservations table
@@ -49,7 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "customer_name TEXT, " +
                 "date TEXT, " +
                 "time TEXT, " +
-                "table_number INTEGER, " +
+                "table_number TEXT, " +
                 "number_of_guests INTEGER, " +
                 "status TEXT, " +
                 "user_email TEXT, " +
@@ -70,9 +80,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Drop older tables if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU_ITEMS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESERVATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATIONS);
+
+        // Create tables again
         onCreate(db);
     }
 
@@ -85,6 +98,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("price", menuItem.getPrice());
         values.put("image_url", menuItem.getImageUrl());
         values.put("description", menuItem.getDescription());
+        values.put("category", menuItem.getCategory());
         long id = db.insert(TABLE_MENU_ITEMS, null, values);
         db.close();
         return id;
@@ -103,6 +117,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 item.setPrice(cursor.getDouble(2));
                 item.setImageUrl(cursor.getString(3));
                 item.setDescription(cursor.getString(4));
+
+                // Check if category column exists
+                if (cursor.getColumnCount() > 5) {
+                    item.setCategory(cursor.getString(5));
+                }
+
                 menuList.add(item);
             } while (cursor.moveToNext());
         }
@@ -118,10 +138,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("price", menuItem.getPrice());
         values.put("image_url", menuItem.getImageUrl());
         values.put("description", menuItem.getDescription());
+        values.put("category", menuItem.getCategory());
         int result = db.update(TABLE_MENU_ITEMS, values, "id = ?",
                 new String[]{String.valueOf(menuItem.getId())});
         db.close();
         return result;
+    }
+
+    public MenuItem getMenuItemById(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        MenuItem item = null;
+
+        Cursor cursor = db.query(
+                TABLE_MENU_ITEMS,
+                null,
+                "id = ?",
+                new String[]{String.valueOf(id)},
+                null, null, null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            item = new MenuItem();
+            item.setId(cursor.getInt(0));
+            item.setName(cursor.getString(1));
+            item.setPrice(cursor.getDouble(2));
+            item.setImageUrl(cursor.getString(3));
+            item.setDescription(cursor.getString(4));
+
+            // Check if category column exists
+            if (cursor.getColumnCount() > 5) {
+                item.setCategory(cursor.getString(5));
+            }
+
+            cursor.close();
+        }
+
+        db.close();
+        return item;
     }
 
     public void deleteMenuItem(int id) {
@@ -148,20 +201,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public long addReservationWithEmail(String customerName, String date, String time,
-                                        int tableNumber, int guests, String status, String userEmail) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("customer_name", customerName);
-        values.put("date", date);
-        values.put("time", time);
-        values.put("table_number", tableNumber);
-        values.put("number_of_guests", guests);
-        values.put("status", status);
-        values.put("user_email", userEmail);
-        long id = db.insert(TABLE_RESERVATIONS, null, values);
-        db.close();
-        return id;
+    public List<Reservation> getUserReservations(String userEmail) {
+        List<Reservation> reservations = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        try {
+            Cursor cursor = db.query(
+                    TABLE_RESERVATIONS,
+                    null,
+                    COLUMN_RESERVATION_USER_EMAIL + " = ?",
+                    new String[]{userEmail},
+                    null, null,
+                    COLUMN_RESERVATION_DATE + " DESC"
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Reservation res = new Reservation();
+                    res.setId(cursor.getInt(0));
+                    res.setCustomerName(cursor.getString(1));
+                    res.setDate(cursor.getString(2));
+                    res.setTime(cursor.getString(3));
+                    res.setTableNumber(cursor.getString(4));
+                    res.setNumberOfGuests(cursor.getInt(5));
+                    res.setStatus(cursor.getString(6));
+                    res.setUserEmail(cursor.getString(7));
+                    res.setSpecialRequests(cursor.getString(8));
+
+                    reservations.add(res);
+                } while (cursor.moveToNext());
+
+                cursor.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+
+        return reservations;
     }
 
     public List<Reservation> getAllReservations() {
@@ -176,7 +254,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 res.setCustomerName(cursor.getString(1));
                 res.setDate(cursor.getString(2));
                 res.setTime(cursor.getString(3));
-                res.setTableNumber(cursor.getInt(4));
+                res.setTableNumber(cursor.getString(4));
                 res.setNumberOfGuests(cursor.getInt(5));
                 res.setStatus(cursor.getString(6));
                 res.setUserEmail(cursor.getString(7));
@@ -187,32 +265,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return resList;
-    }
-
-    public List<Reservation> getUserReservationsByEmail(String userEmail) {
-        List<Reservation> reservations = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_RESERVATIONS, null, "user_email = ?",
-                new String[]{userEmail}, null, null, "id DESC");
-
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Reservation reservation = new Reservation();
-                reservation.setId(cursor.getInt(0));
-                reservation.setCustomerName(cursor.getString(1));
-                reservation.setDate(cursor.getString(2));
-                reservation.setTime(cursor.getString(3));
-                reservation.setTableNumber(cursor.getInt(4));
-                reservation.setNumberOfGuests(cursor.getInt(5));
-                reservation.setStatus(cursor.getString(6));
-                reservation.setUserEmail(cursor.getString(7));
-                reservation.setSpecialRequests(cursor.getString(8));
-                reservations.add(reservation);
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-        db.close();
-        return reservations;
     }
 
     public int updateReservation(Reservation reservation) {
@@ -330,6 +382,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("is_read", 1);
         db.update(TABLE_NOTIFICATIONS, values, "user_email = ?",
                 new String[]{userEmail});
+        db.close();
+    }
+
+    public void clearAllNotifications(String userEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NOTIFICATIONS, "user_email = ?", new String[]{userEmail});
         db.close();
     }
 

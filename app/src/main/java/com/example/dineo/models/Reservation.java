@@ -1,37 +1,40 @@
 package com.example.dineo.models;
 
 /**
- * Reservation Model - Stored locally in SQLite
+ * Reservation Model - Complete with helper methods
  * Student ID: BSSE2506008
  */
 public class Reservation {
+
     private int id;
     private String customerName;
     private String date;
     private String time;
-    private int tableNumber;
     private int numberOfGuests;
-    private String status; // "Confirmed", "Pending", "Cancelled"
-    private String userEmail;
+    private String tableNumber;
     private String specialRequests;
+    private String status;
+    private String userEmail;
 
-    // Constructors
     public Reservation() {
-        this.status = "Pending";
     }
 
-    public Reservation(String customerName, String date, String time, int tableNumber,
-                       int numberOfGuests, String status, String userEmail) {
+    public Reservation(int id, String customerName, String date, String time,
+                       int numberOfGuests, String tableNumber, String specialRequests,
+                       String status, String userEmail) {
+        this.id = id;
         this.customerName = customerName;
         this.date = date;
         this.time = time;
-        this.tableNumber = tableNumber;
         this.numberOfGuests = numberOfGuests;
+        this.tableNumber = tableNumber;
+        this.specialRequests = specialRequests;
         this.status = status;
         this.userEmail = userEmail;
     }
 
-    // Getters
+    // ==================== GETTERS ====================
+
     public int getId() {
         return id;
     }
@@ -48,12 +51,16 @@ public class Reservation {
         return time;
     }
 
-    public int getTableNumber() {
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public String getTableNumber() {
         return tableNumber;
     }
 
-    public int getNumberOfGuests() {
-        return numberOfGuests;
+    public String getSpecialRequests() {
+        return specialRequests;
     }
 
     public String getStatus() {
@@ -64,11 +71,8 @@ public class Reservation {
         return userEmail;
     }
 
-    public String getSpecialRequests() {
-        return specialRequests;
-    }
+    // ==================== SETTERS ====================
 
-    // Setters
     public void setId(int id) {
         this.id = id;
     }
@@ -85,12 +89,16 @@ public class Reservation {
         this.time = time;
     }
 
-    public void setTableNumber(int tableNumber) {
+    public void setNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void setTableNumber(String tableNumber) {
         this.tableNumber = tableNumber;
     }
 
-    public void setNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    public void setSpecialRequests(String specialRequests) {
+        this.specialRequests = specialRequests;
     }
 
     public void setStatus(String status) {
@@ -101,20 +109,35 @@ public class Reservation {
         this.userEmail = userEmail;
     }
 
-    public void setSpecialRequests(String specialRequests) {
-        this.specialRequests = specialRequests;
-    }
+    // ==================== HELPER METHODS (FOR ADAPTERS) ====================
 
-    // Helper methods
+    /**
+     * Get formatted date and time
+     * Used by StaffReservationAdapter
+     */
     public String getDateTimeFormatted() {
-        return date + " at " + time;
+        if (date != null && time != null) {
+            return date + " at " + time;
+        }
+        return date != null ? date : "N/A";
     }
 
+    /**
+     * Get formatted guests count
+     * Used by StaffReservationAdapter
+     */
     public String getGuestsFormatted() {
-        return numberOfGuests + " Pax";
+        return numberOfGuests + (numberOfGuests == 1 ? " Guest" : " Guests");
     }
 
+    /**
+     * Get formatted table number
+     * Used by StaffReservationAdapter
+     */
     public String getTableFormatted() {
-        return "Table: " + tableNumber;
+        if (tableNumber == null || tableNumber.isEmpty() || tableNumber.equals("Any Table")) {
+            return "Any Table";
+        }
+        return tableNumber;
     }
 }

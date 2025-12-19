@@ -110,5 +110,7 @@
     <!-- ========================= -->
     <color name="bottom_nav_active">@color/orange_primary</color>
     <color name="bottom_nav_inactive">@color/text_hint</color>
+    <color name="orange">#FF9966</color>
+
 
 </resources>

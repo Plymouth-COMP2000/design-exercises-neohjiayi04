@@ -10,13 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dineo.R;
 import com.example.dineo.models.MenuItem;
 
 import java.util.List;
 
 /**
- * Menu Adapter for RecyclerView
+ * Menu Adapter for RecyclerView - Browse menu items only
  * Student ID: BSSE2506008
  */
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder> {
@@ -46,13 +47,26 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
     public void onBindViewHolder(@NonNull MenuViewHolder holder, int position) {
         MenuItem menuItem = menuItems.get(position);
 
+        // Set name
         holder.textViewName.setText(menuItem.getName());
+
+        // Set price with proper formatting
         holder.textViewPrice.setText(menuItem.getPriceFormatted());
 
-        // Load image if URL is provided
-        // For now, use placeholder
-        holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
+        // Load image with Glide
+        if (menuItem.getImageUrl() != null && !menuItem.getImageUrl().isEmpty()) {
+            Glide.with(context)
+                    .load(menuItem.getImageUrl())
+                    .placeholder(android.R.drawable.ic_menu_gallery)
+                    .error(android.R.drawable.ic_menu_gallery)
+                    .centerCrop()
+                    .into(holder.imageViewMenu);
+        } else {
+            // Use default placeholder if no image URL
+            holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
+        }
 
+        // Click listener - opens menu detail screen
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onMenuItemClick(menuItem);
@@ -63,6 +77,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
     @Override
     public int getItemCount() {
         return menuItems.size();
+    }
+
+    // Update list (for search/filter)
+    public void updateList(List<MenuItem> newList) {
+        this.menuItems = newList;
+        notifyDataSetChanged();
     }
 
     static class MenuViewHolder extends RecyclerView.ViewHolder {
