@@ -1,9 +1,12 @@
 package com.example.dineo.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,10 +22,12 @@ import com.example.dineo.R;
 import com.example.dineo.database.DatabaseHelper;
 import com.example.dineo.models.MenuItem;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 /**
- * Edit Menu Item Activity - Staff can edit existing menu items
+ * Edit Menu Item Activity - WITH Base64 Image Support
  * Student ID: BSSE2506008
  */
 public class EditMenuItemActivity extends AppCompatActivity {
@@ -36,7 +41,8 @@ public class EditMenuItemActivity extends AppCompatActivity {
 
     private DatabaseHelper databaseHelper;
     private MenuItem currentMenuItem;
-    private Uri imageUri;
+    private String base64Image = ""; // Store as Base64
+    private boolean imageChanged = false;
     private int menuItemId;
 
     @Override
@@ -69,16 +75,13 @@ public class EditMenuItemActivity extends AppCompatActivity {
 
         // Setup click listeners
         imageViewBack.setOnClickListener(v -> finish());
-
         imageViewChangeImage.setOnClickListener(v -> selectImage());
-
         btnSaveItem.setOnClickListener(v -> saveChanges());
-
         btnDeleteItem.setOnClickListener(v -> confirmDelete());
     }
 
     private void setupCategorySpinner() {
-        String[] categories = {"Appetizers", "Main Course", "Burgers", "Desserts", "Beverages", "Specials"};
+        String[] categories = {"Main Food", "Appetizers", "Desserts", "Beverages", "Specials"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -86,8 +89,6 @@ public class EditMenuItemActivity extends AppCompatActivity {
     }
 
     private void loadMenuItem() {
-        // In real app, get by ID from database
-        // For now, we'll create a sample
         if (menuItemId != -1) {
             // Load from database
             List<MenuItem> items = databaseHelper.getAllMenuItems();
@@ -103,10 +104,39 @@ public class EditMenuItemActivity extends AppCompatActivity {
                 editTextDescription.setText(currentMenuItem.getDescription());
                 editTextPrice.setText(String.valueOf(currentMenuItem.getPrice()));
 
-                // Load image if exists
-                if (currentMenuItem.getImageUrl() != null && !currentMenuItem.getImageUrl().isEmpty()) {
-                    imageUri = Uri.parse(currentMenuItem.getImageUrl());
-                    imageViewPreview.setImageURI(imageUri);
+                // Set category spinner
+                String category = currentMenuItem.getCategory();
+                if (category != null && !category.isEmpty()) {
+                    ArrayAdapter adapter = (ArrayAdapter) spinnerCategory.getAdapter();
+                    int position = adapter.getPosition(category);
+                    if (position >= 0) {
+                        spinnerCategory.setSelection(position);
+                    }
+                }
+
+                // Load and display image
+                String imageData = currentMenuItem.getImageUrl();
+                if (imageData != null && !imageData.isEmpty()) {
+                    base64Image = imageData; // Keep original
+
+                    // Display image
+                    if (imageData.startsWith("http://") || imageData.startsWith("https://")) {
+                        // It's a URL - we can't easily display it without network,
+                        // so just show placeholder
+                        imageViewPreview.setImageResource(android.R.drawable.ic_menu_gallery);
+                    } else {
+                        // It's Base64 - decode and display
+                        try {
+                            byte[] decodedBytes = Base64.decode(imageData, Base64.DEFAULT);
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                            if (bitmap != null) {
+                                imageViewPreview.setImageBitmap(bitmap);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            imageViewPreview.setImageResource(android.R.drawable.ic_menu_gallery);
+                        }
+                    }
                 }
             }
         }
@@ -122,32 +152,90 @@ public class EditMenuItemActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            imageUri = data.getData();
-            imageViewPreview.setImageURI(imageUri);
+            try {
+                Uri imageUri = data.getData();
+
+                // Load bitmap
+                InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                inputStream.close();
+
+                // Resize
+                bitmap = resizeBitmap(bitmap, 800, 800);
+
+                // Convert to Base64
+                base64Image = bitmapToBase64(bitmap);
+                imageChanged = true;
+
+                // Show preview
+                imageViewPreview.setImageBitmap(bitmap);
+                imageViewPreview.setVisibility(View.VISIBLE);
+
+                Toast.makeText(this, "Image updated", Toast.LENGTH_SHORT).show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error loading image", Toast.LENGTH_SHORT).show();
+            }
         }
+    }
+
+    private Bitmap resizeBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        float ratioBitmap = (float) width / (float) height;
+        float ratioMax = (float) maxWidth / (float) maxHeight;
+
+        int finalWidth = maxWidth;
+        int finalHeight = maxHeight;
+
+        if (ratioMax > ratioBitmap) {
+            finalWidth = (int) ((float) maxHeight * ratioBitmap);
+        } else {
+            finalHeight = (int) ((float) maxWidth / ratioBitmap);
+        }
+
+        return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true);
+    }
+
+    private String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
     private void saveChanges() {
         String name = editTextItemName.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
         String priceStr = editTextPrice.getText().toString().trim();
+        String category = spinnerCategory.getSelectedItem().toString();
 
         // Validate
         if (name.isEmpty()) {
             editTextItemName.setError("Item name is required");
+            editTextItemName.requestFocus();
             return;
         }
 
         if (priceStr.isEmpty()) {
             editTextPrice.setError("Price is required");
+            editTextPrice.requestFocus();
             return;
         }
 
         double price;
         try {
             price = Double.parseDouble(priceStr);
+            if (price <= 0) {
+                editTextPrice.setError("Price must be positive");
+                editTextPrice.requestFocus();
+                return;
+            }
         } catch (NumberFormatException e) {
             editTextPrice.setError("Invalid price");
+            editTextPrice.requestFocus();
             return;
         }
 
@@ -155,8 +243,11 @@ public class EditMenuItemActivity extends AppCompatActivity {
         currentMenuItem.setName(name);
         currentMenuItem.setDescription(description);
         currentMenuItem.setPrice(price);
-        if (imageUri != null) {
-            currentMenuItem.setImageUrl(imageUri.toString());
+        currentMenuItem.setCategory(category);
+
+        // Only update image if changed
+        if (imageChanged) {
+            currentMenuItem.setImageUrl(base64Image);
         }
 
         // Save to database
@@ -175,9 +266,13 @@ public class EditMenuItemActivity extends AppCompatActivity {
                 .setTitle("Delete Menu Item")
                 .setMessage("Are you sure you want to delete this item?")
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    databaseHelper.deleteMenuItem(menuItemId);
-                    Toast.makeText(this, "Menu item deleted", Toast.LENGTH_SHORT).show();
-                    finish();
+                    int result = databaseHelper.deleteMenuItem(menuItemId);
+                    if (result > 0) {
+                        Toast.makeText(this, "Menu item deleted", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Failed to delete item", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();

@@ -1,6 +1,10 @@
 package com.example.dineo.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +14,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.dineo.R;
 import com.example.dineo.models.MenuItem;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 /**
- * Menu Adapter for RecyclerView - Browse menu items only
+ * Menu Adapter - Handles BOTH Base64 and URL images WITHOUT Glide
  * Student ID: BSSE2506008
  */
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder> {
@@ -50,23 +56,39 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         // Set name
         holder.textViewName.setText(menuItem.getName());
 
-        // Set price with proper formatting
+        // Set price
         holder.textViewPrice.setText(menuItem.getPriceFormatted());
 
-        // Load image with Glide
-        if (menuItem.getImageUrl() != null && !menuItem.getImageUrl().isEmpty()) {
-            Glide.with(context)
-                    .load(menuItem.getImageUrl())
-                    .placeholder(android.R.drawable.ic_menu_gallery)
-                    .error(android.R.drawable.ic_menu_gallery)
-                    .centerCrop()
-                    .into(holder.imageViewMenu);
+        // Load image
+        String imageData = menuItem.getImageUrl();
+
+        if (imageData != null && !imageData.isEmpty()) {
+            // Check if it's a Base64 string or URL
+            if (imageData.startsWith("http://") || imageData.startsWith("https://")) {
+                // It's a URL - load from internet
+                holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
+                new LoadUrlImageTask(holder.imageViewMenu).execute(imageData);
+            } else {
+                // It's Base64 - decode directly
+                try {
+                    byte[] decodedBytes = Base64.decode(imageData, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                    if (bitmap != null) {
+                        holder.imageViewMenu.setImageBitmap(bitmap);
+                    } else {
+                        holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
+                }
+            }
         } else {
-            // Default placeholder
+            // No image - show placeholder
             holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
         }
 
-        // Click listener - opens menu detail screen
+        // Click listener
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onMenuItemClick(menuItem);
@@ -79,11 +101,46 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         return menuItems.size();
     }
 
-    // Update list for search/filter
-    public void updateList(List<MenuItem> newList) {
-        this.menuItems.clear();
-        this.menuItems.addAll(newList);
-        notifyDataSetChanged();
+    /**
+     * AsyncTask to load images from URL in background
+     */
+    private static class LoadUrlImageTask extends AsyncTask<String, Void, Bitmap> {
+        private ImageView imageView;
+
+        public LoadUrlImageTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            String imageUrl = urls[0];
+            Bitmap bitmap = null;
+
+            try {
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.setConnectTimeout(5000); // 5 second timeout
+                connection.setReadTimeout(5000);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(input);
+                input.close();
+                connection.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            if (result != null && imageView != null) {
+                imageView.setImageBitmap(result);
+            }
+            // If null, placeholder is already showing
+        }
     }
 
     static class MenuViewHolder extends RecyclerView.ViewHolder {

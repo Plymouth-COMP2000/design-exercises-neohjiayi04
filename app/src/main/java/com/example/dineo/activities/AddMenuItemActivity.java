@@ -1,9 +1,12 @@
 package com.example.dineo.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,8 +21,11 @@ import com.example.dineo.R;
 import com.example.dineo.database.DatabaseHelper;
 import com.example.dineo.models.MenuItem;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 /**
- * Add Menu Item Activity - Staff can add new menu items
+ * Add Menu Item Activity - With Base64 Image Storage
  * Student ID: BSSE2506008
  */
 public class AddMenuItemActivity extends AppCompatActivity {
@@ -32,7 +38,7 @@ public class AddMenuItemActivity extends AppCompatActivity {
     private Button btnSaveItem, btnDiscardChanges;
 
     private DatabaseHelper databaseHelper;
-    private Uri imageUri;
+    private String base64Image = ""; // Store as Base64
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +64,13 @@ public class AddMenuItemActivity extends AppCompatActivity {
 
         // Setup click listeners
         imageViewBack.setOnClickListener(v -> finish());
-
         imageViewUpload.setOnClickListener(v -> selectImage());
-
         btnSaveItem.setOnClickListener(v -> saveMenuItem());
-
         btnDiscardChanges.setOnClickListener(v -> finish());
     }
 
     private void setupCategorySpinner() {
-        String[] categories = {"Appetizers", "Main Course", "Burgers", "Desserts", "Beverages", "Specials"};
+        String[] categories = {"Main Food", "Appetizers", "Desserts", "Beverages", "Specials"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -84,10 +87,63 @@ public class AddMenuItemActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            imageUri = data.getData();
-            imageViewPreview.setImageURI(imageUri);
-            imageViewPreview.setVisibility(View.VISIBLE);
+            try {
+                Uri imageUri = data.getData();
+
+                // Load bitmap from URI
+                InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                inputStream.close();
+
+                // Resize bitmap to save space (max 800x800)
+                bitmap = resizeBitmap(bitmap, 800, 800);
+
+                // Convert to Base64
+                base64Image = bitmapToBase64(bitmap);
+
+                // Show preview
+                imageViewPreview.setImageBitmap(bitmap);
+                imageViewPreview.setVisibility(View.VISIBLE);
+
+                Toast.makeText(this, "Image selected successfully", Toast.LENGTH_SHORT).show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error loading image", Toast.LENGTH_SHORT).show();
+            }
         }
+    }
+
+    /**
+     * Resize bitmap to max dimensions while maintaining aspect ratio
+     */
+    private Bitmap resizeBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        float ratioBitmap = (float) width / (float) height;
+        float ratioMax = (float) maxWidth / (float) maxHeight;
+
+        int finalWidth = maxWidth;
+        int finalHeight = maxHeight;
+
+        if (ratioMax > ratioBitmap) {
+            finalWidth = (int) ((float) maxHeight * ratioBitmap);
+        } else {
+            finalHeight = (int) ((float) maxWidth / ratioBitmap);
+        }
+
+        return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true);
+    }
+
+    /**
+     * Convert Bitmap to Base64 string
+     */
+    private String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream); // 80% quality
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
     private void saveMenuItem() {
@@ -99,19 +155,27 @@ public class AddMenuItemActivity extends AppCompatActivity {
         // Validate
         if (name.isEmpty()) {
             editTextItemName.setError("Item name is required");
+            editTextItemName.requestFocus();
             return;
         }
 
         if (priceStr.isEmpty()) {
             editTextPrice.setError("Price is required");
+            editTextPrice.requestFocus();
             return;
         }
 
         double price;
         try {
             price = Double.parseDouble(priceStr);
+            if (price <= 0) {
+                editTextPrice.setError("Price must be positive");
+                editTextPrice.requestFocus();
+                return;
+            }
         } catch (NumberFormatException e) {
-            editTextPrice.setError("Invalid price");
+            editTextPrice.setError("Invalid price format");
+            editTextPrice.requestFocus();
             return;
         }
 
@@ -120,7 +184,8 @@ public class AddMenuItemActivity extends AppCompatActivity {
         menuItem.setName(name);
         menuItem.setDescription(description);
         menuItem.setPrice(price);
-        menuItem.setImageUrl(imageUri != null ? imageUri.toString() : "");
+        menuItem.setCategory(category);
+        menuItem.setImageUrl(base64Image); // Store Base64 string
 
         // Save to database
         long id = databaseHelper.addMenuItem(menuItem);

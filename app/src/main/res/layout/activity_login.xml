@@ -9,38 +9,91 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp"
+        android:padding="32dp"
         android:gravity="center">
 
         <!-- Logo -->
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:src="@drawable/ic_logo"
-            android:layout_marginBottom="16dp"/>
+            android:contentDescription="Dineo Logo"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="12dp"/>
 
+        <!-- App Name -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dineo"
-            android:textSize="36sp"
-            android:textColor="#FF9966"
+            android:text="Dineo Restaurant"
+            android:textSize="28sp"
+            android:textColor="#FF6B35"
             android:textStyle="bold"
-            android:layout_marginBottom="48dp"/>
+            android:layout_marginBottom="4dp"/>
 
-        <!-- Email -->
+        <!-- Welcome Text -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome Back"
+            android:textSize="14sp"
+            android:textColor="#999999"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Tab Selector: Staff / Guest -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:background="@android:color/white"
+            android:elevation="3dp"
+            android:layout_marginBottom="24dp"
+            android:padding="4dp">
+
+            <Button
+                android:id="@+id/btnStaffTab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="STAFF"
+                android:textColor="#999999"
+                android:background="@android:color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:stateListAnimator="@null"
+                style="?android:attr/borderlessButtonStyle"/>
+
+            <Button
+                android:id="@+id/btnGuestTab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="GUEST"
+                android:textColor="@android:color/white"
+                android:background="#FF6B35"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:stateListAnimator="@null"
+                style="?android:attr/borderlessButtonStyle"/>
+
+        </LinearLayout>
+
+        <!-- Email Field -->
         <EditText
-            android:id="@+id/editTextUsername"
+            android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:hint="Username"
-            android:inputType="textPersonName"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
             android:padding="16dp"
             android:layout_marginBottom="16dp"
             android:background="@android:color/white"
-            android:elevation="2dp"/>
+            android:elevation="2dp"
+            android:textSize="16sp"
+            android:textColor="#333333"
+            android:textColorHint="#999999"/>
 
-        <!-- Password -->
+        <!-- Password Field -->
         <EditText
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
@@ -50,29 +103,46 @@
             android:padding="16dp"
             android:layout_marginBottom="24dp"
             android:background="@android:color/white"
-            android:elevation="2dp"/>
+            android:elevation="2dp"
+            android:textSize="16sp"
+            android:textColor="#333333"
+            android:textColorHint="#999999"/>
 
         <!-- Login Button -->
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Login"
+            android:text="LOGIN"
             android:textColor="@android:color/white"
-            android:backgroundTint="#FF9966"
+            android:backgroundTint="#FF6B35"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:elevation="4dp"
+            android:layout_marginBottom="16dp"/>
 
-        <!-- Sign In Link -->
+        <!-- Register Link -->
         <TextView
             android:id="@+id/textViewSignIn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Don't have an account? Sign In"
-            android:textColor="#FF9966"
+            android:text="Don't have an account? Register"
+            android:textColor="#FF6B35"
             android:textSize="14sp"
-            android:layout_marginTop="16dp"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Role Indicator -->
+        <TextView
+            android:id="@+id/textViewRoleInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selected Role: Guest"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:textStyle="italic"/>
 
     </LinearLayout>
 </ScrollView>

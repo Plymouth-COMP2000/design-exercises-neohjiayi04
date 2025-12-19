@@ -2,22 +2,29 @@ package com.example.dineo.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.example.dineo.R;
 import com.example.dineo.database.DatabaseHelper;
 import com.example.dineo.models.MenuItem;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 /**
- * MenuDetailActivity - Browse-only food details safely
+ * MenuDetailActivity - Browse-only food details (NO Glide)
+ * Student ID: BSSE2506008
  */
 public class MenuDetailActivity extends AppCompatActivity {
 
@@ -64,7 +71,11 @@ public class MenuDetailActivity extends AppCompatActivity {
         imageViewBack.setOnClickListener(v -> finish());
 
         imageViewNotification.setOnClickListener(v -> {
-            startActivity(new Intent(MenuDetailActivity.this, NotificationActivity.class));
+            try {
+                startActivity(new Intent(MenuDetailActivity.this, NotificationActivity.class));
+            } catch (Exception e) {
+                Toast.makeText(this, "Notifications not available", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -92,7 +103,7 @@ public class MenuDetailActivity extends AppCompatActivity {
         textViewFoodName.setText(menuItem.getName() != null ? menuItem.getName() : "Unknown Dish");
 
         // Price
-        textViewPrice.setText(menuItem.getPrice() >= 0 ? String.format("RM %.2f", menuItem.getPrice()) : "Price N/A");
+        textViewPrice.setText(menuItem.getPriceFormatted());
 
         // Description
         if (menuItem.getDescription() != null && !menuItem.getDescription().isEmpty()) {
@@ -109,17 +120,79 @@ public class MenuDetailActivity extends AppCompatActivity {
             textViewCategory.setVisibility(TextView.GONE);
         }
 
-        // Image with Glide (safe)
-        String imageUrl = menuItem.getImageUrl();
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            Glide.with(this)
-                    .load(imageUrl)
-                    .placeholder(android.R.drawable.ic_menu_gallery)
-                    .error(android.R.drawable.ic_menu_gallery)
-                    .centerCrop()
-                    .into(imageViewFood);
-        } else {
+        // Load image WITHOUT Glide
+        loadMenuImage(menuItem.getImageUrl());
+    }
+
+    /**
+     * Load image - handles BOTH Base64 and URL
+     */
+    private void loadMenuImage(String imageData) {
+        if (imageData == null || imageData.isEmpty()) {
             imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery);
+            return;
+        }
+
+        // Check if it's a URL or Base64
+        if (imageData.startsWith("http://") || imageData.startsWith("https://")) {
+            // It's a URL - load in background
+            imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery); // Placeholder
+            new LoadImageTask(imageViewFood).execute(imageData);
+        } else {
+            // It's Base64 - decode directly
+            try {
+                byte[] decodedBytes = Base64.decode(imageData, Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                if (bitmap != null) {
+                    imageViewFood.setImageBitmap(bitmap);
+                } else {
+                    imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery);
+            }
+        }
+    }
+
+    /**
+     * AsyncTask to load images from URL
+     */
+    private static class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+        private ImageView imageView;
+
+        public LoadImageTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            String imageUrl = urls[0];
+            Bitmap bitmap = null;
+
+            try {
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(input);
+                input.close();
+                connection.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            if (result != null && imageView != null) {
+                imageView.setImageBitmap(result);
+            }
         }
     }
 
