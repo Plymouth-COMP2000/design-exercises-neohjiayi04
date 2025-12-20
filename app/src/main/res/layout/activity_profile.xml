@@ -4,43 +4,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/background_cream">
 
-    <!-- ================= HEADER ================= -->
+    <!-- Header -->
     <RelativeLayout
         android:id="@+id/layoutHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/primary"
+        android:background="@drawable/gradient_header"
         android:padding="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Notification Icon -->
+        <!-- Notifications Icon -->
         <ImageView
-            android:id="@+id/iconNotification"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:id="@+id/imageViewNotification"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_alignParentEnd="true"
-            android:src="@android:drawable/ic_dialog_email"
-            app:tint="@color/white"
-            android:contentDescription="Notifications"/>
+            android:src="@android:drawable/ic_popup_reminder"
+            android:contentDescription="Notifications"
+            app:tint="@color/background_cream"
+            android:layout_marginEnd="16dp"/>
 
-        <!-- Profile Info -->
+        <!-- Profile Picture -->
+        <ImageView
+            android:id="@+id/imageViewProfile"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_centerHorizontal="true"
+            android:src="@android:drawable/ic_menu_myplaces"
+            android:background="@drawable/circle_white_bg"
+            android:padding="8dp"
+            android:elevation="6dp"
+            android:layout_marginTop="16dp"
+            android:scaleType="centerCrop"/>
+
+        <!-- User Info -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginTop="24dp">
-
-            <ImageView
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:src="@android:drawable/ic_menu_myplaces"
-                android:padding="8dp"
-                android:elevation="4dp"/>
+            android:layout_below="@id/imageViewProfile"
+            android:layout_marginTop="12dp">
 
             <TextView
                 android:id="@+id/textViewUserName"
@@ -49,32 +57,33 @@
                 android:text="Sarah Wilson"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/white"
-                android:layout_marginTop="8dp"/>
+                android:textColor="@android:color/white"/>
 
             <TextView
                 android:id="@+id/textViewUserEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="sarah.wilson@email.com"
-                android:textSize="14sp"
-                android:textColor="@color/orange_light"/>
+                android:textColor="@color/orange_light"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textViewUserPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0113338888"
-                android:textSize="14sp"
-                android:textColor="@color/orange_light"/>
+                android:textSize="16sp"
+                android:textColor="@color/orange_light"
+                android:layout_marginTop="2dp"/>
         </LinearLayout>
     </RelativeLayout>
 
-    <!-- ================= SCROLL CONTENT ================= -->
+
+    <!-- Scrollable content -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/layoutHeader"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,25 +105,23 @@
                 android:textColor="@color/gray_dark"
                 android:layout_marginBottom="8dp"/>
 
-
             <LinearLayout
                 android:id="@+id/layoutEditProfile"
                 style="@style/SettingsRow">
-
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@android:drawable/ic_menu_edit"
-                    app:tint="@color/gray"/>
-
+                    android:textColor="@color/gray_dark"
+                    app:tint="@color/orange_primary_dark"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Edit Profile"
+                    android:textColor="@color/gray_dark"
                     android:textSize="16sp"
                     android:layout_marginStart="16dp"/>
-
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
@@ -126,12 +133,10 @@
             <LinearLayout
                 android:id="@+id/layoutResetPassword"
                 style="@style/SettingsRow">
-
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@android:drawable/ic_lock_lock"/>
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -139,22 +144,19 @@
                     android:text="Reset Password"
                     android:textSize="16sp"
                     android:layout_marginStart="16dp"/>
-
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/ic_more" />
+                    android:src="@drawable/ic_more"/>
             </LinearLayout>
 
             <View style="@style/Divider"/>
 
-            <!-- ========================= -->
-            <!-- NOTIFICATION Section -->
-            <!-- ========================= -->
+            <!-- NOTIFICATIONS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NOTIFICATION"
+                android:text="NOTIFICATIONS"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/gray_dark"
@@ -166,17 +168,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/card_background"
+                android:background="@color/background_cream"
                 android:padding="12dp">
 
-                <!-- Reservation Booking -->
+                <!-- Booking Switch -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="12dp">
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -189,123 +190,102 @@
                             android:text="Reservation Booking"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary"/>
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Get notified of any changes to your booking"
+                            android:text="Get notified of any changes"
                             android:textSize="12sp"
                             android:textColor="@color/text_secondary"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
-
                     <Switch
                         android:id="@+id/switchReservationBooking"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:checked="true"
-                        android:thumbTint="@color/orange_primary"
-                        android:trackTint="@color/orange_dark"/>
+                        android:thumbTint="@color/switch_thumb_color"
+                        android:trackTint="@color/switch_thumb_color"/>
                 </LinearLayout>
 
-                <View style="@style/Divider"/>
-
-                <!-- Reservation Modification -->
+                <!-- Modification Switch -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="12dp">
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Reservation Modification"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary"/>
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Get notified of any changes to your booking"
+                            android:text="Get notified of any changes"
                             android:textSize="12sp"
                             android:textColor="@color/text_secondary"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
-
                     <Switch
                         android:id="@+id/switchReservationModification"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:checked="true"
-                        android:thumbTint="@color/orange_primary"
-                        android:trackTint="@color/orange_dark"/>
+                        android:thumbTint="@color/switch_thumb_color"
+                        android:trackTint="@color/switch_track_color"/>
                 </LinearLayout>
 
-                <View style="@style/Divider"/>
-
-                <!-- Reservation Cancellation -->
+                <!-- Cancellation Switch -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="12dp">
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Reservation Cancellation"
                             android:textSize="16sp"
                             android:textColor="@color/text_primary"/>
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Get notified of any changes to your booking"
+                            android:text="Get notified of any changes"
                             android:textSize="12sp"
                             android:textColor="@color/text_secondary"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
-
                     <Switch
                         android:id="@+id/switchReservationCancellation"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:checked="true"
-                        android:thumbTint="@color/orange_primary"
-                        android:trackTint="@color/orange_dark"/>
+                        android:thumbTint="@color/switch_thumb_color"
+                        android:trackTint="@color/switch_track_color"/>
                 </LinearLayout>
 
-                <View style="@style/Divider"/>
-
-                <!-- New Reservation Alert (Staff Only) -->
+                <!-- Staff Only Alert -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="12dp">
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
-
                         <TextView
                             android:id="@+id/textViewNewReservationAlert"
                             android:layout_width="wrap_content"
@@ -314,7 +294,6 @@
                             android:textSize="16sp"
                             android:textColor="@color/text_primary"
                             android:visibility="gone"/>
-
                         <TextView
                             android:id="@+id/textViewNewReservationAlertDesc"
                             android:layout_width="wrap_content"
@@ -325,7 +304,6 @@
                             android:layout_marginTop="4dp"
                             android:visibility="gone"/>
                     </LinearLayout>
-
                     <Switch
                         android:id="@+id/switchNewReservationAlert"
                         android:layout_width="wrap_content"
@@ -337,34 +315,41 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- LOGOUT -->
-            <LinearLayout
-                android:id="@+id/layoutLogout"
+            <!-- LOGOUT Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:gravity="center_vertical"
-                android:background="@color/background_cream"
-                android:layout_marginTop="24dp">
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:padding="12dp"
+                app:cardBackgroundColor="@color/background_cream">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_revert"
-                    app:tint="#F44336"/>
+                <LinearLayout
+                    android:id="@+id/layoutLogout"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Logout"
-                    android:textSize="16sp"
-                    android:textColor="#F44336"
-                    android:layout_marginStart="16dp"/>
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_lock_power_off"
+                        app:tint="#F44336"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Logout"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#F44336"
+                        android:layout_marginStart="16dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>
 
-    <!-- ================= BOTTOM NAV ================= -->
+    <!-- Bottom Nav -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
@@ -376,5 +361,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

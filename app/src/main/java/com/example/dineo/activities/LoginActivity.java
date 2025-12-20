@@ -1,8 +1,8 @@
 package com.example.dineo.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,19 +19,18 @@ import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String TAG = "LoginActivity";
-
     private EditText editTextUsername, editTextPassword;
     private Button btnLogin;
     private ProgressBar progressBar;
     private TextView textRegister;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Bind views
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         btnLogin = findViewById(R.id.btnLogin);
@@ -39,10 +38,9 @@ public class LoginActivity extends AppCompatActivity {
         textRegister = findViewById(R.id.textRegister);
 
         progressBar.setVisibility(View.GONE);
+        sharedPreferences = getSharedPreferences("DinoPrefs", MODE_PRIVATE);
 
         btnLogin.setOnClickListener(v -> loginUser());
-
-        // Navigate to Register
         textRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
     }
 
@@ -59,45 +57,48 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setEnabled(false);
 
         new Thread(() -> {
-            String response;
             try {
-                response = ApiHelper.loginUser(username, password);
-                Log.d(TAG, "Login response: " + response);
-            } catch (Exception e) {
-                Log.e(TAG, "Login error", e);
-                response = "Error: " + e.getMessage();
-            }
+                String response = ApiHelper.loginUser(username, password);
 
-            final String finalResponse = response;
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+                    btnLogin.setEnabled(true);
 
-            runOnUiThread(() -> {
-                progressBar.setVisibility(View.GONE);
-                btnLogin.setEnabled(true);
-
-                if (finalResponse.startsWith("Error")) {
-                    Toast.makeText(LoginActivity.this, "Login failed. Please try again.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                try {
-                    JSONObject json = new JSONObject(finalResponse);
-                    String userType = json.getString("usertype");
-
-                    Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-
-                    if ("Staff".equalsIgnoreCase(userType)) {
-                        startActivity(new Intent(LoginActivity.this, StaffDashboardActivity.class));
-                    } else {
-                        startActivity(new Intent(LoginActivity.this, GuestMenuActivity.class));
+                    if (response.startsWith("Error")) {
+                        Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_LONG).show();
+                        return;
                     }
-                    finish();
 
-                } catch (Exception e) {
-                    Toast.makeText(LoginActivity.this, "Invalid server response", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "JSON parsing error", e);
-                }
-            });
+                    try {
+                        JSONObject json = new JSONObject(response);
 
+                        // Save full user JSON
+                        sharedPreferences.edit().putString("user_json", response).apply();
+
+                        String role = json.getString("usertype");
+
+                        Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+
+                        if ("Staff".equalsIgnoreCase(role)) {
+                            startActivity(new Intent(LoginActivity.this, StaffDashboardActivity.class));
+                        } else {
+                            startActivity(new Intent(LoginActivity.this, GuestMenuActivity.class));
+                        }
+                        finish();
+
+                    } catch (Exception e) {
+                        Toast.makeText(LoginActivity.this, "Invalid server response", Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+                });
+
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+                    btnLogin.setEnabled(true);
+                    Toast.makeText(LoginActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+            }
         }).start();
     }
 }
