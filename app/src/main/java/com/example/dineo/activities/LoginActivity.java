@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,9 +21,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
 
-    private EditText editTextEmail, editTextPassword;
+    private EditText editTextUsername, editTextPassword;
     private Button btnLogin;
     private ProgressBar progressBar;
+    private TextView textRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,34 +32,34 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Bind views
-        editTextEmail = findViewById(R.id.editTextEmail);
+        editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         btnLogin = findViewById(R.id.btnLogin);
         progressBar = findViewById(R.id.progressBar);
+        textRegister = findViewById(R.id.textRegister);
 
         progressBar.setVisibility(View.GONE);
 
         btnLogin.setOnClickListener(v -> loginUser());
+
+        // Navigate to Register
+        textRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
     }
 
     private void loginUser() {
-        String username = editTextEmail.getText().toString().trim();
+        String username = editTextUsername.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        // Basic validation
         if (username.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Disable button + show loading
         progressBar.setVisibility(View.VISIBLE);
         btnLogin.setEnabled(false);
 
-        // Background thread for network call
         new Thread(() -> {
             String response;
-
             try {
                 response = ApiHelper.loginUser(username, password);
                 Log.d(TAG, "Login response: " + response);
@@ -68,15 +70,12 @@ public class LoginActivity extends AppCompatActivity {
 
             final String finalResponse = response;
 
-            // Back to UI thread
             runOnUiThread(() -> {
                 progressBar.setVisibility(View.GONE);
                 btnLogin.setEnabled(true);
 
                 if (finalResponse.startsWith("Error")) {
-                    Toast.makeText(LoginActivity.this,
-                            "Login failed. Please try again.",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Login failed. Please try again.", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -84,25 +83,18 @@ public class LoginActivity extends AppCompatActivity {
                     JSONObject json = new JSONObject(finalResponse);
                     String userType = json.getString("usertype");
 
-                    Toast.makeText(LoginActivity.this,
-                            "Login successful",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
 
-                    // Navigate based on role
-                    if (userType.equalsIgnoreCase("Staff")) {
-                        startActivity(new Intent(LoginActivity.this,
-                                StaffDashboardActivity.class));
+                    if ("Staff".equalsIgnoreCase(userType)) {
+                        startActivity(new Intent(LoginActivity.this, StaffDashboardActivity.class));
                     } else {
-                        startActivity(new Intent(LoginActivity.this,
-                                GuestMenuActivity.class));
+                        startActivity(new Intent(LoginActivity.this, GuestMenuActivity.class));
                     }
-
-                    finish(); // Close LoginActivity
+                    finish();
 
                 } catch (Exception e) {
-                    Toast.makeText(LoginActivity.this,
-                            "Invalid server response",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Invalid server response", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "JSON parsing error", e);
                 }
             });
 

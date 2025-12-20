@@ -3,8 +3,8 @@ package com.example.dineo.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +21,21 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
- * Menu Adapter - Handles BOTH Base64 and URL images WITHOUT Glide
+ * Menu Adapter - Handles BOTH Base64 and URL images WITHOUT AsyncTask
  * Student ID: BSSE2506008
  */
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder> {
 
-    private Context context;
-    private List<MenuItem> menuItems;
-    private OnMenuItemClickListener listener;
+    private static final String TAG = "MenuAdapter";
+
+    private final Context context;
+    private final List<MenuItem> menuItems;
+    private final OnMenuItemClickListener listener;
+    private final ExecutorService executor = Executors.newFixedThreadPool(3); // Thread pool for image loading
 
     public interface OnMenuItemClickListener {
         void onMenuItemClick(MenuItem menuItem);
@@ -53,46 +58,16 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
     public void onBindViewHolder(@NonNull MenuViewHolder holder, int position) {
         MenuItem menuItem = menuItems.get(position);
 
-        // Set name
-        holder.textViewName.setText(menuItem.getName());
-
-        // Set price
+        // Set name and price
+        holder.textViewName.setText(menuItem.getName() != null ? menuItem.getName() : "Unknown");
         holder.textViewPrice.setText(menuItem.getPriceFormatted());
 
-        // Load image
-        String imageData = menuItem.getImageUrl();
-
-        if (imageData != null && !imageData.isEmpty()) {
-            // Check if it's a Base64 string or URL
-            if (imageData.startsWith("http://") || imageData.startsWith("https://")) {
-                // It's a URL - load from internet
-                holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
-                new LoadUrlImageTask(holder.imageViewMenu).execute(imageData);
-            } else {
-                // It's Base64 - decode directly
-                try {
-                    byte[] decodedBytes = Base64.decode(imageData, Base64.DEFAULT);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-                    if (bitmap != null) {
-                        holder.imageViewMenu.setImageBitmap(bitmap);
-                    } else {
-                        holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
-                }
-            }
-        } else {
-            // No image - show placeholder
-            holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
-        }
+        // Load image safely
+        loadImage(menuItem.getImageUrl(), holder.imageViewMenu);
 
         // Click listener
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onMenuItemClick(menuItem);
-            }
+            if (listener != null) listener.onMenuItemClick(menuItem);
         });
     }
 
@@ -101,45 +76,49 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         return menuItems.size();
     }
 
-    /**
-     * AsyncTask to load images from URL in background
-     */
-    private static class LoadUrlImageTask extends AsyncTask<String, Void, Bitmap> {
-        private ImageView imageView;
-
-        public LoadUrlImageTask(ImageView imageView) {
-            this.imageView = imageView;
+    private void loadImage(String imageData, ImageView imageView) {
+        if (imageData == null || imageData.isEmpty()) {
+            imageView.setImageResource(android.R.drawable.ic_menu_gallery);
+            return;
         }
 
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String imageUrl = urls[0];
-            Bitmap bitmap = null;
-
+        // Base64 image
+        if (!imageData.startsWith("http://") && !imageData.startsWith("https://")) {
             try {
-                URL url = new URL(imageUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.setConnectTimeout(5000); // 5 second timeout
-                connection.setReadTimeout(5000);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                bitmap = BitmapFactory.decodeStream(input);
-                input.close();
-                connection.disconnect();
+                byte[] decodedBytes = Base64.decode(imageData, Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                if (bitmap != null) imageView.setImageBitmap(bitmap);
+                else imageView.setImageResource(android.R.drawable.ic_menu_gallery);
             } catch (Exception e) {
                 e.printStackTrace();
+                imageView.setImageResource(android.R.drawable.ic_menu_gallery);
             }
+        } else {
+            // URL image - load with executor
+            imageView.setImageResource(android.R.drawable.ic_menu_gallery); // placeholder
+            executor.execute(() -> {
+                Bitmap bitmap = null;
+                try {
+                    URL url = new URL(imageData);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.setConnectTimeout(5000);
+                    connection.setReadTimeout(5000);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    bitmap = BitmapFactory.decodeStream(input);
+                    input.close();
+                    connection.disconnect();
+                } catch (Exception e) {
+                    Log.e(TAG, "Image load error: " + e.getMessage());
+                }
 
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            if (result != null && imageView != null) {
-                imageView.setImageBitmap(result);
-            }
-            // If null, placeholder is already showing
+                Bitmap finalBitmap = bitmap;
+                imageView.post(() -> {
+                    if (finalBitmap != null) imageView.setImageBitmap(finalBitmap);
+                    // else placeholder is already set
+                });
+            });
         }
     }
 

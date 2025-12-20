@@ -166,7 +166,7 @@ public class ReservationActivity extends AppCompatActivity {
 
             // Navigate to MenuActivity
             if (itemId == R.id.nav_menu) {
-                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                Intent intent = new Intent(getApplicationContext(), GuestMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Prevent creating new instances
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

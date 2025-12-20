@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.widget.ImageView;
@@ -21,11 +20,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-/**
- * MenuDetailActivity - Browse-only food details (NO Glide)
- * Student ID: BSSE2506008
- */
 public class MenuDetailActivity extends AppCompatActivity {
 
     private ImageView imageViewBack, imageViewNotification, imageViewFood;
@@ -35,13 +32,14 @@ public class MenuDetailActivity extends AppCompatActivity {
     private MenuItem menuItem;
     private int unreadCount = 0;
 
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_detail);
 
         databaseHelper = new DatabaseHelper(this);
-
         initializeViews();
 
         int menuItemId = getIntent().getIntExtra("MENU_ITEM_ID", -1);
@@ -99,20 +97,15 @@ public class MenuDetailActivity extends AppCompatActivity {
     }
 
     private void displayMenuItem() {
-        // Food name
         textViewFoodName.setText(menuItem.getName() != null ? menuItem.getName() : "Unknown Dish");
-
-        // Price
         textViewPrice.setText(menuItem.getPriceFormatted());
 
-        // Description
         if (menuItem.getDescription() != null && !menuItem.getDescription().isEmpty()) {
             textViewDescription.setText(menuItem.getDescription());
         } else {
             textViewDescription.setText("Delicious " + textViewFoodName.getText() + " made with the finest ingredients.");
         }
 
-        // Category
         if (menuItem.getCategory() != null && !menuItem.getCategory().isEmpty()) {
             textViewCategory.setText(menuItem.getCategory());
             textViewCategory.setVisibility(TextView.VISIBLE);
@@ -120,34 +113,29 @@ public class MenuDetailActivity extends AppCompatActivity {
             textViewCategory.setVisibility(TextView.GONE);
         }
 
-        // Load image WITHOUT Glide
         loadMenuImage(menuItem.getImageUrl());
     }
 
-    /**
-     * Load image - handles BOTH Base64 and URL
-     */
     private void loadMenuImage(String imageData) {
         if (imageData == null || imageData.isEmpty()) {
             imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery);
             return;
         }
 
-        // Check if it's a URL or Base64
         if (imageData.startsWith("http://") || imageData.startsWith("https://")) {
-            // It's a URL - load in background
-            imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery); // Placeholder
-            new LoadImageTask(imageViewFood).execute(imageData);
+            imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery); // placeholder
+            executorService.execute(() -> {
+                Bitmap bitmap = loadBitmapFromUrl(imageData);
+                runOnUiThread(() -> {
+                    if (bitmap != null) imageViewFood.setImageBitmap(bitmap);
+                });
+            });
         } else {
-            // It's Base64 - decode directly
             try {
                 byte[] decodedBytes = Base64.decode(imageData, Base64.DEFAULT);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-                if (bitmap != null) {
-                    imageViewFood.setImageBitmap(bitmap);
-                } else {
-                    imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery);
-                }
+                if (bitmap != null) imageViewFood.setImageBitmap(bitmap);
+                else imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery);
             } catch (Exception e) {
                 e.printStackTrace();
                 imageViewFood.setImageResource(android.R.drawable.ic_menu_gallery);
@@ -155,45 +143,23 @@ public class MenuDetailActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * AsyncTask to load images from URL
-     */
-    private static class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
-        private ImageView imageView;
-
-        public LoadImageTask(ImageView imageView) {
-            this.imageView = imageView;
+    private Bitmap loadBitmapFromUrl(String imageUrl) {
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(imageUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            bitmap = BitmapFactory.decodeStream(input);
+            input.close();
+            connection.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String imageUrl = urls[0];
-            Bitmap bitmap = null;
-
-            try {
-                URL url = new URL(imageUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                bitmap = BitmapFactory.decodeStream(input);
-                input.close();
-                connection.disconnect();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            if (result != null && imageView != null) {
-                imageView.setImageBitmap(result);
-            }
-        }
+        return bitmap;
     }
 
     private void loadNotificationCount() {
@@ -209,5 +175,11 @@ public class MenuDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadNotificationCount();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executorService.shutdownNow(); // clean up threads
     }
 }

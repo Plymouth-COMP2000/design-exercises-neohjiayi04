@@ -1,7 +1,6 @@
 package com.example.dineo.activities;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,14 +21,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
- * MenuActivity - Browse menu items with category filtering
+ * GuestMenuActivity - Browse menu items with Executor for background DB loading
  * Student ID: BSSE2506008
  */
-public class MenuActivity extends AppCompatActivity {
+public class GuestMenuActivity extends AppCompatActivity {
 
-    private static final String TAG = "MenuActivity";
+    private static final String TAG = "GuestMenuActivity";
 
     private ImageView imageViewNotification;
     private EditText editTextSearch;
@@ -45,12 +46,14 @@ public class MenuActivity extends AppCompatActivity {
 
     private String currentCategory = "All";
 
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        Log.d(TAG, "MenuActivity started");
+        Log.d(TAG, "GuestMenuActivity started");
 
         // Initialize views
         imageViewNotification = findViewById(R.id.imageViewNotification);
@@ -69,7 +72,7 @@ public class MenuActivity extends AppCompatActivity {
         recyclerViewMenu.setLayoutManager(new GridLayoutManager(this, 2));
         menuAdapter = new MenuAdapter(this, filteredMenuItems, menuItem -> {
             try {
-                Intent intent = new Intent(MenuActivity.this, MenuDetailActivity.class);
+                Intent intent = new Intent(GuestMenuActivity.this, MenuDetailActivity.class);
                 intent.putExtra("MENU_ITEM_ID", menuItem.getId());
                 startActivity(intent);
             } catch (Exception e) {
@@ -96,7 +99,7 @@ public class MenuActivity extends AppCompatActivity {
 
         imageViewNotification.setOnClickListener(v -> {
             try {
-                startActivity(new Intent(MenuActivity.this, NotificationActivity.class));
+                startActivity(new Intent(GuestMenuActivity.this, NotificationActivity.class));
             } catch (Exception e) {
                 Log.e(TAG, "NotificationActivity not found");
             }
@@ -134,7 +137,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private void updateCategoryButtons() {
         int grayColor = 0xFFE0E0E0;
-        int orangeColor = 0xFFFF6B35; // Updated to match login theme
+        int orangeColor = 0xFFFF6B35;
 
         btnCategoryAll.setBackgroundColor(grayColor);
         btnCategoryMain.setBackgroundColor(grayColor);
@@ -142,48 +145,31 @@ public class MenuActivity extends AppCompatActivity {
         btnCategoryBeverages.setBackgroundColor(grayColor);
 
         switch (currentCategory) {
-            case "All":
-                btnCategoryAll.setBackgroundColor(orangeColor);
-                break;
-            case "Main Food":
-                btnCategoryMain.setBackgroundColor(orangeColor);
-                break;
-            case "Desserts":
-                btnCategoryDesserts.setBackgroundColor(orangeColor);
-                break;
-            case "Beverages":
-                btnCategoryBeverages.setBackgroundColor(orangeColor);
-                break;
+            case "All": btnCategoryAll.setBackgroundColor(orangeColor); break;
+            case "Main Food": btnCategoryMain.setBackgroundColor(orangeColor); break;
+            case "Desserts": btnCategoryDesserts.setBackgroundColor(orangeColor); break;
+            case "Beverages": btnCategoryBeverages.setBackgroundColor(orangeColor); break;
         }
     }
 
     private void loadMenuItems() {
-        new LoadMenuItemsTask().execute();
-    }
-
-    private class LoadMenuItemsTask extends AsyncTask<Void, Void, List<MenuItem>> {
-        @Override
-        protected List<MenuItem> doInBackground(Void... voids) {
+        executor.execute(() -> {
             List<MenuItem> items = databaseHelper.getAllMenuItems();
 
             // Add sample items if database is empty
             if (items.isEmpty()) {
-                Log.d(TAG, "Database empty, adding sample items");
                 addSampleMenuItems();
                 items = databaseHelper.getAllMenuItems();
             }
 
-            Log.d(TAG, "Loaded " + items.size() + " menu items");
-            return items;
-        }
-
-        @Override
-        protected void onPostExecute(List<MenuItem> items) {
-            menuItems.clear();
-            menuItems.addAll(items);
-            filterMenuItems(editTextSearch.getText().toString());
-            Log.d(TAG, "Menu items loaded and displayed");
-        }
+            final List<MenuItem> loadedItems = items;
+            runOnUiThread(() -> {
+                menuItems.clear();
+                menuItems.addAll(loadedItems);
+                filterMenuItems(editTextSearch.getText().toString());
+                Log.d(TAG, "Menu items loaded: " + menuItems.size());
+            });
+        });
     }
 
     private void filterMenuItems(String query) {
@@ -200,10 +186,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         }
 
-        if (menuAdapter != null) {
-            menuAdapter.notifyDataSetChanged();
-        }
-
+        menuAdapter.notifyDataSetChanged();
         Log.d(TAG, "Filtered to " + filteredMenuItems.size() + " items");
     }
 
@@ -247,37 +230,23 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Add sample menu items with URL images
-     * NOTE: These URLs will work with the MenuAdapter_FINAL which handles both URLs and Base64
-     */
     private void addSampleMenuItems() {
-        // Sample items with URLs (MenuAdapter will handle loading these)
         addMenuItem("Nasi Goreng", 13.00, "Traditional Malaysian fried rice with egg and vegetables",
                 "Main Food", "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400");
-
         addMenuItem("Satay Ayam", 12.00, "Grilled chicken skewers with peanut sauce",
                 "Main Food", "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400");
-
         addMenuItem("Roti Canai", 5.00, "Flaky flatbread served with curry",
                 "Main Food", "https://images.unsplash.com/photo-1567337710282-00832b415979?w=400");
-
         addMenuItem("Ice Cream", 6.00, "Creamy vanilla ice cream with chocolate sauce",
                 "Desserts", "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400");
-
         addMenuItem("Cendol", 5.00, "Shaved ice dessert with coconut milk and palm sugar",
                 "Desserts", "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400");
-
         addMenuItem("Teh Tarik", 3.50, "Traditional Malaysian pulled milk tea",
                 "Beverages", "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400");
-
         addMenuItem("Milo Ais", 4.00, "Iced chocolate malt drink",
                 "Beverages", "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=400");
-
         addMenuItem("Fresh Juice", 5.50, "Freshly squeezed orange juice",
                 "Beverages", "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400");
-
-        Log.d(TAG, "Sample menu items added");
     }
 
     private void addMenuItem(String name, double price, String desc, String category, String imageUrl) {
@@ -286,9 +255,7 @@ public class MenuActivity extends AppCompatActivity {
         item.setPrice(price);
         item.setDescription(desc);
         item.setCategory(category);
-        item.setImageUrl(imageUrl); // Can be URL or Base64
-
-        long id = databaseHelper.addMenuItem(item);
-        Log.d(TAG, "Added item: " + name + " (ID: " + id + ")");
+        item.setImageUrl(imageUrl);
+        databaseHelper.addMenuItem(item);
     }
 }

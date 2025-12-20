@@ -221,7 +221,7 @@ public class ProfileActivity extends AppCompatActivity {
             } else {
                 // Guest navigation
                 if (itemId == R.id.nav_menu) {
-                    startActivity(new Intent(ProfileActivity.this, MenuActivity.class));
+                    startActivity(new Intent(ProfileActivity.this, GuestMenuActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.nav_reservation) {
