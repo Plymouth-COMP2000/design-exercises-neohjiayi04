@@ -7,10 +7,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="24dp"
-        android:gravity="center_horizontal">
+        android:gravity="center">
 
         <!-- App Logo -->
         <ImageView
@@ -19,7 +19,7 @@
             android:layout_height="120dp"
             android:src="@drawable/ic_logo"
             android:contentDescription="App Logo"
-            android:layout_marginTop="24dp"/>
+            android:layout_marginTop="20dp"/>
 
         <!-- App Name -->
         <TextView
@@ -29,7 +29,7 @@
             android:textSize="36sp"
             android:textStyle="bold"
             android:textColor="@color/orange_primary"
-            android:layout_marginTop="40dp"/>
+            android:layout_marginTop="20dp"/>
 
         <!-- Subtitle -->
         <TextView
@@ -61,6 +61,7 @@
             android:inputType="textPassword"
             android:background="@drawable/et_background"
             android:padding="14dp"
+
             android:layout_marginBottom="24dp"/>
 
         <!-- Login Button -->

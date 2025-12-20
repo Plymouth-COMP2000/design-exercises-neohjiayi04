@@ -4,258 +4,148 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dineo.R;
 import com.example.dineo.adapters.MenuAdapter;
-import com.example.dineo.database.DatabaseHelper;
 import com.example.dineo.models.MenuItem;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-/**
- * GuestMenuActivity - Browse menu items with Executor for background DB loading
- * Student ID: BSSE2506008
- */
-public class GuestMenuActivity extends AppCompatActivity {
+public class GuestMenuActivity extends BaseActivity implements MenuAdapter.OnMenuItemClickListener {
 
-    private static final String TAG = "GuestMenuActivity";
-
-    private ImageView imageViewNotification;
-    private EditText editTextSearch;
     private RecyclerView recyclerViewMenu;
-    private BottomNavigationView bottomNavigationView;
+    private MenuAdapter adapter;
+    private List<MenuItem> allMenuItems;
 
-    private Button btnCategoryAll, btnCategoryMain, btnCategoryDesserts, btnCategoryBeverages;
-
-    private DatabaseHelper databaseHelper;
-    private MenuAdapter menuAdapter;
-    private List<MenuItem> menuItems = new ArrayList<>();
-    private List<MenuItem> filteredMenuItems = new ArrayList<>();
-
-    private String currentCategory = "All";
-
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private EditText editTextSearch;
+    private MaterialButton btnCategoryAll, btnCategoryMain, btnCategoryDesserts, btnCategoryBeverages;
+    private ImageView imageViewNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        Log.d(TAG, "GuestMenuActivity started");
+        // Bottom navigation active
+        setupBottomNavigation(R.id.nav_menu);
 
-        // Initialize views
+        // Notification icon
         imageViewNotification = findViewById(R.id.imageViewNotification);
-        editTextSearch = findViewById(R.id.editTextSearch);
-        recyclerViewMenu = findViewById(R.id.recyclerViewMenu);
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        imageViewNotification.setOnClickListener(v ->
+                startActivity(new Intent(this, NotificationActivity.class))
+        );
 
+        // Category buttons
         btnCategoryAll = findViewById(R.id.btnCategoryAll);
         btnCategoryMain = findViewById(R.id.btnCategoryMain);
         btnCategoryDesserts = findViewById(R.id.btnCategoryDesserts);
         btnCategoryBeverages = findViewById(R.id.btnCategoryBeverages);
 
-        databaseHelper = new DatabaseHelper(this);
+        // Search
+        editTextSearch = findViewById(R.id.editTextSearch);
 
-        // Setup RecyclerView
+        // RecyclerView
+        recyclerViewMenu = findViewById(R.id.recyclerViewMenu);
         recyclerViewMenu.setLayoutManager(new GridLayoutManager(this, 2));
-        menuAdapter = new MenuAdapter(this, filteredMenuItems, menuItem -> {
-            try {
-                Intent intent = new Intent(GuestMenuActivity.this, MenuDetailActivity.class);
-                intent.putExtra("MENU_ITEM_ID", menuItem.getId());
-                startActivity(intent);
-            } catch (Exception e) {
-                Log.e(TAG, "Error opening menu detail: " + e.getMessage());
-            }
-        });
-        recyclerViewMenu.setAdapter(menuAdapter);
 
-        loadMenuItems();
+        // Load menu
+        allMenuItems = new ArrayList<>();
+        loadSampleMenu();
 
-        // Search functionality
+        adapter = new MenuAdapter(this, new ArrayList<>(allMenuItems), this);
+        recyclerViewMenu.setAdapter(adapter);
+
+        setupCategoryButtons();
+        setupSearchFilter();
+    }
+
+    private void setupCategoryButtons() {
+        btnCategoryAll.setOnClickListener(v -> { filterMenuByCategory("All"); setActiveCategoryButton(btnCategoryAll); });
+        btnCategoryMain.setOnClickListener(v -> { filterMenuByCategory("Main"); setActiveCategoryButton(btnCategoryMain); });
+        btnCategoryDesserts.setOnClickListener(v -> { filterMenuByCategory("Desserts"); setActiveCategoryButton(btnCategoryDesserts); });
+        btnCategoryBeverages.setOnClickListener(v -> { filterMenuByCategory("Beverages"); setActiveCategoryButton(btnCategoryBeverages); });
+
+        // Default active
+        setActiveCategoryButton(btnCategoryAll);
+    }
+
+    private void setupSearchFilter() {
         editTextSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterMenuItems(s.toString());
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterMenuByKeyword(s.toString());
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        imageViewNotification.setOnClickListener(v -> {
-            try {
-                startActivity(new Intent(GuestMenuActivity.this, NotificationActivity.class));
-            } catch (Exception e) {
-                Log.e(TAG, "NotificationActivity not found");
-            }
-        });
-
-        setupCategoryFilters();
-        setupBottomNavigation();
-    }
-
-    private void setupCategoryFilters() {
-        btnCategoryAll.setOnClickListener(v -> {
-            currentCategory = "All";
-            updateCategoryButtons();
-            filterMenuItems(editTextSearch.getText().toString());
-        });
-
-        btnCategoryMain.setOnClickListener(v -> {
-            currentCategory = "Main Food";
-            updateCategoryButtons();
-            filterMenuItems(editTextSearch.getText().toString());
-        });
-
-        btnCategoryDesserts.setOnClickListener(v -> {
-            currentCategory = "Desserts";
-            updateCategoryButtons();
-            filterMenuItems(editTextSearch.getText().toString());
-        });
-
-        btnCategoryBeverages.setOnClickListener(v -> {
-            currentCategory = "Beverages";
-            updateCategoryButtons();
-            filterMenuItems(editTextSearch.getText().toString());
+            @Override public void afterTextChanged(Editable s) {}
         });
     }
 
-    private void updateCategoryButtons() {
-        int grayColor = 0xFFE0E0E0;
-        int orangeColor = 0xFFFF6B35;
-
-        btnCategoryAll.setBackgroundColor(grayColor);
-        btnCategoryMain.setBackgroundColor(grayColor);
-        btnCategoryDesserts.setBackgroundColor(grayColor);
-        btnCategoryBeverages.setBackgroundColor(grayColor);
-
-        switch (currentCategory) {
-            case "All": btnCategoryAll.setBackgroundColor(orangeColor); break;
-            case "Main Food": btnCategoryMain.setBackgroundColor(orangeColor); break;
-            case "Desserts": btnCategoryDesserts.setBackgroundColor(orangeColor); break;
-            case "Beverages": btnCategoryBeverages.setBackgroundColor(orangeColor); break;
+    private void setActiveCategoryButton(MaterialButton activeButton) {
+        MaterialButton[] buttons = {btnCategoryAll, btnCategoryMain, btnCategoryDesserts, btnCategoryBeverages};
+        for (MaterialButton btn : buttons) {
+            btn.setBackgroundTintList(getColorStateList(R.color.category_inactive));
+            btn.setTextColor(getColor(R.color.category_inactive_text));
         }
+        activeButton.setBackgroundTintList(getColorStateList(R.color.category_active));
+        activeButton.setTextColor(getColor(R.color.category_active_text));
     }
 
-    private void loadMenuItems() {
-        executor.execute(() -> {
-            List<MenuItem> items = databaseHelper.getAllMenuItems();
-
-            // Add sample items if database is empty
-            if (items.isEmpty()) {
-                addSampleMenuItems();
-                items = databaseHelper.getAllMenuItems();
-            }
-
-            final List<MenuItem> loadedItems = items;
-            runOnUiThread(() -> {
-                menuItems.clear();
-                menuItems.addAll(loadedItems);
-                filterMenuItems(editTextSearch.getText().toString());
-                Log.d(TAG, "Menu items loaded: " + menuItems.size());
-            });
-        });
-    }
-
-    private void filterMenuItems(String query) {
-        filteredMenuItems.clear();
-
-        for (MenuItem item : menuItems) {
-            boolean matchesSearch = item.getName() != null &&
-                    item.getName().toLowerCase().contains(query.toLowerCase());
-            boolean matchesCategory = "All".equals(currentCategory) ||
-                    (item.getCategory() != null && item.getCategory().equals(currentCategory));
-
-            if (matchesSearch && matchesCategory) {
-                filteredMenuItems.add(item);
+    private void filterMenuByCategory(String category) {
+        List<MenuItem> filtered = new ArrayList<>();
+        for (MenuItem item : allMenuItems) {
+            if (category.equalsIgnoreCase("All") || item.getCategory().equalsIgnoreCase(category)) {
+                filtered.add(item);
             }
         }
-
-        menuAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Filtered to " + filteredMenuItems.size() + " items");
+        adapter.setMenuItems(filtered);
     }
 
-    private void setupBottomNavigation() {
-        bottomNavigationView.setSelectedItemId(R.id.nav_menu);
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.nav_menu) {
-                return true;
-            } else if (id == R.id.nav_reservation) {
-                try {
-                    startActivity(new Intent(this, ReservationActivity.class));
-                    overridePendingTransition(0, 0);
-                    finish();
-                } catch (Exception e) {
-                    Log.e(TAG, "ReservationActivity not found");
-                }
-                return true;
-            } else if (id == R.id.nav_profile) {
-                try {
-                    startActivity(new Intent(this, ProfileActivity.class));
-                    overridePendingTransition(0, 0);
-                    finish();
-                } catch (Exception e) {
-                    Log.e(TAG, "ProfileActivity not found");
-                }
-                return true;
+    private void filterMenuByKeyword(String keyword) {
+        List<MenuItem> filtered = new ArrayList<>();
+        for (MenuItem item : allMenuItems) {
+            if (item.getName().toLowerCase().contains(keyword.toLowerCase()) ||
+                    item.getCategory().toLowerCase().contains(keyword.toLowerCase())) {
+                filtered.add(item);
             }
-            return false;
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadMenuItems();
-        if (bottomNavigationView != null) {
-            bottomNavigationView.setSelectedItemId(R.id.nav_menu);
         }
+        adapter.setMenuItems(filtered);
     }
 
-    private void addSampleMenuItems() {
-        addMenuItem("Nasi Goreng", 13.00, "Traditional Malaysian fried rice with egg and vegetables",
-                "Main Food", "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400");
-        addMenuItem("Satay Ayam", 12.00, "Grilled chicken skewers with peanut sauce",
-                "Main Food", "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400");
-        addMenuItem("Roti Canai", 5.00, "Flaky flatbread served with curry",
-                "Main Food", "https://images.unsplash.com/photo-1567337710282-00832b415979?w=400");
-        addMenuItem("Ice Cream", 6.00, "Creamy vanilla ice cream with chocolate sauce",
-                "Desserts", "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400");
-        addMenuItem("Cendol", 5.00, "Shaved ice dessert with coconut milk and palm sugar",
-                "Desserts", "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400");
-        addMenuItem("Teh Tarik", 3.50, "Traditional Malaysian pulled milk tea",
-                "Beverages", "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400");
-        addMenuItem("Milo Ais", 4.00, "Iced chocolate malt drink",
-                "Beverages", "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=400");
-        addMenuItem("Fresh Juice", 5.50, "Freshly squeezed orange juice",
-                "Beverages", "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400");
+    private void loadSampleMenu() {
+        addMenuItem("Nasi Goreng", 13.0, "Traditional Malaysian fried rice with egg and vegetables", "Main", "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400");
+        addMenuItem("Satay Ayam", 12.0, "Grilled chicken skewers with peanut sauce", "Main", "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400");
+        addMenuItem("Roti Canai", 5.0, "Flaky flatbread served with curry", "Main", "https://images.unsplash.com/photo-1567337710282-00832b415979?w=400");
+        addMenuItem("Ice Cream", 6.0, "Creamy vanilla ice cream with chocolate sauce", "Desserts", "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400");
+        addMenuItem("Cendol", 5.0, "Shaved ice dessert with coconut milk and palm sugar", "Desserts", "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400");
+        addMenuItem("Teh Tarik", 3.5, "Traditional Malaysian pulled milk tea", "Beverages", "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400");
+        addMenuItem("Milo Ais", 4.0, "Iced chocolate malt drink", "Beverages", "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=400");
+        addMenuItem("Fresh Juice", 5.5, "Freshly squeezed orange juice", "Beverages", "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400");
     }
 
-    private void addMenuItem(String name, double price, String desc, String category, String imageUrl) {
+    private void addMenuItem(String name, double price, String description, String category, String imageUrl) {
         MenuItem item = new MenuItem();
         item.setName(name);
         item.setPrice(price);
-        item.setDescription(desc);
+        item.setDescription(description);
         item.setCategory(category);
         item.setImageUrl(imageUrl);
-        databaseHelper.addMenuItem(item);
+        allMenuItems.add(item);
+    }
+
+    @Override
+    public void onMenuItemClick(MenuItem menuItem) {
+        Intent intent = new Intent(this, MenuDetailActivity.class);
+        intent.putExtra("menuItemName", menuItem.getName());
+        intent.putExtra("menuItemPrice", menuItem.getPrice());
+        intent.putExtra("menuItemDescription", menuItem.getDescription());
+        intent.putExtra("menuItemCategory", menuItem.getCategory());
+        intent.putExtra("menuItemImageUrl", menuItem.getImageUrl());
+        startActivity(intent);
     }
 }

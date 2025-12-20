@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.dineo.models.Reservation;
-import com.example.dineo.models.MenuItem;
 import com.example.dineo.models.Notification;
+import com.example.dineo.models.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;

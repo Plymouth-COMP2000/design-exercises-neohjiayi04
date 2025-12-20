@@ -75,6 +75,11 @@
     <color name="button_secondary">@color/gray_light</color>
     <color name="button_text">@color/white</color>
     <color name="button_text_dark">@color/text_primary</color>
+    <color name="category_active">#FF9966</color>
+    <color name="category_active_text">#FFFFFF</color>
+    <color name="category_inactive">#E0E0E0</color>
+    <color name="category_inactive_text">#333333</color>
+
 
     <!-- ========================= -->
     <!-- Reservation Status Colors -->

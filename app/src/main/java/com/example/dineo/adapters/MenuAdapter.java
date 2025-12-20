@@ -24,18 +24,14 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Menu Adapter - Handles BOTH Base64 and URL images WITHOUT AsyncTask
- * Student ID: BSSE2506008
- */
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder> {
 
     private static final String TAG = "MenuAdapter";
 
     private final Context context;
-    private final List<MenuItem> menuItems;
+    private List<MenuItem> menuItems;
     private final OnMenuItemClickListener listener;
-    private final ExecutorService executor = Executors.newFixedThreadPool(3); // Thread pool for image loading
+    private final ExecutorService executor = Executors.newFixedThreadPool(3);
 
     public interface OnMenuItemClickListener {
         void onMenuItemClick(MenuItem menuItem);
@@ -47,6 +43,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         this.listener = listener;
     }
 
+    public void setMenuItems(List<MenuItem> items) {
+        this.menuItems = items;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,24 +57,31 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MenuViewHolder holder, int position) {
+        if (position < 0 || position >= menuItems.size()) return;
+
         MenuItem menuItem = menuItems.get(position);
 
-        // Set name and price
-        holder.textViewName.setText(menuItem.getName() != null ? menuItem.getName() : "Unknown");
+        holder.textViewName.setText(menuItem.getName());
         holder.textViewPrice.setText(menuItem.getPriceFormatted());
+        holder.textViewCategory.setText(menuItem.getCategory());
 
-        // Load image safely
+        // Optional: style category badge background based on category (color logic)
+        holder.textViewCategory.setBackgroundResource(R.drawable.category_badge);
+
+        holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery); // placeholder
         loadImage(menuItem.getImageUrl(), holder.imageViewMenu);
 
-        // Click listener
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onMenuItemClick(menuItem);
+            int adapterPosition = holder.getAdapterPosition();
+            if (adapterPosition != RecyclerView.NO_POSITION && listener != null) {
+                listener.onMenuItemClick(menuItems.get(adapterPosition));
+            }
         });
     }
 
     @Override
     public int getItemCount() {
-        return menuItems.size();
+        return menuItems != null ? menuItems.size() : 0;
     }
 
     private void loadImage(String imageData, ImageView imageView) {
@@ -82,41 +90,41 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             return;
         }
 
-        // Base64 image
+        imageView.setTag(imageData);
+
         if (!imageData.startsWith("http://") && !imageData.startsWith("https://")) {
             try {
                 byte[] decodedBytes = Base64.decode(imageData, Base64.DEFAULT);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
                 if (bitmap != null) imageView.setImageBitmap(bitmap);
-                else imageView.setImageResource(android.R.drawable.ic_menu_gallery);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "Base64 decode error", e);
                 imageView.setImageResource(android.R.drawable.ic_menu_gallery);
             }
         } else {
-            // URL image - load with executor
-            imageView.setImageResource(android.R.drawable.ic_menu_gallery); // placeholder
             executor.execute(() -> {
                 Bitmap bitmap = null;
                 try {
                     URL url = new URL(imageData);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setDoInput(true);
                     connection.setConnectTimeout(5000);
                     connection.setReadTimeout(5000);
+                    connection.setDoInput(true);
                     connection.connect();
+
                     InputStream input = connection.getInputStream();
                     bitmap = BitmapFactory.decodeStream(input);
                     input.close();
                     connection.disconnect();
                 } catch (Exception e) {
-                    Log.e(TAG, "Image load error: " + e.getMessage());
+                    Log.e(TAG, "Image load error", e);
                 }
 
                 Bitmap finalBitmap = bitmap;
                 imageView.post(() -> {
-                    if (finalBitmap != null) imageView.setImageBitmap(finalBitmap);
-                    // else placeholder is already set
+                    if (imageData.equals(imageView.getTag()) && finalBitmap != null) {
+                        imageView.setImageBitmap(finalBitmap);
+                    }
                 });
             });
         }
@@ -124,13 +132,14 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
 
     static class MenuViewHolder extends RecyclerView.ViewHolder {
         ImageView imageViewMenu;
-        TextView textViewName, textViewPrice;
+        TextView textViewName, textViewPrice, textViewCategory;
 
         public MenuViewHolder(@NonNull View itemView) {
             super(itemView);
             imageViewMenu = itemView.findViewById(R.id.imageViewMenu);
             textViewName = itemView.findViewById(R.id.textViewMenuName);
             textViewPrice = itemView.findViewById(R.id.textViewMenuPrice);
+            textViewCategory = itemView.findViewById(R.id.textViewMenuCategory);
         }
     }
 }

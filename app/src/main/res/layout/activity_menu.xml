@@ -10,17 +10,18 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@android:color/white"
-        android:elevation="4dp"
-        android:padding="16dp">
+        android:background="#FFF5EB"
+        android:elevation="0dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="MENU"
-            android:gravity="center_vertical"            android:textColor="#333333"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="#333333"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="16dp"/>
 
         <ImageView
             android:id="@+id/imageViewNotification"
@@ -30,7 +31,8 @@
             android:layout_centerVertical="true"
             android:src="@android:drawable/ic_popup_reminder"
             android:contentDescription="Notifications"
-            app:tint="#FF9966" />
+            app:tint="#FF9966"
+            android:layout_marginEnd="16dp"/>
     </RelativeLayout>
 
     <!-- Search Bar -->
@@ -39,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_margin="16dp"
-        android:background="@android:color/white"
+        android:background="@drawable/rounded_edittext_bg"
         android:padding="12dp"
         android:hint="Search menu..."
         android:drawableStart="@android:drawable/ic_menu_search"
@@ -60,44 +62,48 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCategoryAll"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:text="All"
-                android:textSize="14sp"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#FF9966"
-                android:textColor="@android:color/white" />
+                android:text="All"
+                android:textColor="@android:color/white"
+                app:cornerRadius="16dp"
+                android:textSize="14sp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCategoryMain"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:text="Main Food"
-                android:textSize="14sp"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#E0E0E0"
-                android:textColor="#333333" />
+                android:text="Main"
+                android:textColor="#333333"
+                app:cornerRadius="16dp"
+                android:textSize="14sp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCategoryDesserts"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:text="Desserts"
-                android:textSize="14sp"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#E0E0E0"
-                android:textColor="#333333" />
+                android:text="Desserts"
+                app:cornerRadius="16dp"
+                android:textColor="#333333"
+                android:textSize="14sp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCategoryBeverages"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:text="Beverages"
-                android:textSize="14sp"
                 android:backgroundTint="#E0E0E0"
-                android:textColor="#333333" />
+                android:text="Beverages"
+                app:cornerRadius="16dp"
+                android:textColor="#333333"
+                android:textSize="14sp" />
 
         </LinearLayout>
     </HorizontalScrollView>

@@ -2,7 +2,6 @@ package com.example.dineo.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -15,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dineo.R;
 import com.example.dineo.adapters.StaffMenuAdapter;
 import com.example.dineo.database.DatabaseHelper;
-import com.example.dineo.models.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.dineo.models.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
