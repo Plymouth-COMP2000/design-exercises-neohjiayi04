@@ -49,7 +49,7 @@
             android:name=".activities.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.MenuActivity"
+            android:name=".activities.GuestMenuActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MenuDetailActivity"

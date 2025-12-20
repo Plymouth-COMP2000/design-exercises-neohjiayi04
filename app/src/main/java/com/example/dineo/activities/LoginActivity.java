@@ -2,8 +2,11 @@ package com.example.dineo.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,56 +14,98 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.dineo.R;
 import com.example.dineo.api.ApiHelper;
 
+import org.json.JSONObject;
+
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText etUsername, etPassword;
+    private static final String TAG = "LoginActivity";
+
+    private EditText editTextEmail, editTextPassword;
     private Button btnLogin;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Find views
-        etUsername = findViewById(R.id.etUsername);
-        etPassword = findViewById(R.id.etPassword);
+        // Bind views
+        editTextEmail = findViewById(R.id.editTextEmail);
+        editTextPassword = findViewById(R.id.editTextPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        progressBar = findViewById(R.id.progressBar);
 
-        // Login button click
-        btnLogin.setOnClickListener(v -> {
-            String username = etUsername.getText().toString().trim();
-            String password = etPassword.getText().toString().trim();
+        progressBar.setVisibility(View.GONE);
 
-            if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
-                return;
+        btnLogin.setOnClickListener(v -> loginUser());
+    }
+
+    private void loginUser() {
+        String username = editTextEmail.getText().toString().trim();
+        String password = editTextPassword.getText().toString().trim();
+
+        // Basic validation
+        if (username.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Disable button + show loading
+        progressBar.setVisibility(View.VISIBLE);
+        btnLogin.setEnabled(false);
+
+        // Background thread for network call
+        new Thread(() -> {
+            String response;
+
+            try {
+                response = ApiHelper.loginUser(username, password);
+                Log.d(TAG, "Login response: " + response);
+            } catch (Exception e) {
+                Log.e(TAG, "Login error", e);
+                response = "Error: " + e.getMessage();
             }
 
-            btnLogin.setEnabled(false); // disable button while logging in
-            btnLogin.setText("Logging in...");
+            final String finalResponse = response;
 
-            // Run API call in background thread
-            new Thread(() -> {
-                String result = ApiHelper.loginUser(username, password);
+            // Back to UI thread
+            runOnUiThread(() -> {
+                progressBar.setVisibility(View.GONE);
+                btnLogin.setEnabled(true);
 
-                runOnUiThread(() -> {
-                    btnLogin.setEnabled(true);
-                    btnLogin.setText("Login");
+                if (finalResponse.startsWith("Error")) {
+                    Toast.makeText(LoginActivity.this,
+                            "Login failed. Please try again.",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-                    if (result.startsWith("Error")) {
-                        // show error
-                        Toast.makeText(LoginActivity.this, result, Toast.LENGTH_LONG).show();
+                try {
+                    JSONObject json = new JSONObject(finalResponse);
+                    String userType = json.getString("usertype");
+
+                    Toast.makeText(LoginActivity.this,
+                            "Login successful",
+                            Toast.LENGTH_SHORT).show();
+
+                    // Navigate based on role
+                    if (userType.equalsIgnoreCase("Staff")) {
+                        startActivity(new Intent(LoginActivity.this,
+                                StaffDashboardActivity.class));
                     } else {
-                        // login successful
-                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-
-                        // Navigate to MainActivity (replace with your home activity)
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish(); // close login
+                        startActivity(new Intent(LoginActivity.this,
+                                GuestMenuActivity.class));
                     }
-                });
-            }).start();
-        });
+
+                    finish(); // Close LoginActivity
+
+                } catch (Exception e) {
+                    Toast.makeText(LoginActivity.this,
+                            "Invalid server response",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+
+        }).start();
     }
 }
