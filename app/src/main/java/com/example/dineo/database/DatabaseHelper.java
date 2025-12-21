@@ -5,18 +5,27 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+import android.widget.Toast;
 
-import com.example.dineo.models.Reservation;
-import com.example.dineo.models.Notification;
+import androidx.annotation.Nullable;
+
 import com.example.dineo.models.MenuItem;
+import com.example.dineo.models.Notification;
+import com.example.dineo.models.Reservation;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "dineo.db";
-    private static final int DATABASE_VERSION = 2; // INCREASED VERSION
+    private static final int DATABASE_VERSION = 2;
 
     // Table Names
     private static final String TABLE_RESERVATION = "reservation";
@@ -58,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String USER_PASSWORD = "password";
     private static final String USER_NAME = "name";
 
-    public DatabaseHelper(Context context) {
+    public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -189,6 +198,97 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return reservations;
     }
 
+    /**
+     * NEW METHOD: Get reservation by ID
+     */
+    public Reservation getReservationById(int reservationId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Reservation reservation = null;
+
+        Cursor cursor = db.query(TABLE_RESERVATION, null, RES_ID + "=?",
+                new String[]{String.valueOf(reservationId)}, null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            reservation = new Reservation();
+            reservation.setId(cursor.getInt(cursor.getColumnIndexOrThrow(RES_ID)));
+            reservation.setCustomerName(cursor.getString(cursor.getColumnIndexOrThrow(RES_NAME)));
+            reservation.setUserEmail(cursor.getString(cursor.getColumnIndexOrThrow(RES_EMAIL)));
+            reservation.setDate(cursor.getString(cursor.getColumnIndexOrThrow(RES_DATE)));
+            reservation.setTime(cursor.getString(cursor.getColumnIndexOrThrow(RES_TIME)));
+            reservation.setNumberOfGuests(cursor.getInt(cursor.getColumnIndexOrThrow(RES_GUESTS)));
+            reservation.setTableNumber(cursor.getString(cursor.getColumnIndexOrThrow(RES_TABLE)));
+            reservation.setSpecialRequests(cursor.getString(cursor.getColumnIndexOrThrow(RES_SPECIAL)));
+            reservation.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(RES_STATUS)));
+            cursor.close();
+        }
+
+        db.close();
+        return reservation;
+    }
+
+    /**
+     * NEW METHOD: Get upcoming reservations (limited)
+     */
+    public List<Reservation> getUpcomingReservations(int limit) {
+        List<Reservation> reservations = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String currentDate = getCurrentDate();
+
+        Cursor cursor = db.query(
+                TABLE_RESERVATION,
+                null,
+                RES_DATE + " >= ? AND " + RES_STATUS + " != ?",
+                new String[]{currentDate, "Cancelled"},
+                null,
+                null,
+                RES_DATE + " ASC, " + RES_TIME + " ASC",
+                String.valueOf(limit)
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                Reservation res = new Reservation();
+                res.setId(cursor.getInt(cursor.getColumnIndexOrThrow(RES_ID)));
+                res.setCustomerName(cursor.getString(cursor.getColumnIndexOrThrow(RES_NAME)));
+                res.setUserEmail(cursor.getString(cursor.getColumnIndexOrThrow(RES_EMAIL)));
+                res.setDate(cursor.getString(cursor.getColumnIndexOrThrow(RES_DATE)));
+                res.setTime(cursor.getString(cursor.getColumnIndexOrThrow(RES_TIME)));
+                res.setNumberOfGuests(cursor.getInt(cursor.getColumnIndexOrThrow(RES_GUESTS)));
+                res.setTableNumber(cursor.getString(cursor.getColumnIndexOrThrow(RES_TABLE)));
+                res.setSpecialRequests(cursor.getString(cursor.getColumnIndexOrThrow(RES_SPECIAL)));
+                res.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(RES_STATUS)));
+
+                reservations.add(res);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return reservations;
+    }
+
+    /**
+     * NEW METHOD: Get count of upcoming reservations
+     */
+    public int getUpcomingReservationsCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String currentDate = getCurrentDate();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM " + TABLE_RESERVATION +
+                        " WHERE " + RES_DATE + " >= ? AND " + RES_STATUS + " != ?",
+                new String[]{currentDate, "Cancelled"}
+        );
+
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count;
+    }
+
     public int updateReservationStatus(int reservationId, String newStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -263,6 +363,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return menuItems;
     }
 
+    /**
+     * NEW METHOD: Get menu items count
+     */
+    public int getMenuItemsCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_MENU, null);
+
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    public int updateMenuItem(MenuItem item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MENU_NAME, item.getName());
+        values.put(MENU_CATEGORY, item.getCategory());
+        values.put(MENU_PRICE, item.getPrice());
+        values.put(MENU_DESC, item.getDescription());
+        values.put(MENU_IMAGE, item.getImageUrl());
+
+        int rows = db.update(TABLE_MENU, values, MENU_ID + "=?",
+                new String[]{String.valueOf(item.getId())});
+        db.close();
+        return rows;
+    }
+
+    public int deleteMenuItem(int menuItemId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = db.delete(TABLE_MENU, MENU_ID + "=?",
+                new String[]{String.valueOf(menuItemId)});
+        db.close();
+        return rows;
+    }
+
     // ---------------- NOTIFICATION METHODS ----------------
 
     public long addNotification(String title, String message, String timestamp, String type, String userEmail) {
@@ -300,15 +439,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Notification> notificationList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // ✅ Use constants for table & column names
         Cursor cursor = db.query(
-                TABLE_NOTIFICATION,                 // Correct table
-                null,                               // All columns
-                NOTIF_EMAIL + "=?",                  // Correct column
+                TABLE_NOTIFICATION,
+                null,
+                NOTIF_EMAIL + "=?",
                 new String[]{userEmail},
                 null,
                 null,
-                NOTIF_TIMESTAMP + " DESC"            // Correct column
+                NOTIF_TIMESTAMP + " DESC"
         );
 
         if (cursor.moveToFirst()) {
@@ -319,6 +457,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 notification.setMessage(cursor.getString(cursor.getColumnIndexOrThrow(NOTIF_MESSAGE)));
                 notification.setRead(cursor.getInt(cursor.getColumnIndexOrThrow(NOTIF_READ)) == 1);
                 notification.setTimestamp(cursor.getString(cursor.getColumnIndexOrThrow(NOTIF_TIMESTAMP)));
+                notification.setType(cursor.getString(cursor.getColumnIndexOrThrow(NOTIF_TYPE)));
 
                 notificationList.add(notification);
             } while (cursor.moveToNext());
@@ -326,10 +465,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         cursor.close();
         db.close();
-
         return notificationList;
     }
-
 
     public int markNotificationAsRead(int notificationId) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -345,31 +482,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         int rows = db.delete(TABLE_NOTIFICATION, NOTIF_ID + "=?",
                 new String[]{String.valueOf(notificationId)});
-        db.close();
-        return rows;
-    }
-
-    // ---------------- MENU ITEM METHODS ----------------
-
-    public int updateMenuItem(MenuItem item) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(MENU_NAME, item.getName());
-        values.put(MENU_CATEGORY, item.getCategory());
-        values.put(MENU_PRICE, item.getPrice());
-        values.put(MENU_DESC, item.getDescription());
-        values.put(MENU_IMAGE, item.getImageUrl());
-
-        int rows = db.update(TABLE_MENU, values, MENU_ID + "=?",
-                new String[]{String.valueOf(item.getId())});
-        db.close();
-        return rows;
-    }
-
-    public int deleteMenuItem(int menuItemId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int rows = db.delete(TABLE_MENU, MENU_ID + "=?",
-                new String[]{String.valueOf(menuItemId)});
         db.close();
         return rows;
     }
@@ -398,5 +510,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return exists;
+    }
+
+    // ---------------- UTILITY METHODS ----------------
+
+    /**
+     * NEW METHOD: Get current timestamp in standard format
+     */
+    public String getCurrentTimestamp() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+
+    /**
+     * NEW METHOD: Get current date in standard format
+     */
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(new Date());
     }
 }

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/white">
 
     <!-- Header -->
     <RelativeLayout
@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:padding="16dp"
-        android:background="#FFF5EB"
+        android:background="@color/background_cream"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -23,7 +23,7 @@
             android:text="RESERVATION"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="@color/text_primary"
             android:layout_centerInParent="true"/>
 
         <ImageView
@@ -31,7 +31,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@android:drawable/ic_popup_reminder"
-            android:tint="#FF9966"
+            app:tint="@color/orange_primary"
             android:padding="4dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
@@ -55,51 +55,50 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="20dp">
 
             <!-- Booking Form -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Book Your Table"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_marginBottom="12dp"/>
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="16dp"/>
 
             <!-- Date & Time -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="12dp">
 
                 <EditText
                     android:id="@+id/editTextDate"
                     android:layout_width="0dp"
-                    android:layout_height="45dp"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
-                    android:padding="10dp"
+                    android:background="@drawable/et_background"
+                    android:padding="12dp"
                     android:hint="Date"
                     android:textSize="14sp"
                     android:focusable="false"
                     android:clickable="true"
-                    android:layout_marginEnd="4dp"/>
+                    android:layout_marginEnd="6dp"/>
 
                 <EditText
                     android:id="@+id/editTextTime"
                     android:layout_width="0dp"
-                    android:layout_height="45dp"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
-                    android:padding="10dp"
+                    android:background="@drawable/et_background"
+                    android:padding="12dp"
                     android:hint="Time"
                     android:textSize="14sp"
                     android:focusable="false"
                     android:clickable="true"
-                    android:layout_marginStart="4dp"/>
+                    android:layout_marginStart="6dp"/>
             </LinearLayout>
 
             <!-- Guests & Table -->
@@ -107,64 +106,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="12dp">
 
                 <EditText
                     android:id="@+id/editTextGuests"
                     android:layout_width="0dp"
-                    android:layout_height="45dp"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
-                    android:padding="10dp"
+                    android:background="@drawable/et_background"
+                    android:padding="12dp"
                     android:hint="Guests"
                     android:textSize="14sp"
                     android:inputType="number"
-                    android:layout_marginEnd="4dp"/>
+                    android:layout_marginEnd="6dp"/>
 
                 <Spinner
                     android:id="@+id/spinnerTable"
                     android:layout_width="0dp"
-                    android:layout_height="45dp"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
-                    android:layout_marginStart="4dp"/>
+                    android:background="@drawable/et_background"
+                    android:layout_marginStart="6dp"/>
             </LinearLayout>
 
             <!-- Special Requests -->
             <EditText
                 android:id="@+id/editTextSpecialRequests"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@android:color/white"
-                android:padding="10dp"
+                android:layout_height="80dp"
+                android:background="@drawable/et_background"
+                android:padding="12dp"
                 android:hint="Special Requests (Optional)"
                 android:textSize="14sp"
                 android:gravity="top"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="16dp"/>
 
             <!-- Reserve Button -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReserve"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="52dp"
                 android:text="RESERVE"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:backgroundTint="#FF9966"
+                app:cornerRadius="12dp"
+                android:backgroundTint="@color/orange_primary"
                 android:textColor="@android:color/white"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="20dp"/>
 
             <!-- Tabs -->
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFF5EB"
-                app:tabSelectedTextColor="#FF9966"
-                app:tabTextColor="#666666"
-                app:tabIndicatorColor="#FF9966"
-                android:layout_marginBottom="8dp"/>
+                android:background="@color/background_cream"
+                app:tabSelectedTextColor="@color/orange_primary"
+                app:tabTextColor="@color/text_secondary"
+                app:tabIndicatorColor="@color/orange_primary"
+                android:layout_marginBottom="12dp"/>
 
             <!-- Reservations List -->
             <androidx.recyclerview.widget.RecyclerView
@@ -180,7 +179,7 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="@color/white"
         android:elevation="8dp"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"

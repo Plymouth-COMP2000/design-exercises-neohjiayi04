@@ -15,65 +15,57 @@ import com.example.dineo.models.Notification;
 
 import java.util.List;
 
-/**
- * Notification Adapter - Display notifications for users
- * Student ID: BSSE2506008
- */
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
+public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
 
-    private Context context;
-    private List<Notification> notifications;
-    private OnNotificationActionListener listener;
+    private final Context context;
+    private final List<Notification> notificationList;
+    private final OnNotificationActionListener listener;
 
+    // Interface for notification actions
     public interface OnNotificationActionListener {
         void onNotificationClick(Notification notification);
         void onDeleteClick(Notification notification);
     }
 
-    public NotificationAdapter(Context context, List<Notification> notifications, OnNotificationActionListener listener) {
+    // Constructor - Context FIRST, then List, then Listener
+    public NotificationAdapter(Context context, List<Notification> notificationList, OnNotificationActionListener listener) {
         this.context = context;
-        this.notifications = notifications;
+        this.notificationList = notificationList;
         this.listener = listener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public NotificationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false);
-        return new ViewHolder(view);
+        return new NotificationViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Notification notification = notifications.get(position);
+    public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
+        Notification notification = notificationList.get(position);
 
         holder.textViewTitle.setText(notification.getTitle());
         holder.textViewMessage.setText(notification.getMessage());
         holder.textViewTimestamp.setText(notification.getTimestamp());
 
-        // Set icon based on notification type
-        int iconResource = getIconForType(notification.getType());
-        holder.imageViewIcon.setImageResource(iconResource);
-
-        // Set background based on read status
+        // Visual indicator for unread notifications
         if (notification.isRead()) {
-            // Read notification - normal background
-            holder.itemView.setBackgroundColor(0xFFFFFFFF); // White
-            holder.textViewTitle.setTypeface(null, android.graphics.Typeface.NORMAL);
+            holder.itemView.setAlpha(0.6f);
+            holder.imageViewIcon.setAlpha(0.5f);
         } else {
-            // Unread notification - highlighted background
-            holder.itemView.setBackgroundColor(0xFFFFF5EB); // Light orange
-            holder.textViewTitle.setTypeface(null, android.graphics.Typeface.BOLD);
+            holder.itemView.setAlpha(1.0f);
+            holder.imageViewIcon.setAlpha(1.0f);
         }
 
-        // Click on notification
+        // Click listener for the whole item
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onNotificationClick(notification);
             }
         });
 
-        // Delete button
+        // Delete button click listener
         holder.imageViewDelete.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDeleteClick(notification);
@@ -83,47 +75,21 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public int getItemCount() {
-        return notifications.size();
+        return notificationList != null ? notificationList.size() : 0;
     }
 
-    /**
-     * Get icon resource based on notification type
-     */
-    private int getIconForType(String type) {
-        if (type == null) {
-            return android.R.drawable.ic_dialog_info;
-        }
-
-        switch (type) {
-            case "reservation_confirmed":
-                return android.R.drawable.ic_menu_my_calendar; // Calendar icon
-
-            case "reservation_modified":
-                return android.R.drawable.ic_menu_edit; // Edit icon
-
-            case "reservation_cancelled":
-                return android.R.drawable.ic_delete; // Delete icon
-
-            case "new_reservation":
-                return android.R.drawable.ic_input_add; // Add icon
-
-            default:
-                return android.R.drawable.ic_dialog_info; // Info icon
-        }
-    }
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageViewIcon, imageViewDelete;
+    static class NotificationViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle, textViewMessage, textViewTimestamp;
+        ImageView imageViewIcon, imageViewDelete;
 
-        public ViewHolder(@NonNull View itemView) {
+        public NotificationViewHolder(@NonNull View itemView) {
             super(itemView);
-            // ✅ CORRECTED IDs to match item_notification.xml
-            imageViewIcon = itemView.findViewById(R.id.imageViewIcon);
-            imageViewDelete = itemView.findViewById(R.id.imageViewDelete);
+            // FIXED: Use correct IDs from item_notification.xml
             textViewTitle = itemView.findViewById(R.id.textViewTitle);
             textViewMessage = itemView.findViewById(R.id.textViewMessage);
             textViewTimestamp = itemView.findViewById(R.id.textViewTimestamp);
+            imageViewIcon = itemView.findViewById(R.id.imageViewIcon);
+            imageViewDelete = itemView.findViewById(R.id.imageViewDelete);
         }
     }
 }

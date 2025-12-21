@@ -17,22 +17,27 @@ import com.example.dineo.models.Notification;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationActivity extends BaseActivity
+/**
+ * Staff Notification Activity
+ * Shows notifications for staff members
+ */
+public class StaffNotificationActivity extends StaffBaseActivity
         implements NotificationAdapter.OnNotificationActionListener {
 
     private DatabaseHelper db;
     private RecyclerView recyclerView;
     private TextView emptyState;
     private SharedPreferences prefs;
+    private NotificationAdapter adapter;
+    private List<Notification> notificationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
-        // FIXED: Use R.id.nav_profile instead of nav_notifications
-        // Since nav_notifications doesn't exist in bottom_nav_menu
-        setupBottomNavigation(R.id.nav_profile);
+        // Setup staff bottom navigation
+        setupStaffBottomNavigation(R.id.nav_staff_profile);
 
         db = new DatabaseHelper(this);
         prefs = getSharedPreferences("DinoPrefs", MODE_PRIVATE);
@@ -43,6 +48,12 @@ public class NotificationActivity extends BaseActivity
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         back.setOnClickListener(v -> finish());
+
+        notificationList = new ArrayList<>();
+
+        // FIXED: Pass Context first, then list, then listener
+        adapter = new NotificationAdapter(this, notificationList, this);
+        recyclerView.setAdapter(adapter);
 
         loadNotifications();
     }
@@ -55,19 +66,18 @@ public class NotificationActivity extends BaseActivity
         }
 
         List<Notification> all = db.getUserNotifications(email);
-        List<Notification> filtered = new ArrayList<>();
+        notificationList.clear();
 
         for (Notification n : all) {
             if (shouldShow(n.getType())) {
-                filtered.add(n);
+                notificationList.add(n);
             }
         }
 
-        if (filtered.isEmpty()) {
+        if (notificationList.isEmpty()) {
             showEmpty();
         } else {
-            recyclerView.setAdapter(
-                    new NotificationAdapter(this, filtered, this));
+            adapter.notifyDataSetChanged();
             recyclerView.setVisibility(View.VISIBLE);
             emptyState.setVisibility(View.GONE);
         }
@@ -78,11 +88,10 @@ public class NotificationActivity extends BaseActivity
 
         switch (type) {
             case "reservation_confirmed":
-                return prefs.getBoolean("notifyBooking", true);
+            case "reservation_status":
             case "reservation_modified":
-                return prefs.getBoolean("notifyModification", true);
             case "reservation_cancelled":
-                return prefs.getBoolean("notifyCancellation", true);
+                return true;
             default:
                 return true;
         }

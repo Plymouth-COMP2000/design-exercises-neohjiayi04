@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="MENU"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:layout_centerInParent="true"/>
 
@@ -25,46 +25,56 @@
             android:id="@+id/imageViewNotification"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@android:drawable/ic_popup_reminder"
+            android:src="@android:drawable/ic_dialog_info"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 
-    <!-- Search Bar -->
-    <SearchView
-        android:id="@+id/searchView"
+    <!-- Search and Category -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="#FFE4C8"
-        android:queryHint="Search"/>
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <!-- Menu Items List -->
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchViewMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:queryHint="Search menu items"/>
+
+        <Spinner
+            android:id="@+id/spinnerCategoryFilter"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/white"/>
+    </LinearLayout>
+
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMenu"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp"/>
+        android:padding="16dp"/>
 
-    <!-- Floating Action Button -->
+    <!-- FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddItem"
+        android:id="@+id/fabAddMenuItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="#FF9966"
-        app:tint="@android:color/white"
-        android:layout_marginBottom="80dp"/>
+        android:src="@android:drawable/ic_input_add"/>
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:menu="@menu/staff_bottom_nav_menu"
         android:background="#FFF5EB"
-        app:menu="@menu/staff_bottom_nav_menu"/>
-
+        app:itemIconTint="#FF9966"
+        app:itemTextColor="#FF9966"/>
 </LinearLayout>

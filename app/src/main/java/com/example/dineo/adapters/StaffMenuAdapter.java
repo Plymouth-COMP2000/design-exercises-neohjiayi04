@@ -3,14 +3,13 @@ package com.example.dineo.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,157 +17,77 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dineo.R;
 import com.example.dineo.models.MenuItem;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
-/**
- * StaffMenuAdapter - Manage menu items with edit/delete (NO Glide)
- * Student ID: BSSE2506008
- */
-public class StaffMenuAdapter extends RecyclerView.Adapter<StaffMenuAdapter.MenuViewHolder> {
-
-    private Context context;
-    private List<MenuItem> menuItems;
-    private OnMenuItemActionListener listener;
+public class StaffMenuAdapter extends RecyclerView.Adapter<StaffMenuAdapter.ViewHolder> {
 
     public interface OnMenuItemActionListener {
-        void onEditClick(MenuItem menuItem);
-        void onDeleteClick(MenuItem menuItem);
+        void onEditClick(MenuItem item);
+        void onDeleteClick(MenuItem item);
     }
 
-    public StaffMenuAdapter(Context context, List<MenuItem> menuItems, OnMenuItemActionListener listener) {
+    private List<MenuItem> menuList;
+    private Context context;
+    private OnMenuItemActionListener listener;
+
+    public StaffMenuAdapter(List<MenuItem> menuList, Context context, OnMenuItemActionListener listener) {
+        this.menuList = menuList;
         this.context = context;
-        this.menuItems = menuItems;
         this.listener = listener;
     }
 
     @NonNull
     @Override
-    public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_staff_menu, parent, false);
-        return new MenuViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MenuViewHolder holder, int position) {
-        MenuItem menuItem = menuItems.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        MenuItem item = menuList.get(position);
+        holder.textViewName.setText(item.getName());
+        holder.textViewCategory.setText(item.getCategory());
+        holder.textViewPrice.setText("$" + String.format("%.2f", item.getPrice()));
 
-        // Set name
-        holder.textViewName.setText(menuItem.getName());
-
-        // Set price
-        holder.textViewPrice.setText(menuItem.getPriceFormatted());
-
-        // Set category
-        if (menuItem.getCategory() != null && !menuItem.getCategory().isEmpty()) {
-            holder.textViewCategory.setText(menuItem.getCategory());
-            holder.textViewCategory.setVisibility(View.VISIBLE);
-        } else {
-            holder.textViewCategory.setVisibility(View.GONE);
-        }
-
-        // Load image WITHOUT Glide
-        String imageData = menuItem.getImageUrl();
-        if (imageData != null && !imageData.isEmpty()) {
-            if (imageData.startsWith("http://") || imageData.startsWith("https://")) {
-                // URL - load in background
-                holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
-                new LoadImageTask(holder.imageViewMenu).execute(imageData);
-            } else {
-                // Base64 - decode directly
-                try {
-                    byte[] decodedBytes = Base64.decode(imageData, Base64.DEFAULT);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-                    if (bitmap != null) {
-                        holder.imageViewMenu.setImageBitmap(bitmap);
-                    } else {
-                        holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
+        // Load image (Base64 or URL)
+        try {
+            if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+                if (item.getImageUrl().startsWith("http")) {
+                    // URL: Use default placeholder (or Glide/Picasso if available)
+                    holder.imageView.setImageResource(R.drawable.ic_launcher_foreground);
+                } else {
+                    byte[] decoded = Base64.decode(item.getImageUrl(), Base64.DEFAULT);
+                    Bitmap bmp = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
+                    holder.imageView.setImageBitmap(bmp);
                 }
+            } else {
+                holder.imageView.setImageResource(R.drawable.ic_launcher_foreground);
             }
-        } else {
-            holder.imageViewMenu.setImageResource(android.R.drawable.ic_menu_gallery);
+        } catch (Exception e) {
+            holder.imageView.setImageResource(R.drawable.ic_launcher_foreground);
+            e.printStackTrace();
         }
 
-        // Edit button
-        holder.btnEdit.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onEditClick(menuItem);
-            }
-        });
-
-        // Delete button
-        holder.btnDelete.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onDeleteClick(menuItem);
-            }
-        });
+        holder.imageViewEdit.setOnClickListener(v -> listener.onEditClick(item));
+        holder.imageViewDelete.setOnClickListener(v -> listener.onDeleteClick(item));
     }
 
     @Override
-    public int getItemCount() {
-        return menuItems.size();
-    }
+    public int getItemCount() { return menuList.size(); }
 
-    /**
-     * AsyncTask to load images from URL
-     */
-    private static class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
-        private ImageView imageView;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView, imageViewEdit, imageViewDelete;
+        TextView textViewName, textViewCategory, textViewPrice;
 
-        public LoadImageTask(ImageView imageView) {
-            this.imageView = imageView;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String imageUrl = urls[0];
-            Bitmap bitmap = null;
-
-            try {
-                URL url = new URL(imageUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                bitmap = BitmapFactory.decodeStream(input);
-                input.close();
-                connection.disconnect();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            if (result != null && imageView != null) {
-                imageView.setImageBitmap(result);
-            }
-        }
-    }
-
-    static class MenuViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageViewMenu;
-        TextView textViewName, textViewPrice, textViewCategory;
-        ImageButton btnEdit, btnDelete;
-
-        public MenuViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageViewMenu = itemView.findViewById(R.id.imageViewMenu);
-            textViewName = itemView.findViewById(R.id.textViewMenuName);
-            textViewPrice = itemView.findViewById(R.id.textViewMenuPrice);
+            imageView = itemView.findViewById(R.id.imageViewMenuItem);
+            imageViewEdit = itemView.findViewById(R.id.imageViewEdit);
+            imageViewDelete = itemView.findViewById(R.id.imageViewDelete);
+            textViewName = itemView.findViewById(R.id.textViewItemName);
             textViewCategory = itemView.findViewById(R.id.textViewCategory);
-            btnEdit = itemView.findViewById(R.id.btnEdit);
-            btnDelete = itemView.findViewById(R.id.btnDelete);
+            textViewPrice = itemView.findViewById(R.id.textViewPrice);
         }
     }
 }

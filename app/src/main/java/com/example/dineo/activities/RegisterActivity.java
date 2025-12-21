@@ -1,7 +1,8 @@
 package com.example.dineo.activities;
 
-import android.content.Intent;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,12 +22,13 @@ public class RegisterActivity extends AppCompatActivity {
     private Button btnRegister;
     private TextView textLoginLink;
 
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Bind views
         editUsername = findViewById(R.id.editUsername);
         editPassword = findViewById(R.id.editPassword);
         editFirstName = findViewById(R.id.editFirstName);
@@ -36,9 +38,10 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         textLoginLink = findViewById(R.id.textLoginLink);
 
-        // Button listeners
+        sharedPreferences = getSharedPreferences("DinoPrefs", MODE_PRIVATE);
+
         btnRegister.setOnClickListener(v -> registerUser());
-        textLoginLink.setOnClickListener(v -> finish()); // go back to login
+        textLoginLink.setOnClickListener(v -> finish());
     }
 
     private void registerUser() {
@@ -48,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
         final String lastName = editLastName.getText().toString().trim();
         final String email = editEmail.getText().toString().trim();
         final String contact = editContact.getText().toString().trim();
-        final String userType = "Guest"; // default role
+        final String userType = "Guest";
 
         if (username.isEmpty() || password.isEmpty() || firstName.isEmpty() ||
                 lastName.isEmpty() || email.isEmpty() || contact.isEmpty()) {
@@ -56,46 +59,45 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Show loading dialog
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage("Registering...");
         dialog.setCancelable(false);
         dialog.show();
 
-        // Background thread for network requests
         new Thread(() -> {
             try {
-                // 1️⃣ Register user
-                String registerResponse = ApiHelper.createUser(
-                        username, password, firstName, lastName, email, contact, userType
-                );
+                String registerResponse = ApiHelper.createUser(username, password, firstName, lastName, email, contact, userType);
 
                 if (registerResponse.startsWith("Error")) {
                     runOnUiThread(() -> {
                         dialog.dismiss();
-                        Toast.makeText(this, "Registration failed: " + registerResponse, Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Registration failed", Toast.LENGTH_LONG).show();
                     });
                     return;
                 }
 
-                // 2️⃣ Auto-login using username
                 String loginResponse = ApiHelper.loginUser(username, password);
+                if (loginResponse.startsWith("Error")) {
+                    runOnUiThread(() -> {
+                        dialog.dismiss();
+                        Toast.makeText(this, "Login failed after registration", Toast.LENGTH_LONG).show();
+                    });
+                    return;
+                }
 
+                sharedPreferences.edit().putString("user_json", loginResponse).apply();
                 JSONObject json = new JSONObject(loginResponse);
                 String role = json.getString("usertype");
 
                 runOnUiThread(() -> {
                     dialog.dismiss();
-                    Toast.makeText(this, "Welcome " + username + "!", Toast.LENGTH_SHORT).show();
-
-                    // Navigate to correct dashboard
-                    if (role.equalsIgnoreCase("Staff")) {
+                    Toast.makeText(this, "Welcome " + firstName + "!", Toast.LENGTH_SHORT).show();
+                    if ("Staff".equalsIgnoreCase(role)) {
                         startActivity(new Intent(this, StaffDashboardActivity.class));
                     } else {
                         startActivity(new Intent(this, GuestMenuActivity.class));
                     }
-
-                    finishAffinity(); // close register + login activities
+                    finishAffinity();
                 });
 
             } catch (Exception e) {

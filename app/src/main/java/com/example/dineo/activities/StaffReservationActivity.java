@@ -1,11 +1,15 @@
 package com.example.dineo.activities;
 
-import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,251 +17,174 @@ import com.example.dineo.R;
 import com.example.dineo.adapters.StaffReservationAdapter;
 import com.example.dineo.database.DatabaseHelper;
 import com.example.dineo.models.Reservation;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-/**
- * StaffReservationActivity - Staff manages all reservations
- * Features:
- * - View all reservations (Pending, Confirmed, Seated, Cancelled)
- * - Confirm pending reservations
- * - Mark reservations as seated
- * - Cancel reservations with confirmation dialog
- * - View reservation details
- */
-public class StaffReservationActivity extends AppCompatActivity {
+public class StaffReservationActivity extends StaffBaseActivity
+        implements StaffReservationAdapter.OnReservationClickListener {
 
-    private RecyclerView recyclerViewReservations;
+    private RecyclerView recyclerView;
+    private StaffReservationAdapter adapter;
+    private List<Reservation> allReservations;
+
     private TabLayout tabLayout;
-    private BottomNavigationView bottomNavigationView;
+    private TextView textViewDateFilter;
+    private ImageView imageViewNotification;
 
-    private DatabaseHelper databaseHelper;
-    private List<Reservation> filteredReservations;
-    private StaffReservationAdapter staffReservationAdapter;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_reservation);
 
-        // Initialize views
-        recyclerViewReservations = findViewById(R.id.recyclerViewReservations);
-        tabLayout = findViewById(R.id.tabLayout);
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        dbHelper = new DatabaseHelper(this);
 
-        // Initialize database
-        databaseHelper = new DatabaseHelper(this);
-        filteredReservations = new ArrayList<>();
+        // Notification icon
+        imageViewNotification = findViewById(R.id.imageViewNotification);
+        imageViewNotification.setOnClickListener(v -> {
+            startActivity(new Intent(this, StaffNotificationActivity.class));
+        });
 
-        // Setup RecyclerView
-        recyclerViewReservations.setLayoutManager(new LinearLayoutManager(this));
+        // Date filter - FIXED ID
+        textViewDateFilter = findViewById(R.id.textViewDateFilter);
+        textViewDateFilter.setOnClickListener(v -> showDatePicker());
 
-        staffReservationAdapter = new StaffReservationAdapter(
-                this,
-                filteredReservations,
-                new StaffReservationAdapter.OnReservationClickListener() {
-                    @Override
-                    public void onConfirm(Reservation reservation) {
-                        confirmReservation(reservation);
-                    }
-
-                    @Override
-                    public void onCancel(Reservation reservation) {
-                        showCancelConfirmationDialog(reservation);
-                    }
-                }
-        );
-
-        recyclerViewReservations.setAdapter(staffReservationAdapter);
-
-        // Setup tabs and navigation
+        // Tabs
+        tabLayout = findViewById(R.id.tabLayoutStatus);
         setupTabs();
-        setupBottomNavigation();
 
-        // Load pending reservations by default
-        loadReservations("Pending");
+        // RecyclerView - FIXED ID
+        recyclerView = findViewById(R.id.recyclerViewReservations);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        allReservations = new ArrayList<>();
+
+        // Pass 'this' as the listener since this activity implements the interface
+        adapter = new StaffReservationAdapter(this, new ArrayList<>(), this);
+        recyclerView.setAdapter(adapter);
+
+        // Setup bottom navigation
+        setupStaffBottomNavigation(R.id.nav_staff_reservations);
+
+        loadReservations();
     }
 
     private void setupTabs() {
+        tabLayout.addTab(tabLayout.newTab().setText("All"));
+        tabLayout.addTab(tabLayout.newTab().setText("Pending"));
+        tabLayout.addTab(tabLayout.newTab().setText("Confirmed"));
+        tabLayout.addTab(tabLayout.newTab().setText("Seated"));
+        tabLayout.addTab(tabLayout.newTab().setText("Cancelled"));
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                int position = tab.getPosition();
-                switch(position) {
-                    case 0: // Pending
-                        loadReservations("Pending");
-                        break;
-                    case 1: // Confirmed
-                        loadReservations("Confirmed");
-                        break;
-                    case 2: // Seated
-                        loadReservations("Seated");
-                        break;
-                    case 3: // Cancelled
-                        loadReservations("Cancelled");
-                        break;
-                }
+                filterReservations();
             }
-
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) { }
-
+            public void onTabUnselected(TabLayout.Tab tab) {}
             @Override
-            public void onTabReselected(TabLayout.Tab tab) { }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
 
-    /**
-     * Load reservations filtered by status
-     */
-    private void loadReservations(String status) {
-        filteredReservations.clear();
+    private void showDatePicker() {
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
 
-        List<Reservation> allReservations = databaseHelper.getAllReservations();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (DatePicker view, int selectedYear, int selectedMonth, int selectedDay) -> {
+                    String formattedDate = String.format("%04d-%02d-%02d",
+                            selectedYear, selectedMonth + 1, selectedDay);
+                    textViewDateFilter.setText(formattedDate);
+                    filterReservations();
+                }, year, month, day);
+        datePickerDialog.show();
+    }
 
-        for (Reservation reservation : allReservations) {
-            if (reservation.getStatus() != null && reservation.getStatus().equals(status)) {
-                filteredReservations.add(reservation);
+    private void loadReservations() {
+        allReservations.clear();
+        allReservations.addAll(dbHelper.getAllReservations());
+        filterReservations();
+    }
+
+    private void filterReservations() {
+        if (allReservations == null) return;
+
+        String selectedStatus = tabLayout.getSelectedTabPosition() == 0 ? "All" :
+                tabLayout.getTabAt(tabLayout.getSelectedTabPosition()).getText().toString();
+
+        String selectedDate = textViewDateFilter.getText().toString().trim();
+        if (selectedDate.equals("Select Date")) selectedDate = "";
+
+        List<Reservation> filtered = new ArrayList<>();
+        for (Reservation res : allReservations) {
+            boolean matchStatus = selectedStatus.equals("All") || res.getStatus().equalsIgnoreCase(selectedStatus);
+            boolean matchDate = selectedDate.isEmpty() || res.getDate().equals(selectedDate);
+
+            if (matchStatus && (selectedDate.isEmpty() || matchDate)) {
+                filtered.add(res);
             }
         }
+        adapter.setReservations(filtered);
+    }
 
-        if (filteredReservations.isEmpty()) {
-            Toast.makeText(this, "No " + status.toLowerCase() + " reservations", Toast.LENGTH_SHORT).show();
+    // ============== INTERFACE IMPLEMENTATIONS ==============
+
+    @Override
+    public void onReservationClick(Reservation reservation) {
+        // Navigate to detail view
+        Intent intent = new Intent(this, StaffReservationDetailActivity.class);
+        intent.putExtra("RESERVATION_ID", reservation.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onConfirm(Reservation reservation) {
+        int result = dbHelper.updateReservationStatus(reservation.getId(), "Confirmed");
+        if (result > 0) {
+            Toast.makeText(this, "Reservation confirmed", Toast.LENGTH_SHORT).show();
+
+            // Send notification to user
+            String title = "Reservation Confirmed";
+            String message = "Your reservation on " + reservation.getDate() +
+                    " at " + reservation.getTime() + " has been confirmed.";
+            dbHelper.addNotification(title, message, dbHelper.getCurrentTimestamp(),
+                    "reservation_confirmed", reservation.getUserEmail());
+
+            loadReservations();
+        } else {
+            Toast.makeText(this, "Failed to confirm reservation", Toast.LENGTH_SHORT).show();
         }
-
-        staffReservationAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Confirm a pending reservation
-     */
-    private void confirmReservation(Reservation reservation) {
-        new AlertDialog.Builder(this)
-                .setTitle("Confirm Reservation")
-                .setMessage("Confirm reservation for " + reservation.getCustomerName() + "?")
-                .setPositiveButton("Confirm", (dialog, which) -> {
-                    int result = databaseHelper.updateReservationStatus(reservation.getId(), "Confirmed");
-
-                    if (result > 0) {
-                        Toast.makeText(this, "Reservation confirmed!", Toast.LENGTH_SHORT).show();
-
-                        // Send notification to customer
-                        databaseHelper.addNotification(
-                                "Reservation Confirmed",
-                                "Your reservation for " + reservation.getDate() + " at " +
-                                        reservation.getTime() + " has been confirmed!",
-                                getCurrentTimestamp(),
-                                "reservation",
-                                reservation.getUserEmail()
-                        );
-
-                        // Reload current tab
-                        loadReservations("Pending");
-                    } else {
-                        Toast.makeText(this, "Failed to confirm reservation", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
-
-    /**
-     * Show confirmation dialog before cancelling
-     */
-    private void showCancelConfirmationDialog(Reservation reservation) {
-        new AlertDialog.Builder(this)
-                .setTitle("⚠️ Cancel Reservation")
-                .setMessage("Are you sure you want to cancel this reservation?\n\n" +
-                        "Guest: " + reservation.getCustomerName() + "\n" +
-                        "Date: " + reservation.getDate() + "\n" +
-                        "Time: " + reservation.getTime() + "\n\n" +
-                        "This action cannot be undone.")
-                .setPositiveButton("Yes, Cancel", (dialog, which) -> {
-                    cancelReservation(reservation);
-                })
-                .setNegativeButton("No, Keep It", null)
-                .setCancelable(true)
-                .show();
-    }
-
-    /**
-     * Cancel a reservation
-     */
-    private void cancelReservation(Reservation reservation) {
-        int result = databaseHelper.updateReservationStatus(reservation.getId(), "Cancelled");
-
+    @Override
+    public void onCancel(Reservation reservation) {
+        int result = dbHelper.updateReservationStatus(reservation.getId(), "Cancelled");
         if (result > 0) {
             Toast.makeText(this, "Reservation cancelled", Toast.LENGTH_SHORT).show();
 
-            // Send notification to customer
-            databaseHelper.addNotification(
-                    "Reservation Cancelled",
-                    "Your reservation for " + reservation.getDate() + " at " +
-                            reservation.getTime() + " has been cancelled by the restaurant.",
-                    getCurrentTimestamp(),
-                    "reservation",
-                    reservation.getUserEmail()
-            );
+            // Send notification to user
+            String title = "Reservation Cancelled";
+            String message = "Your reservation on " + reservation.getDate() +
+                    " at " + reservation.getTime() + " has been cancelled.";
+            dbHelper.addNotification(title, message, dbHelper.getCurrentTimestamp(),
+                    "reservation_cancelled", reservation.getUserEmail());
 
-            // Reload current tab
-            int currentTab = tabLayout.getSelectedTabPosition();
-            switch(currentTab) {
-                case 0: loadReservations("Pending"); break;
-                case 1: loadReservations("Confirmed"); break;
-                case 2: loadReservations("Seated"); break;
-                case 3: loadReservations("Cancelled"); break;
-            }
+            loadReservations();
         } else {
             Toast.makeText(this, "Failed to cancel reservation", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /**
-     * Get current timestamp for notifications
-     */
-    private String getCurrentTimestamp() {
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
-                "MMM dd, yyyy h:mm a",
-                java.util.Locale.getDefault()
-        );
-        return sdf.format(new java.util.Date());
-    }
-
-    /**
-     * Setup bottom navigation
-     */
-    private void setupBottomNavigation() {
-        bottomNavigationView.setSelectedItemId(R.id.nav_staff_dashboard);
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.nav_staff_dashboard) {
-                return true;
-            } else if (id == R.id.nav_menu) {
-                startActivity(new Intent(this, StaffMenuActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-                return true;
-            }
-
-            return false;
-        });
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload reservations when returning to activity
-        int currentTab = tabLayout.getSelectedTabPosition();
-        switch(currentTab) {
-            case 0: loadReservations("Pending"); break;
-            case 1: loadReservations("Confirmed"); break;
-            case 2: loadReservations("Seated"); break;
-            case 3: loadReservations("Cancelled"); break;
-        }
+        loadReservations();
     }
 }

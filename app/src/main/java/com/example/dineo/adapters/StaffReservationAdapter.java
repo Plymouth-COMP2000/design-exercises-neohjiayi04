@@ -10,76 +10,94 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dineo.R;
-import com.example.dineo.database.DatabaseHelper;
 import com.example.dineo.models.Reservation;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class StaffReservationAdapter extends RecyclerView.Adapter<StaffReservationAdapter.ReservationViewHolder> {
-    private Context context;
-    private List<Reservation> reservations;
-    private OnReservationClickListener listener;
+/**
+ * Adapter for Staff Reservation List
+ * Safe, defensive, and status-aware
+ */
+public class StaffReservationAdapter
+        extends RecyclerView.Adapter<StaffReservationAdapter.ReservationViewHolder> {
 
+    private final Context context;
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final OnReservationClickListener listener;
+
+    // ===================== INTERFACE =====================
     public interface OnReservationClickListener {
+        void onReservationClick(Reservation reservation);
         void onConfirm(Reservation reservation);
         void onCancel(Reservation reservation);
     }
 
-    public StaffReservationAdapter(Context context, List<Reservation> reservations, OnReservationClickListener listener) {
+    // ===================== CONSTRUCTOR =====================
+    public StaffReservationAdapter(Context context,
+                                   List<Reservation> initialData,
+                                   OnReservationClickListener listener) {
         this.context = context;
-        this.reservations = reservations;
+        if (initialData != null) {
+            this.reservations.addAll(initialData);
+        }
         this.listener = listener;
     }
 
+    // ===================== ADAPTER METHODS =====================
     @NonNull
     @Override
     public ReservationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_reservation_staff, parent, false);
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.item_reservation_staff, parent, false);
         return new ReservationViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReservationViewHolder holder, int position) {
-        Reservation reservation = reservations.get(position);
+        Reservation r = reservations.get(position);
+        if (r == null) return;
 
-        holder.textViewGuestName.setText(reservation.getCustomerName());
-        String info = reservation.getDate() + " · " + reservation.getTime() + " · " +
-                reservation.getTableNumber() + " · " + reservation.getNumberOfGuests() + " Pax";
-        holder.textViewReservationInfo.setText(info);
+        // Guest name
+        holder.textGuestName.setText(
+                safeText(r.getCustomerName(), "Guest")
+        );
 
-        // Set status badge
-        holder.textViewStatusBadge.setText(reservation.getStatus().toUpperCase());
-        switch (reservation.getStatus()) {
-            case "Pending":
-                holder.textViewStatusBadge.setBackgroundColor(context.getResources().getColor(R.color.status_pending));
-                holder.buttonConfirm.setVisibility(View.VISIBLE);
-                holder.buttonCancel.setVisibility(View.VISIBLE);
-                break;
-            case "Confirmed":
-                holder.textViewStatusBadge.setBackgroundColor(context.getResources().getColor(R.color.status_confirmed));
-                holder.buttonConfirm.setVisibility(View.GONE);
-                holder.buttonCancel.setVisibility(View.VISIBLE);
-                break;
-            case "Seated":
-                holder.textViewStatusBadge.setBackgroundColor(context.getResources().getColor(R.color.status_seated));
-                holder.buttonConfirm.setVisibility(View.GONE);
-                holder.buttonCancel.setVisibility(View.VISIBLE);
-                break;
-            case "Cancelled":
-                holder.textViewStatusBadge.setBackgroundColor(context.getResources().getColor(R.color.status_cancelled));
-                holder.buttonConfirm.setVisibility(View.GONE);
-                holder.buttonCancel.setVisibility(View.GONE);
-                break;
-        }
+        // Reservation info line
+        String info = safeText(r.getDate(), "Date")
+                + " • "
+                + safeText(r.getTime(), "Time")
+                + " • "
+                + r.getGuestsFormatted();
 
-        // Button click listeners
-        holder.buttonConfirm.setOnClickListener(v -> {
-            if(listener != null) listener.onConfirm(reservation);
+        holder.textInfo.setText(info);
+
+        // Status badge
+        String status = safeText(r.getStatus(), "Pending");
+        holder.textStatus.setText(status.toUpperCase());
+
+        setupStatusUI(holder, status);
+
+        // Item click → details
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onReservationClick(r);
+            }
         });
 
-        holder.buttonCancel.setOnClickListener(v -> {
-            if(listener != null) listener.onCancel(reservation);
+        // Confirm
+        holder.btnConfirm.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onConfirm(r);
+            }
+        });
+
+        // Cancel
+        holder.btnCancel.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCancel(r);
+            }
         });
     }
 
@@ -88,17 +106,65 @@ public class StaffReservationAdapter extends RecyclerView.Adapter<StaffReservati
         return reservations.size();
     }
 
-    public static class ReservationViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewGuestName, textViewReservationInfo, textViewStatusBadge;
-        MaterialButton buttonConfirm, buttonCancel;
-
-        public ReservationViewHolder(@NonNull View itemView) {
-            super(itemView);
-            textViewGuestName = itemView.findViewById(R.id.textViewGuestName);
-            textViewReservationInfo = itemView.findViewById(R.id.textViewReservationInfo);
-            textViewStatusBadge = itemView.findViewById(R.id.textViewStatusBadge);
-            buttonConfirm = itemView.findViewById(R.id.buttonConfirm);
-            buttonCancel = itemView.findViewById(R.id.buttonCancel);
+    // ===================== PUBLIC METHODS =====================
+    public void setReservations(List<Reservation> newList) {
+        reservations.clear();
+        if (newList != null) {
+            reservations.addAll(newList);
         }
+        notifyDataSetChanged();
+    }
+
+    // ===================== VIEW HOLDER =====================
+    static class ReservationViewHolder extends RecyclerView.ViewHolder {
+
+        TextView textGuestName, textInfo, textStatus;
+        MaterialButton btnConfirm, btnCancel;
+
+        ReservationViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            textGuestName = itemView.findViewById(R.id.textViewGuestName);
+            textInfo = itemView.findViewById(R.id.textViewReservationInfo);
+            textStatus = itemView.findViewById(R.id.textViewStatusBadge);
+
+            btnConfirm = itemView.findViewById(R.id.buttonConfirm);
+            btnCancel = itemView.findViewById(R.id.buttonCancel);
+        }
+    }
+
+    // ===================== HELPERS =====================
+    private void setupStatusUI(ReservationViewHolder holder, String status) {
+
+        holder.btnConfirm.setVisibility(View.GONE);
+        holder.btnCancel.setVisibility(View.GONE);
+
+        switch (status) {
+            case "Pending":
+                holder.textStatus.setBackgroundResource(R.drawable.bg_status_pending);
+                holder.btnConfirm.setVisibility(View.VISIBLE);
+                holder.btnCancel.setVisibility(View.VISIBLE);
+                break;
+
+            case "Confirmed":
+                holder.textStatus.setBackgroundResource(R.drawable.bg_status_confirmed);
+                holder.btnCancel.setVisibility(View.VISIBLE);
+                break;
+
+            case "Seated":
+                holder.textStatus.setBackgroundResource(R.drawable.bg_status_seated);
+                break;
+
+            case "Cancelled":
+                holder.textStatus.setBackgroundResource(R.drawable.bg_status_cancelled);
+                break;
+
+            default:
+                holder.textStatus.setBackgroundResource(R.drawable.bg_status_pending);
+        }
+    }
+
+    private String safeText(String value, String fallback) {
+        return value == null || value.trim().isEmpty() ? fallback : value;
     }
 }

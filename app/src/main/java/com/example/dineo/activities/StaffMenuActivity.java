@@ -1,12 +1,15 @@
-package com.example.dineo.activities;
+package com.example.dineo.staff;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,154 +17,115 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dineo.R;
 import com.example.dineo.adapters.StaffMenuAdapter;
 import com.example.dineo.database.DatabaseHelper;
+import com.example.dineo.models.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.example.dineo.models.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Staff Menu Activity - Manage all menu items (view, edit, delete)
- * Student ID: BSSE2506008
- */
-public class StaffMenuActivity extends AppCompatActivity implements StaffMenuAdapter.OnMenuItemActionListener {
+public class StaffMenuActivity extends AppCompatActivity {
 
-    private SearchView searchView;
     private RecyclerView recyclerViewMenu;
-    private FloatingActionButton fabAddItem;
-    private ImageView imageViewNotification;
-    private BottomNavigationView bottomNavigationView;
-
-    private DatabaseHelper databaseHelper;
-    private StaffMenuAdapter menuAdapter;
-    private List<MenuItem> allMenuItems;
-    private List<MenuItem> filteredMenuItems;
+    private StaffMenuAdapter adapter;
+    private List<MenuItem> menuItemList;
+    private DatabaseHelper dbHelper;
+    private SearchView searchViewMenu;
+    private Spinner spinnerCategoryFilter;
+    private FloatingActionButton fabAddMenuItem;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_menu);
 
-        // Initialize views
-        searchView = findViewById(R.id.searchView);
+        dbHelper = new DatabaseHelper(this);
+
         recyclerViewMenu = findViewById(R.id.recyclerViewMenu);
-        fabAddItem = findViewById(R.id.fabAddItem);
-        imageViewNotification = findViewById(R.id.imageViewNotification);
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        searchViewMenu = findViewById(R.id.searchViewMenu);
+        spinnerCategoryFilter = findViewById(R.id.spinnerCategoryFilter);
+        fabAddMenuItem = findViewById(R.id.fabAddMenuItem);
 
-        // Initialize database
-        databaseHelper = new DatabaseHelper(this);
-
-        // Setup RecyclerView
         recyclerViewMenu.setLayoutManager(new LinearLayoutManager(this));
+        menuItemList = new ArrayList<>();
+        adapter = new StaffMenuAdapter(menuItemList, this, new StaffMenuAdapter.OnMenuItemActionListener() {
+            @Override
+            public void onEditClick(MenuItem item) {
+                Intent intent = new Intent(StaffMenuActivity.this, EditMenuItemActivity.class);
+                intent.putExtra("MENU_ITEM_ID", item.getId());
+                startActivity(intent);
+            }
 
-        // Load menu items
+            @Override
+            public void onDeleteClick(MenuItem item) {
+                int rows = dbHelper.deleteMenuItem(item.getId());
+                if (rows > 0) {
+                    Toast.makeText(StaffMenuActivity.this, "Deleted successfully", Toast.LENGTH_SHORT).show();
+                    loadMenuItems();
+                } else {
+                    Toast.makeText(StaffMenuActivity.this, "Delete failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        recyclerViewMenu.setAdapter(adapter);
+
+        setupCategorySpinner();
+        setupSearchView();
+        setupFab();
+
         loadMenuItems();
+    }
 
-        // Setup search
-        setupSearch();
+    private void setupCategorySpinner() {
+        String[] categories = {"All", "Main Food", "Appetizers", "Desserts", "Beverages", "Specials"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, categories);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategoryFilter.setAdapter(spinnerAdapter);
 
-        // Setup FAB
-        fabAddItem.setOnClickListener(v -> {
-            Intent intent = new Intent(StaffMenuActivity.this, AddMenuItemActivity.class);
-            startActivity(intent);
+        spinnerCategoryFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                filterMenu();
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
+    }
 
-        // Setup notification bell
-        imageViewNotification.setOnClickListener(v -> {
-            Intent intent = new Intent(StaffMenuActivity.this, NotificationActivity.class);
-            startActivity(intent);
+    private void setupSearchView() {
+        searchViewMenu.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override public boolean onQueryTextSubmit(String query) { return false; }
+            @Override public boolean onQueryTextChange(String newText) {
+                filterMenu();
+                return true;
+            }
         });
+    }
 
-        // Setup bottom navigation
-        setupBottomNavigation();
+    private void setupFab() {
+        fabAddMenuItem.setOnClickListener(v -> {
+            startActivity(new Intent(StaffMenuActivity.this, AddMenuItemActivity.class));
+        });
     }
 
     private void loadMenuItems() {
-        allMenuItems = databaseHelper.getAllMenuItems();
-        filteredMenuItems = new ArrayList<>(allMenuItems);
-
-        menuAdapter = new StaffMenuAdapter(this, filteredMenuItems, this);
-        recyclerViewMenu.setAdapter(menuAdapter);
+        menuItemList.clear();
+        List<MenuItem> allItems = dbHelper.getAllMenuItems();
+        if (allItems != null) menuItemList.addAll(allItems);
+        adapter.notifyDataSetChanged();
     }
 
-    private void setupSearch() {
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                filterMenuItems(newText);
-                return true;
-            }
-        });
-    }
-
-    private void filterMenuItems(String query) {
-        filteredMenuItems.clear();
-
-        if (query.isEmpty()) {
-            filteredMenuItems.addAll(allMenuItems);
-        } else {
-            for (MenuItem item : allMenuItems) {
-                if (item.getName().toLowerCase().contains(query.toLowerCase())) {
-                    filteredMenuItems.add(item);
-                }
-            }
+    private void filterMenu() {
+        String query = searchViewMenu.getQuery().toString().trim().toLowerCase();
+        String selectedCategory = spinnerCategoryFilter.getSelectedItem().toString();
+        List<MenuItem> filtered = new ArrayList<>();
+        for (MenuItem item : dbHelper.getAllMenuItems()) {
+            boolean matchesCategory = selectedCategory.equals("All") || item.getCategory().equalsIgnoreCase(selectedCategory);
+            boolean matchesQuery = item.getName().toLowerCase().contains(query);
+            if (matchesCategory && matchesQuery) filtered.add(item);
         }
-
-        menuAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onEditClick(MenuItem menuItem) {
-        Intent intent = new Intent(this, EditMenuItemActivity.class);
-        intent.putExtra("MENU_ITEM_ID", menuItem.getId());
-        startActivity(intent);
-    }
-
-    @Override
-    public void onDeleteClick(MenuItem menuItem) {
-        new AlertDialog.Builder(this)
-                .setTitle("Delete Menu Item")
-                .setMessage("Are you sure you want to delete " + menuItem.getName() + "?")
-                .setPositiveButton("Delete", (dialog, which) -> {
-                    databaseHelper.deleteMenuItem(menuItem.getId());
-                    Toast.makeText(this, "Menu item deleted", Toast.LENGTH_SHORT).show();
-                    loadMenuItems();
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
-
-    private void setupBottomNavigation() {
-        bottomNavigationView.setSelectedItemId(R.id.nav_menu);
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.nav_staff_dashboard) {
-                startActivity(new Intent(StaffMenuActivity.this, StaffDashboardActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (itemId == R.id.nav_menu) {
-                return true;
-            } else if (itemId == R.id.nav_reservation) {
-                startActivity(new Intent(StaffMenuActivity.this, StaffReservationActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (itemId == R.id.nav_profile) {
-                startActivity(new Intent(StaffMenuActivity.this, ProfileActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            }
-
-            return false;
-        });
+        menuItemList.clear();
+        menuItemList.addAll(filtered);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    android:background="@android:color/white">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,19 +14,31 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Guest Name and Status Badge -->
-        <RelativeLayout
+        <!-- ================= HEADER ROW ================= -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
+            <!-- Guest Icon -->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_person"
+                android:tint="@color/text_primary"/>
+
+            <!-- Guest Name -->
             <TextView
                 android:id="@+id/textViewGuestName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
                 android:text="Guest Name"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#333333"/>
+                android:textColor="@color/text_primary"/>
 
             <!-- Status Badge -->
             <TextView
@@ -35,58 +46,70 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PENDING"
-                android:textColor="@android:color/white"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_alignParentEnd="true"
-                android:background="#FFA726"/>
-        </RelativeLayout>
+                android:textColor="@android:color/white"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:background="@drawable/bg_status_pending"/>
+        </LinearLayout>
 
-        <!-- Reservation Info -->
-        <TextView
-            android:id="@+id/textViewReservationInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Date · Time · Table · Guests"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginTop="8dp"/>
-
-        <!-- Action Buttons -->
+        <!-- ================= RESERVATION INFO ================= -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal"
-            android:gravity="end"
-            android:layout_marginTop="12dp">
+            android:gravity="center_vertical">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonConfirm"
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_calendar"
+                android:tint="@color/text_secondary"/>
+
+            <TextView
+                android:id="@+id/textViewReservationInfo"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:text="CONFIRM"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:cornerRadius="20dp"
-                android:backgroundTint="#4CAF50"
-                android:textColor="@android:color/white"
-                android:layout_marginEnd="8dp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Oct 5 • 7:30 PM • 4 Guests"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"/>
+        </LinearLayout>
+
+        <!-- ================= ACTION BUTTONS ================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="end"
+            android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:text="CANCEL"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/status_cancelled"
                 app:cornerRadius="20dp"
-                android:backgroundTint="#F44336"
-                android:textColor="@android:color/white"/>
+                android:layout_marginEnd="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="CONFIRM"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/status_confirmed"
+                app:cornerRadius="20dp"/>
         </LinearLayout>
 
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>
