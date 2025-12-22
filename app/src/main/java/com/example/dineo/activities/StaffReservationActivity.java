@@ -43,7 +43,7 @@ public class StaffReservationActivity extends StaffBaseActivity
 
         dbHelper = new DatabaseHelper(this);
 
-        // Notification icon
+        // ✅ Notification icon - already setup correctly
         imageViewNotification = findViewById(R.id.imageViewNotification);
         imageViewNotification.setOnClickListener(v -> {
             startActivity(new Intent(this, StaffNotificationActivity.class));

@@ -1,10 +1,11 @@
-package com.example.dineo.staff;
+package com.example.dineo.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class StaffMenuActivity extends AppCompatActivity {
     private SearchView searchViewMenu;
     private Spinner spinnerCategoryFilter;
     private FloatingActionButton fabAddMenuItem;
+    private ImageView imageViewNotification;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,11 +71,26 @@ public class StaffMenuActivity extends AppCompatActivity {
         });
         recyclerViewMenu.setAdapter(adapter);
 
+        // ✅ Setup notification icon
+        setupNotificationIcon();
+
         setupCategorySpinner();
         setupSearchView();
         setupFab();
 
         loadMenuItems();
+    }
+
+    /**
+     * ✅ Setup notification icon click listener for Staff
+     */
+    private void setupNotificationIcon() {
+        imageViewNotification = findViewById(R.id.imageViewNotification);
+        if (imageViewNotification != null) {
+            imageViewNotification.setOnClickListener(v ->
+                    startActivity(new Intent(this, StaffNotificationActivity.class))
+            );
+        }
     }
 
     private void setupCategorySpinner() {

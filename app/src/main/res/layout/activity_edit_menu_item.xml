@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:padding="16dp"
-        android:background="#FFF5EB">
+        android:background="#FF9966">
 
         <ImageView
             android:id="@+id/imageViewBack"
@@ -23,8 +23,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Edit Menu Item"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 
@@ -172,6 +173,7 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:labelVisibilityMode="labeled"
         android:background="#FFF5EB"
         app:menu="@menu/staff_bottom_nav_menu"
         app:itemIconTint="#FF9966"

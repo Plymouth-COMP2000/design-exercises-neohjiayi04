@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/background_cream">
 
     <!-- ================= HEADER ================= -->
     <RelativeLayout
@@ -47,9 +47,9 @@
         <TextView
             android:id="@+id/textViewDateFilter"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:text="Select Date"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="16sp"
             android:drawableEnd="@drawable/ic_calendar"
             android:drawablePadding="8dp"
@@ -62,10 +62,11 @@
     <!-- ================= TABS ================= -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayoutStatus"
+        android:contentDescription="tab for reservation status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@color/colorPrimary"
-        app:tabSelectedTextColor="@color/colorPrimary"
+        app:tabIndicatorColor="@color/primary"
+        app:tabSelectedTextColor="@color/primary"
         app:tabTextColor="@color/text_secondary"
         android:background="@color/white"
         android:elevation="2dp"/>

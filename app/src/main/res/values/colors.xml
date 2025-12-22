@@ -1,66 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- ========================= -->
-    <!-- Base Colors               -->
-    <!-- ========================= -->
+    <!-- Base Colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="transparent">#00000000</color>
 
-    <!-- ========================= -->
-    <!-- Primary Theme Colors      -->
-    <!-- ========================= -->
-    <color name="primary">#FF9654</color>
-    <color name="primary_dark">#E67E3C</color>
-    <color name="accent">#FF9654</color>
+    <!-- Primary Theme Colors -->
+    <color name="primary">#FB8941</color>
+    <color name="primary_dark">#D94A1F</color>
+    <color name="accent">#FF9800</color>
 
-    <!-- Material Design aliases -->
-    <color name="colorPrimary">@color/primary</color>
-    <color name="colorPrimaryDark">@color/primary_dark</color>
-    <color name="colorAccent">@color/accent</color>
-
-    <!-- ========================= -->
-    <!-- Orange Theme Variants     -->
-    <!-- ========================= -->
+    <!-- Orange Theme Variants -->
     <color name="orange_primary">#FF9654</color>
-    <color name="orange_primary_dark">#E67E3C</color>
+    <color name="orange_primary_dark">#E46D23</color>
     <color name="orange_primary_variant">#FF7043</color>
-    <color name="orange_accent">#FF9654</color>
     <color name="orange_nav">#FFD7B5</color>
     <color name="orange_light">#FFF3E0</color>
-    <color name="orange_dark">#FFFF7733</color>
+    <color name="orange_dark">#893207</color>
 
-    <!-- ========================= -->
-    <!-- Background & Surface      -->
-    <!-- ========================= -->
-    <color name="background">#FFFFFF</color>
-    <color name="background_light">#F5F5F5</color>
+    <!-- Background & Surface -->
     <color name="background_cream">#FFF8F0</color>
-    <color name="background_gray">#EEEEEE</color>
-    <color name="surface">#FFFFFF</color>
-    <color name="card_background">#FFFFFF</color>
+    <color name="background_gray">#B3B3B3</color>
 
-    <!-- ========================= -->
-    <!-- Text Colors               -->
-    <!-- ========================= -->
+    <!-- Text Colors -->
     <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
-    <color name="text_hint">#9E9E9E</color>
+    <color name="text_secondary">#5B5A5A</color>
+    <color name="text_hint">#757575</color>
     <color name="text_dark">#000000</color>
 
-    <!-- ========================= -->
-    <!-- Gray Shades               -->
-    <!-- ========================= -->
+    <!-- Gray Shades -->
     <color name="gray_light">#E0E0E0</color>
     <color name="gray">#BDBDBD</color>
     <color name="gray_medium">#9E9E9E</color>
     <color name="gray_dark">#616161</color>
     <color name="divider">#E0E0E0</color>
 
-    <!-- ========================= -->
-    <!-- Action / Status Colors    -->
-    <!-- ========================= -->
+    <!-- Action / Status Colors -->
     <color name="success_green">#4CAF50</color>
     <color name="error">#F44336</color>
     <color name="warning_yellow">#FFC107</color>
@@ -68,22 +43,13 @@
     <color name="teal_accent">#00BCD4</color>
     <color name="status_pending">@color/orange_primary</color>
 
-    <!-- ========================= -->
-    <!-- Button Colors             -->
-    <!-- ========================= -->
+    <!-- Button Colors -->
     <color name="button_primary">@color/orange_primary</color>
     <color name="button_secondary">@color/gray_light</color>
     <color name="button_text">@color/white</color>
     <color name="button_text_dark">@color/text_primary</color>
-    <color name="category_active">#FF9966</color>
-    <color name="category_active_text">#FFFFFF</color>
-    <color name="category_inactive">#E0E0E0</color>
-    <color name="category_inactive_text">#333333</color>
 
-
-    <!-- ========================= -->
     <!-- Reservation Status Colors -->
-    <!-- ========================= -->
     <color name="status_upcoming">@color/warning_yellow</color>
     <color name="status_confirmed">@color/success_green</color>
     <color name="status_seated">@color/info_blue</color>
@@ -91,9 +57,7 @@
     <color name="status_cancelled">@color/error</color>
     <color name="status_no_show">#FF5722</color>
 
-    <!-- ========================= -->
-    <!-- Category Colors           -->
-    <!-- ========================= -->
+    <!-- Category Colors -->
     <color name="category_malaysian">#FF9800</color>
     <color name="category_thai">@color/success_green</color>
     <color name="category_western">@color/info_blue</color>
@@ -101,31 +65,12 @@
     <color name="category_beverage">#9C27B0</color>
     <color name="category_default">@color/text_secondary</color>
 
-    <!-- ========================= -->
-    <!-- Notification Colors       -->
-    <!-- ========================= -->
+    <!-- Notification Colors -->
     <color name="notif_unread">@color/orange_primary</color>
     <color name="notif_read">@color/gray_light</color>
 
-    <!-- ========================= -->
-    <!-- Overlay Colors            -->
-    <!-- ========================= -->
-    <color name="overlay_dark">#80000000</color>
-    <color name="overlay_light">#40000000</color>
-
-    <!-- ========================= -->
-    <!-- Bottom Navigation         -->
-    <!-- ========================= -->
+    <!-- Bottom Navigation -->
     <color name="bottom_nav_active">@color/orange_primary</color>
-    <color name="bottom_nav_inactive">@color/text_hint</color>
-
-    <!-- ========================= -->
-    <!-- Material Palette Extras   -->
-    <!-- ========================= -->
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="bottom_nav_inactive">@color/text_secondary</color>
 
 </resources>

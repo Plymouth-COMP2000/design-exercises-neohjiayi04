@@ -1,151 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- ========================= -->
-    <!-- App Info                  -->
-    <!-- ========================= -->
+    <!-- App Name -->
     <string name="app_name">Dineo</string>
-    <string name="logo_desc">App logo</string>
 
-    <!-- ========================= -->
-    <!-- Roles / Launch Page        -->
-    <!-- ========================= -->
-    <string name="customer">Customer</string>
-    <string name="admin">Admin</string>
-    <string name="select_role">Select your role to continue</string>
+    <!-- Menu Screen -->
+    <string name="menu">MENU</string>
+    <string name="search_menu">Search menu...</string>
+    <string name="notifications">Notifications</string>
 
-    <!-- ========================= -->
-    <!-- Login Page                 -->
-    <!-- ========================= -->
-    <string name="email_address">Email Address</string>
-    <string name="password">Password</string>
-    <string name="login">Login</string>
-    <string name="no_account">Do not have an account?</string>
-    <string name="create_account">Create Account</string>
-    <string name="terms_privacy">By continuing, you agree to our Terms &amp; Privacy</string>
+    <!-- Categories -->
+    <string name="all">All</string>
+    <string name="main">Main</string>
+    <string name="desserts">Desserts</string>
+    <string name="beverages">Beverages</string>
+    <string name="appetizers">Appetizers</string>
+    <string name="specials">Specials</string>
 
-    <!-- ========================= -->
-    <!-- Sign Up Page               -->
-    <!-- ========================= -->
+    <!-- Common Actions -->
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="back">Back</string>
+    <string name="done">Done</string>
+    <string name="close">Close</string>
+    <string name="clear_all">Clear All</string>
+
+    <!-- Login Screen -->
+    <string name="welcome_back">Welcome Back</string>
     <string name="username">Username</string>
-    <string name="sign_up">Sign Up</string>
-    <string name="already_account">Already have an account?</string>
+    <string name="password">Password</string>
+    <string name="log_in">LOG IN</string>
+    <string name="dont_have_account">REGISTER</string>
 
-    <!-- ========================= -->
-    <!-- Navigation                 -->
-    <!-- ========================= -->
+    <!-- Registration Screen -->
+    <string name="create_account">Create Account</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="contact">Contact Number</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">REGISTER</string>
+    <string name="already_have_account">Already have an account? Login</string>
+
+    <!-- Profile Screen -->
+    <string name="profile">Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="logout">Logout</string>
+    <string name="account">ACCOUNT</string>
+    <string name="settings">Settings</string>
+
+    <!-- Notification Settings -->
+    <string name="notification_settings">NOTIFICATIONS</string>
+    <string name="reservation_booking">Reservation Booking</string>
+    <string name="reservation_modification">Reservation Modification</string>
+    <string name="reservation_cancellation">Reservation Cancellation</string>
+    <string name="get_notified_changes">Get notified of any changes</string>
+    <string name="new_reservation_alert">New Reservation Alert</string>
+    <string name="new_reservation_alert_desc">Get notified when customers make new bookings</string>
+
+    <!-- Reservation Screen -->
+    <string name="reservation">RESERVATION</string>
+    <string name="book_your_table">Book Your Table</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="guests">Guests</string>
+    <string name="table">Table</string>
+    <string name="special_requests">Special Requests (Optional)</string>
+    <string name="reserve">RESERVE</string>
+    <string name="upcoming">UPCOMING</string>
+    <string name="finished">FINISHED</string>
+
+    <!-- Table Options -->
+    <string name="any_table">Any Table</string>
+    <string name="indoor_table_1">Indoor - Table 1 (2 seats)</string>
+    <string name="indoor_table_2">Indoor - Table 2 (4 seats)</string>
+    <string name="indoor_table_3">Indoor - Table 3 (4 seats)</string>
+    <string name="outdoor_table_4">Outdoor - Table 4 (6 seats)</string>
+    <string name="outdoor_table_5">Outdoor - Table 5 (6 seats)</string>
+    <string name="outdoor_table_6">Outdoor - Table 6 (8 seats)</string>
+
+    <!-- Reservation Status -->
+    <string name="pending">Pending</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="completed">Completed</string>
+    <string name="seated">Seated</string>
+    <string name="no_show">No Show</string>
+
+    <!-- Menu Details -->
+    <string name="menu_details">Menu Details</string>
+    <string name="description">Description</string>
+    <string name="customization_optional">Customization (Optional)</string>
+    <string name="less_spicy">🌶️ Less Spicy</string>
+    <string name="less_salty">🧂 Less Salty</string>
+    <string name="less_sweet">🍯 Less Sweet</string>
+
+    <!-- Staff Dashboard -->
+    <string name="dashboard">DASHBOARD</string>
+    <string name="menu_items">Menu Items</string>
+    <string name="reservations">Reservations</string>
+    <string name="add_menu_item">Add Menu Item</string>
+    <string name="manage_table">Manage Table</string>
+    <string name="todays_reservation">Today Reservation</string>
+    <string name="upcoming_reservation">Upcoming Reservation</string>
+    <string name="today_reservations">Today Reservations</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="recent_activity">Recent Activity</string>
+
+    <!-- Quick Action Cards -->
+    <string name="add_menu_item_desc">Create new menu item for guests</string>
+    <string name="add_menu_item_short">Create new item</string>
+    <string name="view_all_menus">View All Menus</string>
+    <string name="view_all_menus_desc">Edit or delete existing menu items</string>
+    <string name="view_all_menus_short">Edit or delete</string>
+    <string name="view_all_reservations">View All Reservations</string>
+    <string name="view_all_reservations_desc">Manage all reservation bookings</string>
+    <string name="view_all_reservations_short">Manage bookings</string>
+    <string name="manage_tables">Manage Tables</string>
+
+    <!-- Staff Reservation -->
+    <string name="all_reservations">All</string>
+    <string name="select_date">Select Date</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="mark_seated">SEATED</string>
+    <string name="cancel_reservation">CANCEL</string>
+
+    <!-- Staff Menu -->
+    <string name="staff_menu">MENU</string>
+    <string name="search_menu_items">Search menu items</string>
+    <string name="add_new_item">Add New Item</string>
+
+    <!-- Reservation Dialog -->
+    <string name="booking_successful">Booking Successful!</string>
+    <string name="reservation_created">Your reservation has been created successfully. We will notify you about the confirmation shortly.</string>
+    <string name="status_pending_confirmation">Status: Pending Confirmation</string>
+    <string name="got_it">GOT IT</string>
+    <string name="view_all">VIEW ALL</string>
+
+    <!-- Error Messages -->
+    <string name="error_empty_field">This field cannot be empty</string>
+    <string name="error_invalid_email">Please enter a valid email</string>
+    <string name="error_password_mismatch">Passwords do not match</string>
+    <string name="error_invalid_credentials">Invalid username or password</string>
+    <string name="error_connection">Connection error. Please try again.</string>
+
+    <!-- Success Messages -->
+    <string name="success_login">Login successful</string>
+    <string name="success_register">Registration successful</string>
+    <string name="success_update">Update successful</string>
+    <string name="success_delete">Deleted successfully</string>
+
+    <!-- Confirmation Messages -->
+    <string name="confirm_logout">Are you sure you want to logout?</string>
+    <string name="confirm_delete">Are you sure you want to delete this?</string>
+    <string name="confirm_cancel_reservation">Are you sure you want to cancel this reservation?</string>
+
+    <!-- Empty States -->
+    <string name="no_notifications">No notifications yet</string>
+    <string name="no_reservations">No reservations found</string>
+    <string name="no_menu_items">No menu items available</string>
+
+    <!-- Bottom Navigation -->
     <string name="nav_menu">Menu</string>
     <string name="nav_reservation">Reservation</string>
     <string name="nav_profile">Profile</string>
-    <string name="nav_notification">Notification</string>
     <string name="nav_dashboard">Dashboard</string>
 
-    <!-- ========================= -->
-    <!-- Add Menu Page              -->
-    <!-- ========================= -->
-    <string name="title_add_new_item">Add New Item</string>
-    <string name="upload_image">Upload Image</string>
-    <string name="upload_image_subtext">Add a photo of the menu item</string>
-    <string name="choose_file">Choose File</string>
-    <string name="hint_item_name">Item Name</string>
-    <string name="hint_description">Description</string>
-    <string name="hint_price">Price (RM)</string>
-    <string name="hint_category">Category</string>
-    <string name="btn_save_item">Save Item</string>
-    <string name="btn_discard_changes">Discard Changes</string>
-    <string name="cd_back_button">Back</string>
-    <string name="cd_upload_icon">Upload Icon</string>
-    <string name="cd_menu_image">Menu Image</string>
-
-    <!-- ========================= -->
-    <!-- User Profile Page          -->
-    <!-- ========================= -->
-    <string name="edit_profile">Edit Profile</string>
-    <string name="logout">Log Out</string>
-    <string name="edit_profile_title">Edit Profile</string>
+    <!-- Content Descriptions -->
+    <string name="app_logo">App Logo</string>
+    <string name="food_image">Food Image</string>
     <string name="profile_picture">Profile Picture</string>
-    <string name="edit_profile_picture">Edit Profile Picture</string>
-    <string name="section_account">ACCOUNT</string>
-    <string name="section_notification">NOTIFICATION</string>
-    <string name="label_full_name">Full Name</string>
-    <string name="label_email_address">Email Address</string>
-    <string name="label_phone_number">Phone Number</string>
-    <string name="hint_full_name">Enter your full name</string>
-    <string name="hint_email">Enter your email</string>
-    <string name="hint_phone">Enter your phone number</string>
-    <string name="btn_save_changes">Save Changes</string>
+    <string name="notification_icon">Notification Icon</string>
+    <string name="back_button">Back Button</string>
+    <string name="menu_icon">Menu Icon</string>
 
-    <!-- Sample Profile Data -->
-    <string name="name">Sarah Wilson</string>
-    <string name="email">sarah.wilson@email.com</string>
-    <string name="phone">+60 12–345 6789</string>
-
-    <!-- ========================= -->
-    <!-- Reset Password Page        -->
-    <!-- ========================= -->
-    <string name="reset_password_title">Reset Password</string>
-    <string name="reset_password_message">We’ve got you covered!\nSet a new password and continue enjoying Dineo.</string>
-    <string name="current_password_label">Current Password</string>
-    <string name="current_password_hint">Enter current password</string>
-    <string name="new_password_label">New Password</string>
-    <string name="new_password_hint">Enter new password</string>
-    <string name="confirm_password_label">Confirm New Password</string>
-    <string name="confirm_password_hint">Re-enter new password</string>
-    <string name="toggle_password">Toggle password visibility</string>
-    <string name="update_password">Update Password</string>
-
-    <!-- Simplified reset password aliases -->
-    <string name="reset_password">Reset Password</string>
-    <string name="current_password">Current Password</string>
-    <string name="new_password">New Password</string>
-    <string name="confirm_new_password">Confirm New Password</string>
-
-    <!-- ========================= -->
-    <!-- Reservation Page           -->
-    <!-- ========================= -->
-    <string name="reservation_title">Reservation</string>
-    <string name="new_reservation">New Reservation</string>
-    <string name="book_table_title">Book Your Table</string>
-    <string name="book_table_subtitle">Select the details for your booking</string>
-    <string name="upcoming_reservations">Upcoming Reservations</string>
-    <string name="finished_reservations">Finished Reservations</string>
-    <string name="select_date">Select Date</string>
-    <string name="select_time">Select Time</string>
-    <string name="number_of_pax">Number of Pax</string>
-    <string name="select_table">Select Table</string>
-    <string name="remark_optional">Remark (Optional)</string>
-    <string name="reserve">Reserve</string>
-    <string name="action_edit">Edit Reservation</string>
-    <string name="action_cancel">Cancel Reservation</string>
-    <string name="label_table_number">Table: %1$s</string>
-
-    <!-- Reservation Samples -->
-    <string name="sample_upcoming_date">12 Dec 2025, 7:00 PM</string>
-    <string name="sample_upcoming_pax_table">Pax: 4 | Table: 3</string>
-    <string name="sample_upcoming_status">Status: Confirmed</string>
-    <string name="sample_upcoming_remark">Remark: Window seat preferred</string>
-    <string name="sample_finished_date">05 Dec 2025, 6:30 PM</string>
-    <string name="sample_finished_pax_table">Pax: 2 | Table: 1</string>
-    <string name="sample_finished_status">Status: Completed</string>
-
-    <!-- ========================= -->
-    <!-- Notification Page          -->
-    <!-- ========================= -->
-    <string name="notification_title">Notifications</string>
-    <string name="notification_subtitle">Updates about your reservations</string>
-    <string name="no_notification">No notifications</string>
-    <string name="notification_empty">You are all caught up! No new notifications.</string>
-    <string name="notification_close">Close Notification</string>
-    <string name="notification_content">Notification message goes here</string>
-    <string name="notify_title">Notification Title</string>
-    <string name="notification_timestamps">5 mins</string>
-    <string name="clear">Clear All</string>
-
-    <!-- ========================= -->
-    <!-- Common Actions             -->
-    <!-- ========================= -->
-    <string name="edit">Edit</string>
-    <string name="delete">Delete</string>
-    <string name="back">Back</string>
-    <string name="cancel">Cancel</string>
-
+    <!-- Loading & Progress -->
+    <string name="loading">Loading...</string>
+    <string name="please_wait">Please wait...</string>
+    <string name="processing">Processing...</string>
 </resources>

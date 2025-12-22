@@ -36,11 +36,8 @@ public class GuestMenuActivity extends BaseActivity implements MenuAdapter.OnMen
         // Bottom navigation active
         setupBottomNavigation(R.id.nav_menu);
 
-        // Notification icon
-        imageViewNotification = findViewById(R.id.imageViewNotification);
-        imageViewNotification.setOnClickListener(v ->
-                startActivity(new Intent(this, NotificationActivity.class))
-        );
+        // ✅ Setup notification icon
+        setupNotificationIcon();
 
         // Category buttons
         btnCategoryAll = findViewById(R.id.btnCategoryAll);
@@ -64,6 +61,18 @@ public class GuestMenuActivity extends BaseActivity implements MenuAdapter.OnMen
 
         setupCategoryButtons();
         setupSearchFilter();
+    }
+
+    /**
+     * ✅ Setup notification icon click listener
+     */
+    private void setupNotificationIcon() {
+        imageViewNotification = findViewById(R.id.imageViewNotification);
+        if (imageViewNotification != null) {
+            imageViewNotification.setOnClickListener(v ->
+                    startActivity(new Intent(this, NotificationActivity.class))
+            );
+        }
     }
 
     private void setupCategoryButtons() {

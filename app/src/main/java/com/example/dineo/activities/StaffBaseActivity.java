@@ -40,7 +40,7 @@ public abstract class StaffBaseActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.nav_staff_profile) {
                 intent = new Intent(this, ProfileActivity.class);
             } else if (item.getItemId() == R.id.nav_menu_staff) {
-                intent = new Intent(this, com.example.dineo.staff.StaffMenuActivity.class);
+                intent = new Intent(this, com.example.dineo.activities.StaffMenuActivity.class);
             }
 
 

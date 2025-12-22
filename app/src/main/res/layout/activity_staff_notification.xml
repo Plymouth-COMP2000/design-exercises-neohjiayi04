@@ -27,9 +27,10 @@
             app:tint="@color/white"/>
 
         <TextView
+            android:id="@+id/textHeaderTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reset Password"
+            android:text="Notifications"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
@@ -47,7 +48,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <include layout="@layout/layout_reset_password_content"/>
+        <include layout="@layout/layout_staff_notifications_content"/>
     </ScrollView>
 
     <!-- Bottom Navigation -->
@@ -55,8 +56,9 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="@color/surface"
-        app:menu="@menu/bottom_nav_menu"
+        android:background="@color/white"
+        app:menu="@menu/staff_bottom_nav_menu"
+        app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/selector_bottom_nav"
         app:itemTextColor="@color/selector_bottom_nav"
         app:layout_constraintBottom_toBottomOf="parent"

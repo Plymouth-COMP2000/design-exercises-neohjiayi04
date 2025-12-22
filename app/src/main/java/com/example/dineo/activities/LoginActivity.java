@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dineo.R;
 import com.example.dineo.api.ApiHelper;
+import com.example.dineo.database.DatabaseHelper;
 
 import org.json.JSONObject;
 
@@ -25,11 +26,15 @@ public class LoginActivity extends AppCompatActivity {
     private TextView textRegister;
 
     private SharedPreferences sharedPreferences;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Initialize DatabaseHelper
+        dbHelper = new DatabaseHelper(this);
 
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
@@ -41,15 +46,32 @@ public class LoginActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("DinoPrefs", MODE_PRIVATE);
 
         btnLogin.setOnClickListener(v -> loginUser());
-        textRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
+        textRegister.setOnClickListener(v -> {
+            startActivity(new Intent(this, RegisterActivity.class));
+        });
+
     }
 
     private void loginUser() {
         String username = editTextUsername.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+        // Input validation
+        if (username.isEmpty()) {
+            editTextUsername.setError("Username is required");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            editTextPassword.setError("Password is required");
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        if (password.length() < 6) {
+            editTextPassword.setError("Password must be at least 6 characters");
+            editTextPassword.requestFocus();
             return;
         }
 
@@ -58,6 +80,43 @@ public class LoginActivity extends AppCompatActivity {
 
         new Thread(() -> {
             try {
+                // STEP 1: Check if user exists in local database
+                boolean userExists = dbHelper.isUserExists(username);
+
+                if (!userExists) {
+                    // User not found - show specific error
+                    runOnUiThread(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        btnLogin.setEnabled(true);
+                        Toast.makeText(LoginActivity.this,
+                                "Account not found. Please register first.",
+                                Toast.LENGTH_LONG).show();
+                        editTextUsername.setError("No account with this username");
+                        editTextUsername.requestFocus();
+                    });
+                    return;
+                }
+
+                // STEP 2: User exists, now check password
+                boolean correctPassword = dbHelper.checkUser(username, password);
+
+                if (!correctPassword) {
+                    // Wrong password - show specific error
+                    runOnUiThread(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        btnLogin.setEnabled(true);
+                        Toast.makeText(LoginActivity.this,
+                                "Incorrect password. Please try again.",
+                                Toast.LENGTH_LONG).show();
+                        editTextPassword.setError("Wrong password");
+                        editTextPassword.requestFocus();
+                        // Clear password field for security
+                        editTextPassword.setText("");
+                    });
+                    return;
+                }
+
+                // STEP 3: Try API login for additional data
                 String response = ApiHelper.loginUser(username, password);
 
                 runOnUiThread(() -> {
@@ -65,20 +124,29 @@ public class LoginActivity extends AppCompatActivity {
                     btnLogin.setEnabled(true);
 
                     if (response.startsWith("Error")) {
-                        Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_LONG).show();
+                        // API failed but local login succeeded - proceed anyway
+                        proceedToApp(username, "guest");
                         return;
                     }
 
                     try {
                         JSONObject json = new JSONObject(response);
-
-                        // Save full user JSON
-                        sharedPreferences.edit().putString("user_json", response).apply();
-
                         String role = json.getString("usertype");
 
-                        Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                        // Save user data
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("isLoggedIn", true);
+                        editor.putString("username", username);
+                        editor.putString("userEmail", username);
+                        editor.putString("userRole", role);
+                        editor.putString("user_json", response);
+                        editor.apply();
 
+                        Toast.makeText(LoginActivity.this,
+                                "Welcome back, " + dbHelper.getUserName(username) + "!",
+                                Toast.LENGTH_SHORT).show();
+
+                        // Navigate based on role
                         if ("Staff".equalsIgnoreCase(role)) {
                             startActivity(new Intent(LoginActivity.this, StaffDashboardActivity.class));
                         } else {
@@ -87,8 +155,8 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
 
                     } catch (Exception e) {
-                        Toast.makeText(LoginActivity.this, "Invalid server response", Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
+                        // JSON parsing failed - use local data
+                        proceedToApp(username, "guest");
                     }
                 });
 
@@ -96,9 +164,48 @@ public class LoginActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     progressBar.setVisibility(View.GONE);
                     btnLogin.setEnabled(true);
-                    Toast.makeText(LoginActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this,
+                            "Connection error: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
                 });
             }
         }).start();
+    }
+
+    /**
+     * Proceed to appropriate dashboard
+     */
+    private void proceedToApp(String username, String role) {
+        // Save login state
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isLoggedIn", true);
+        editor.putString("username", username);
+        editor.putString("userEmail", username);
+        editor.putString("userRole", role);
+        editor.apply();
+
+        String userName = dbHelper.getUserName(username);
+        Toast.makeText(LoginActivity.this,
+                "Welcome back" + (userName.isEmpty() ? "!" : ", " + userName + "!"),
+                Toast.LENGTH_SHORT).show();
+
+        // Navigate based on role
+        if ("Staff".equalsIgnoreCase(role)) {
+            startActivity(new Intent(LoginActivity.this, StaffDashboardActivity.class));
+        } else {
+            startActivity(new Intent(LoginActivity.this, GuestMenuActivity.class));
+        }
+        finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (btnLogin != null) {
+            btnLogin.setEnabled(true);
+        }
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 }

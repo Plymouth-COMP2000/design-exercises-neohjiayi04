@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:padding="16dp"
-        android:background="#FFF5EB">
+        android:background="#FF9966">
 
         <ImageView
             android:id="@+id/imageViewBack"
@@ -23,8 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add New Menu Item"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 
@@ -65,7 +67,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@android:drawable/ic_menu_camera"
-                        android:tint="#999999"/>
+                        app:tint="#999999"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -175,8 +177,6 @@
         android:background="#FFF5EB"
         app:menu="@menu/staff_bottom_nav_menu"
         app:itemIconTint="#FF9966"
-        app:itemTextColor="#FF9966"
-        xmlns:app="http://schemas.android.com/apk/res-auto"/>
-
+        app:itemTextColor="#FF9966"/>
 
 </LinearLayout>

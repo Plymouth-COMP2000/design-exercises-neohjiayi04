@@ -1,15 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme -->
-    <style name="Theme.Dineo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color -->
+    <!-- Night / Dark theme -->
+    <style name="Theme.Dineo"
+        parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <!-- ================= PRIMARY ================= -->
         <item name="colorPrimary">@color/orange_primary</item>
-        <item name="colorPrimaryVariant">@color/orange_primary_dark</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/orange_primary_variant</item>
+        <item name="colorOnPrimary">@color/black</item>
+
+        <!-- ================= SECONDARY ================= -->
+        <item name="colorSecondaryVariant">@color/orange_primary_variant</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- ================= BACKGROUND / SURFACE ================= -->
         <item name="android:windowBackground">@color/background_cream</item>
+        <item name="colorSurface">@color/black</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+
+        <!-- ================= ERROR ================= -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/white</item>
+
+        <!-- ================= TEXT ================= -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+
+        <!-- ================= RIPPLE ================= -->
+        <item name="colorControlHighlight">@color/orange_primary</item>
+
     </style>
 
 </resources>

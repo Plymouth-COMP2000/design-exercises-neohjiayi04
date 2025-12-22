@@ -4,15 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/background_cream">
 
-    <!-- Header -->
+    <!-- ================= HEADER ================= -->
     <RelativeLayout
         android:id="@+id/layoutHeader"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:padding="16dp"
-        android:background="@color/background_cream"
+        android:background="@color/orange_light"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -20,10 +21,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RESERVATION"
-            android:textSize="18sp"
+            android:text="@string/reservation"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
+            android:textSize="20sp"
             android:layout_centerInParent="true"/>
 
         <ImageView
@@ -31,16 +32,12 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@android:drawable/ic_popup_reminder"
-            app:tint="@color/orange_primary"
-            android:padding="4dp"
+            android:contentDescription="@string/notifications"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
 
-    <!-- Scrollable Content -->
+    <!-- ================= SCROLLABLE CONTENT ================= -->
     <ScrollView
         android:id="@+id/scrollViewContent"
         android:layout_width="0dp"
@@ -55,24 +52,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="16dp">
 
-            <!-- Booking Form -->
+            <!-- Booking Form Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Book Your Table"
-                android:textSize="20sp"
+                android:text="@string/book_your_table"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Date & Time -->
+            <!-- Date & Time Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="8dp">
 
                 <EditText
                     android:id="@+id/editTextDate"
@@ -81,11 +78,10 @@
                     android:layout_weight="1"
                     android:background="@drawable/et_background"
                     android:padding="12dp"
-                    android:hint="Date"
-                    android:textSize="14sp"
+                    android:hint="@string/date"
                     android:focusable="false"
                     android:clickable="true"
-                    android:layout_marginEnd="6dp"/>
+                    android:layout_marginEnd="4dp"/>
 
                 <EditText
                     android:id="@+id/editTextTime"
@@ -94,19 +90,18 @@
                     android:layout_weight="1"
                     android:background="@drawable/et_background"
                     android:padding="12dp"
-                    android:hint="Time"
-                    android:textSize="14sp"
+                    android:hint="@string/time"
                     android:focusable="false"
                     android:clickable="true"
-                    android:layout_marginStart="6dp"/>
+                    android:layout_marginStart="4dp"/>
             </LinearLayout>
 
-            <!-- Guests & Table -->
+            <!-- Guests & Table Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="8dp">
 
                 <EditText
                     android:id="@+id/editTextGuests"
@@ -115,10 +110,9 @@
                     android:layout_weight="1"
                     android:background="@drawable/et_background"
                     android:padding="12dp"
-                    android:hint="Guests"
-                    android:textSize="14sp"
+                    android:hint="@string/guests"
                     android:inputType="number"
-                    android:layout_marginEnd="6dp"/>
+                    android:layout_marginEnd="4dp"/>
 
                 <Spinner
                     android:id="@+id/spinnerTable"
@@ -126,18 +120,17 @@
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:background="@drawable/et_background"
-                    android:layout_marginStart="6dp"/>
+                    android:layout_marginStart="4dp"/>
             </LinearLayout>
 
             <!-- Special Requests -->
             <EditText
                 android:id="@+id/editTextSpecialRequests"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="100dp"
                 android:background="@drawable/et_background"
                 android:padding="12dp"
-                android:hint="Special Requests (Optional)"
-                android:textSize="14sp"
+                android:hint="@string/special_requests"
                 android:gravity="top"
                 android:layout_marginBottom="16dp"/>
 
@@ -145,14 +138,12 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReserve"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:text="RESERVE"
-                android:textSize="16sp"
+                android:layout_height="48dp"
+                android:text="@string/reserve"
                 android:textStyle="bold"
-                app:cornerRadius="12dp"
                 android:backgroundTint="@color/orange_primary"
                 android:textColor="@android:color/white"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="16dp"/>
 
             <!-- Tabs -->
             <com.google.android.material.tabs.TabLayout
@@ -163,7 +154,7 @@
                 app:tabSelectedTextColor="@color/orange_primary"
                 app:tabTextColor="@color/text_secondary"
                 app:tabIndicatorColor="@color/orange_primary"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="8dp"/>
 
             <!-- Reservations List -->
             <androidx.recyclerview.widget.RecyclerView
@@ -174,11 +165,11 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Bottom Navigation -->
+    <!-- ================= BOTTOM NAVIGATION ================= -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:background="@color/white"
         android:elevation="8dp"
         app:itemIconTint="@color/bottom_nav_color"
@@ -187,4 +178,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

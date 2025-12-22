@@ -13,40 +13,46 @@
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/orange_light"
+        android:background="@drawable/gradient_header"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:layout_alignParentTop="true">
+        android:paddingEnd="16dp">
 
         <ImageView
             android:id="@+id/imageViewBack"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@android:drawable/ic_menu_revert"
-            app:tint="@color/text_primary"
+            app:tint="@android:color/white"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            android:contentDescription="Back"/>
+            android:contentDescription="@string/back"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Notifications"
-            android:textSize="18sp"
+            android:text="@string/notifications"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/text_primary"
+            android:textColor="@android:color/white"
             android:layout_centerInParent="true"/>
 
         <TextView
             android:id="@+id/textViewClearAll"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear All"
-            android:textSize="14sp"
-            android:textColor="@color/orange_primary"
+            android:layout_height="48dp"
+            android:text="@string/clear_all"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:padding="4dp"/>
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
     </RelativeLayout>
 
     <!-- ========================= -->
@@ -57,6 +63,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginTop="56dp"
+        android:background="@drawable/bg_cream_orange_gradient"
         android:layout_marginBottom="60dp">
 
         <!-- RecyclerView -->
@@ -65,30 +72,53 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:clipToPadding="false"/>
 
         <!-- Empty State -->
-        <TextView
+        <LinearLayout
             android:id="@+id/textViewEmptyState"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="No notifications yet"
-            android:textSize="16sp"
-            android:textColor="@color/text_hint"
+            android:orientation="vertical"
             android:gravity="center"
-            android:visibility="gone"/>
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@android:drawable/ic_popup_reminder"
+                app:tint="@color/text_hint"
+                android:alpha="0.3"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_notifications"
+                android:textSize="18sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_notifications"
+                android:textSize="14sp"
+                android:textColor="@color/text_hint"
+                android:gravity="center"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- ========================= -->
     <!-- Fixed Bottom Navigation -->
-    <!-- ========================= -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="bottom"
-        android:background="@color/surface"
+        android:background="@color/white"
         android:elevation="8dp"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/selector_bottom_nav"

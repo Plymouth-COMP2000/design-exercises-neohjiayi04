@@ -2,9 +2,12 @@ package com.example.dineo.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
 
 /**
- * MenuItem model - Parcelable + null-safe getters
+ * MenuItem model - UPDATED to support byte[] images
+ * Backward compatible with String imageUrl
+ * Student ID: BSSE2506008
  */
 public class MenuItem implements Parcelable {
 
@@ -15,7 +18,18 @@ public class MenuItem implements Parcelable {
     private String category = "";
     private String imageUrl = "";
 
+    // ==================== CONSTRUCTORS ====================
+
     public MenuItem() {}
+
+    public MenuItem(int id, String name, String description, double price, String category, byte[] imageBytes) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        setImage(imageBytes); // Convert bytes to Base64 string
+    }
 
     protected MenuItem(Parcel in) {
         id = in.readInt();
@@ -53,7 +67,43 @@ public class MenuItem implements Parcelable {
         dest.writeString(imageUrl);
     }
 
-    // ===== Existing getters & setters (unchanged) =====
+    // ==================== IMAGE METHODS (NEW) ====================
+
+    /**
+     * Set image from byte array
+     * Converts to Base64 string for storage
+     */
+    public void setImage(byte[] imageBytes) {
+        if (imageBytes != null && imageBytes.length > 0) {
+            this.imageUrl = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        } else {
+            this.imageUrl = "";
+        }
+    }
+
+    /**
+     * Get image as byte array
+     * Converts from Base64 string
+     */
+    public byte[] getImage() {
+        if (imageUrl != null && !imageUrl.isEmpty() && !imageUrl.startsWith("http")) {
+            try {
+                return Base64.decode(imageUrl, Base64.DEFAULT);
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if has valid image data
+     */
+    public boolean hasImage() {
+        return imageUrl != null && !imageUrl.isEmpty();
+    }
+
+    // ==================== EXISTING GETTERS & SETTERS ====================
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

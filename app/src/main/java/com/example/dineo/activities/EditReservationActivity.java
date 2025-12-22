@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,13 +16,15 @@ import com.example.dineo.R;
 import com.example.dineo.database.DatabaseHelper;
 import com.example.dineo.models.Reservation;
 
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Edit Reservation Activity
- * Student ID: BSSE2506008
+ * Edit Reservation Activity - SECURED
+ * Only allows users to edit their own reservations
  */
 public class EditReservationActivity extends AppCompatActivity {
 
@@ -36,6 +37,7 @@ public class EditReservationActivity extends AppCompatActivity {
     private Reservation reservation;
     private Calendar calendar;
     private int reservationId;
+    private String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +59,23 @@ public class EditReservationActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("DinoPrefs", MODE_PRIVATE);
         calendar = Calendar.getInstance();
 
-        // Get reservation ID
-        reservationId = getIntent().getIntExtra("RESERVATION_ID", -1);
+        // Get user email from SharedPreferences
+        userEmail = getUserEmail();
+        if (userEmail == null || userEmail.isEmpty()) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // Load reservation data
+        // Get reservation ID from intent
+        reservationId = getIntent().getIntExtra("RESERVATION_ID", -1);
+        if (reservationId == -1) {
+            Toast.makeText(this, "Invalid reservation", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        // SECURITY: Load reservation with ownership verification
         loadReservation();
 
         // Setup date and time pickers
@@ -76,34 +91,65 @@ public class EditReservationActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(v -> finish());
     }
 
-    private void loadReservation() {
-        // In a real app, you'd query by ID
-        // For now, we'll just initialize with data
-        if (reservationId != -1) {
-            // Load from database
-            // For demonstration, we'll use placeholder data
-            editTextDate.setText("May 28, 2024");
-            editTextTime.setText("7:30 PM");
-            editTextGuests.setText("4");
-            editTextTable.setText("Patio Seat #12");
-            editTextRequests.setText("Celebrating an anniversary.");
+    /**
+     * Get user email from SharedPreferences
+     */
+    private String getUserEmail() {
+        String email = sharedPreferences.getString("userEmail", "");
+
+        // Fallback: Try to get from user_json
+        if (email.isEmpty()) {
+            String userJson = sharedPreferences.getString("user_json", null);
+            if (userJson != null) {
+                try {
+                    JSONObject json = new JSONObject(userJson);
+                    email = json.optString("email", "");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+        return email;
+    }
+
+    /**
+     * SECURITY: Load reservation from database WITH ownership verification
+     */
+    private void loadReservation() {
+        // Use the secure method that verifies ownership
+        reservation = databaseHelper.getReservationByIdAndEmail(reservationId, userEmail);
+
+        if (reservation == null) {
+            // Reservation not found OR doesn't belong to this user
+            Toast.makeText(this,
+                    "Unauthorized: You can only edit your own reservations",
+                    Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        // Check if reservation can be edited
+        String status = reservation.getStatus();
+        if ("Cancelled".equalsIgnoreCase(status) || "Completed".equalsIgnoreCase(status)) {
+            Toast.makeText(this,
+                    "Cannot edit " + status.toLowerCase() + " reservation",
+                    Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        // Populate fields with reservation data
+        editTextDate.setText(reservation.getDate());
+        editTextTime.setText(reservation.getTime());
+        editTextGuests.setText(String.valueOf(reservation.getNumberOfGuests()));
+        editTextTable.setText(reservation.getTableNumber());
+        editTextRequests.setText(reservation.getSpecialRequests());
     }
 
     private void setupDateTimePickers() {
-        editTextDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePicker();
-            }
-        });
-
-        editTextTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showTimePicker();
-            }
-        });
+        editTextDate.setOnClickListener(v -> showDatePicker());
+        editTextTime.setOnClickListener(v -> showTimePicker());
     }
 
     private void showDatePicker() {
@@ -122,6 +168,7 @@ public class EditReservationActivity extends AppCompatActivity {
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
 
+        // Can only select future dates
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
@@ -144,31 +191,63 @@ public class EditReservationActivity extends AppCompatActivity {
     }
 
     private void saveChanges() {
+        // Validation
         String date = editTextDate.getText().toString().trim();
         String time = editTextTime.getText().toString().trim();
         String guestsStr = editTextGuests.getText().toString().trim();
         String table = editTextTable.getText().toString().trim();
         String requests = editTextRequests.getText().toString().trim();
 
-        if (date.isEmpty() || time.isEmpty() || guestsStr.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+        if (date.isEmpty()) {
+            editTextDate.setError("Please select a date");
             return;
         }
 
-        // Update reservation
-        Reservation updatedReservation = new Reservation();
-        updatedReservation.setId(reservationId);
-        updatedReservation.setDate(date);
-        updatedReservation.setTime(time);
-        updatedReservation.setNumberOfGuests(Integer.parseInt(guestsStr));
-        updatedReservation.setSpecialRequests(requests);
-        updatedReservation.setStatus("Confirmed");
+        if (time.isEmpty()) {
+            editTextTime.setError("Please select a time");
+            return;
+        }
 
-        int result = databaseHelper.updateReservation(updatedReservation);
+        if (guestsStr.isEmpty()) {
+            editTextGuests.setError("Please enter number of guests");
+            return;
+        }
+
+        int guests;
+        try {
+            guests = Integer.parseInt(guestsStr);
+            if (guests <= 0) {
+                editTextGuests.setError("Number of guests must be positive");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            editTextGuests.setError("Please enter a valid number");
+            return;
+        }
+
+        // SECURITY: Verify ownership one more time before updating
+        Reservation verifyOwnership = databaseHelper.getReservationByIdAndEmail(reservationId, userEmail);
+        if (verifyOwnership == null) {
+            Toast.makeText(this,
+                    "Cannot save: You do not own this reservation",
+                    Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        // Update reservation object
+        reservation.setDate(date);
+        reservation.setTime(time);
+        reservation.setNumberOfGuests(guests);
+        reservation.setTableNumber(table);
+        reservation.setSpecialRequests(requests);
+        // Keep status as is (only staff can change status)
+
+        // Save to database
+        int result = databaseHelper.updateReservation(reservation);
 
         if (result > 0) {
             // Create notification
-            String userEmail = sharedPreferences.getString("userEmail", "");
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.getDefault());
             String timestamp = sdf.format(Calendar.getInstance().getTime());
 
@@ -181,6 +260,7 @@ public class EditReservationActivity extends AppCompatActivity {
             );
 
             Toast.makeText(this, "Reservation updated successfully", Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK); // Notify caller that changes were made
             finish();
         } else {
             Toast.makeText(this, "Failed to update reservation", Toast.LENGTH_SHORT).show();
