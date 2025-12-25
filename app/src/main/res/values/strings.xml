@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App Name -->
@@ -185,3 +186,129 @@
     <string name="please_wait">Please wait...</string>
     <string name="processing">Processing...</string>
 </resources>
+=======
+<resources>
+
+    <!-- App Info -->
+    <string name="app_name">Dineo</string>
+    <!--Launch Page-->
+    <string name="logo_desc">App logo</string>
+    <string name="customer">Customer</string>
+    <string name="admin">Admin</string>
+    <string name="select_role">Select your role to continue</string>
+
+    <!--login page-->
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="no_account">Do not have an account?</string>
+    <string name="create_account">Create Account</string>
+    <string name="terms_privacy">By continuing, you agree to our Terms &amp; Privacy</string>
+
+    <!--sign up page-->
+    <string name="username">Username</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="already_account">Already have an account? </string>
+
+    <!-- Navigation -->
+    <string name="nav_menu">Menu</string>
+    <string name="nav_reservation">Reservation</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_notification">Notification</string>
+
+    <!--User Profile Page-->
+    <string name="arrow_right">Right Arrow</string>
+    <string name="confirmation_icon">Confirmation Icon</string>
+    <string name="modification_icon">Modification Icon</string>
+    <string name="cancellation_icon">Cancellation Icon</string>
+    <string name="password_icon">Confirmation Icon</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="logout_icon">Logout Icon</string>
+    <string name="logout">Log Out</string>
+
+    <string name="reservation_confirmation">Reservation Confirmation</string>
+    <string name="reservation_confirmation_desc">Get notified when reservation is confirmed</string>
+    <string name="reservation_modification">Reservation Modification</string>
+    <string name="reservation_modification_desc">Get notified of any changes to your booking</string>
+    <string name="reservation_cancellation">Reservation Cancellation</string>
+    <string name="reservation_cancellation_desc">Get notified when reservation is cancelled</string>
+
+
+    <string name="back_button">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="edit_profile_picture">Edit Profile Picture</string>
+    <string name="section_account">ACCOUNT</string>
+    <string name="section_notification">NOTIFICATION</string>
+    <string name="label_full_name">Full Name</string>
+    <string name="label_email_address">Email Address</string>
+    <string name="label_phone_number">Phone Number</string>
+    <string name="hint_full_name">Enter your full name</string>
+    <string name="hint_email">Enter your email</string>
+    <string name="hint_phone">Enter your phone number</string>
+    <string name="name">Sarah Wilson</string>
+    <string name="email">sarah.wilson@email.com</string>
+    <string name="phone">+60 12–345 6789</string>
+    <string name="btn_save_changes">Save Changes</string>
+
+    <string name="reset_password_title">Reset Password</string>
+    <string name="reset_password_message">We’ve got you covered!\n Set a new password and continue enjoying Dineo.</string>
+    <string name="current_password_label">Current Password</string>
+    <string name="current_password_hint">Enter current password</string>
+    <string name="new_password_label">New Password</string>
+    <string name="new_password_hint">Enter new password</string>
+    <string name="confirm_password_label">Confirm New Password</string>
+    <string name="confirm_password_hint">Re-enter new password</string>
+    <string name="toggle_password">Toggle password visibility</string>
+    <string name="update_password">Update Password</string>
+
+    <!-- Reservation Page -->
+    <string name="reservation_title">Reservation</string>
+    <string name="new_reservation">New Reservation</string>
+    <string name="book_table_title">Book Your Table</string>
+    <string name="book_table_subtitle">Select the details for your booking</string>
+    <string name="upcoming_reservations">Upcoming Reservations</string>
+    <string name="finished_reservations">Finished Reservations</string>
+    <string name="calendar_icon">Calendar Icon</string>
+
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="number_of_pax">Number of Pax</string>
+    <string name="select_table">Select Table</string>
+    <string name="remark_optional">Remark (Optional)</string>
+    <string name="reserve">Reserve</string>
+
+    <string name="sample_upcoming_date">12 Dec 2025, 7:00 PM</string>
+    <string name="sample_upcoming_pax_table">Pax: 4 | Table: 3</string>
+    <string name="sample_upcoming_status">Status: Confirmed</string>
+    <string name="sample_upcoming_remark">Remark: Window seat preferred</string>
+
+    <string name="sample_finished_date">05 Dec 2025, 6:30 PM</string>
+    <string name="sample_finished_pax_table">Pax: 2 | Table: 1</string>
+    <string name="sample_finished_status">Status: Completed</string>
+
+    <string name="reservation_datetime">Dec 25, 2024 at 7:30 PM</string>
+    <string name="reservation_status_confirmed">Confirmed</string>
+    <string name="reservation_table">Table 7</string>
+    <string name="reservation_pax">4 Pax</string>
+
+    <string name="action_edit">Edit Reservation</string>
+    <string name="action_cancel">Cancel Reservation</string>
+
+    <string name="label_table_number">Table: %1$s</string>
+
+    <!--Notification Page-->
+    <string name="notification_title">Notifications</string>
+    <string name="notification_subtitle">Updates about your reservations</string>
+    <string name="no_notification">No notifications</string>
+    <string name="notification_empty">You are all caught up! No new notifications.</string>
+    <string name="notification_close">Close Notification</string>
+    <string name="notification_content">Notification message goes here</string>
+    <string name="notify_title">Notification Title</string>
+    <string name="notification_timestamps">5 mins</string>
+    <string name="clear">Clear All</string>
+
+
+</resources>
+>>>>>>> e9babd3d5e6463477cb758221fac66bfffdba5f8

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<<<<<<< HEAD
 
     <!-- Base Colors -->
     <color name="white">#FFFFFF</color>
@@ -74,3 +75,42 @@
     <color name="bottom_nav_inactive">@color/text_secondary</color>
 
 </resources>
+=======
+    <!-- Primary Orange Theme -->
+    <color name="orange_primary">#FF6B35</color>
+    <color name="orange_primary_dark">#E85A2A</color>
+    <color name="orange_light">#FF8C61</color>
+    <color name="orange_accent">#FFA726</color>
+
+    <!-- Complementary Colors -->
+    <color name="teal_accent">#26A69A</color>
+    <color name="deep_teal">#00796B</color>
+
+    <!-- Neutral Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="off_white">#FAFAFA</color>
+    <color name="light_gray">#F5F5F5</color>
+    <color name="gray">#E0E0E0</color>
+    <color name="dark_gray">#757575</color>
+    <color name="charcoal">#424242</color>
+    <color name="black">#212121</color>
+
+    <!-- Background -->
+    <color name="background_light">#FAFAFA</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="beige_background">#F5EEDC</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
+
+    <!-- Status Colors -->
+    <color name="success_green">#4CAF50</color>
+    <color name="error_red">#F44336</color>
+
+    <!-- Overlay -->
+    <color name="overlay_dark">#80000000</color>
+    <color name="overlay_light">#40000000</color>
+</resources>
+>>>>>>> e9babd3d5e6463477cb758221fac66bfffdba5f8

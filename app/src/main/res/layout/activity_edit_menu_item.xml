@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<<<<<<< HEAD
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -33,11 +34,25 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+=======
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light">
+
+    <!-- Scrollable Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+>>>>>>> e9babd3d5e6463477cb758221fac66bfffdba5f8
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+<<<<<<< HEAD
             android:padding="24dp">
 
             <!-- Upload Image -->
@@ -181,3 +196,222 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"/>
 
 </LinearLayout>
+=======
+            android:paddingBottom="@dimen/bottom_nav_height">
+
+            <!-- Header -->
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/toolbar_height"
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
+                app:navigationIcon="@drawable/ic_back"
+                app:navigationIconTint="@color/text_primary"
+                app:title="Edit Menu Item"
+                app:titleTextColor="@color/text_primary"
+                app:titleTextAppearance="@style/ToolbarTitleStyle" />
+
+            <!-- Image Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginStart="@dimen/margin_horizontal"
+                android:layout_marginEnd="@dimen/margin_horizontal"
+                android:layout_marginTop="@dimen/spacing_medium"
+                app:cardCornerRadius="@dimen/card_radius"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/menu_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:background="@color/light_gray" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/overlay_light" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_change_image"
+                        style="@style/Widget.Material3.Button.ElevatedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Change Image"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"
+                        app:backgroundTint="@color/orange_primary"
+                        app:cornerRadius="@dimen/button_radius"
+                        app:icon="@drawable/ic_upload"
+                        app:iconTint="@color/white" />
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Form Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal"
+                android:layout_marginEnd="@dimen/margin_horizontal"
+                android:layout_marginTop="@dimen/spacing_large"
+                app:cardCornerRadius="@dimen/card_radius"
+                app:cardElevation="@dimen/card_elevation"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/card_background">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_large">
+
+                    <!-- Item Name -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Item Name"
+                        app:boxBackgroundMode="outline"
+                        app:boxStrokeColor="@color/orange_primary"
+                        app:hintTextColor="@color/orange_primary"
+                        app:boxCornerRadiusTopStart="@dimen/spacing_small"
+                        app:boxCornerRadiusTopEnd="@dimen/spacing_small"
+                        app:boxCornerRadiusBottomStart="@dimen/spacing_small"
+                        app:boxCornerRadiusBottomEnd="@dimen/spacing_small">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_item_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:textSize="@dimen/text_body" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Description -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Description"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        app:boxBackgroundMode="outline"
+                        app:boxStrokeColor="@color/orange_primary"
+                        app:hintTextColor="@color/orange_primary"
+                        app:boxCornerRadiusTopStart="@dimen/spacing_small"
+                        app:boxCornerRadiusTopEnd="@dimen/spacing_small"
+                        app:boxCornerRadiusBottomStart="@dimen/spacing_small"
+                        app:boxCornerRadiusBottomEnd="@dimen/spacing_small">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine"
+                            android:minLines="3"
+                            android:maxLines="5"
+                            android:gravity="top"
+                            android:textSize="@dimen/text_body" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Price -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Price (RM)"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        app:boxBackgroundMode="outline"
+                        app:boxStrokeColor="@color/orange_primary"
+                        app:hintTextColor="@color/orange_primary"
+                        app:boxCornerRadiusTopStart="@dimen/spacing_small"
+                        app:boxCornerRadiusTopEnd="@dimen/spacing_small"
+                        app:boxCornerRadiusBottomStart="@dimen/spacing_small"
+                        app:boxCornerRadiusBottomEnd="@dimen/spacing_small"
+                        app:prefixText="RM ">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_price"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:textSize="@dimen/text_body" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Category -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Category"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        app:boxStrokeColor="@color/orange_primary"
+                        app:hintTextColor="@color/orange_primary">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/spinner_category"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textSize="@dimen/text_body" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/margin_horizontal"
+                android:layout_marginEnd="@dimen/margin_horizontal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginBottom="@dimen/spacing_medium">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="Save Changes"
+                    android:textSize="@dimen/text_body"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/success_green"
+                    app:cornerRadius="@dimen/button_radius" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_delete"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="Delete Item"
+                    android:textSize="@dimen/text_body"
+                    android:textColor="@color/error_red"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    app:strokeColor="@color/error_red"
+                    app:cornerRadius="@dimen/button_radius" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Fixed Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_nav_height"
+        android:layout_gravity="bottom"
+        android:elevation="8dp"
+        android:background="@color/white"
+        app:menu="@menu/bottom_nav_staff"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:itemIconSize="@dimen/icon_size"
+        app:itemTextAppearanceActive="@style/BottomNavTextStyle"
+        app:itemTextAppearanceInactive="@style/BottomNavTextStyle"
+        app:labelVisibilityMode="labeled" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+>>>>>>> e9babd3d5e6463477cb758221fac66bfffdba5f8

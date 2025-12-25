@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+<<<<<<< HEAD
     <!-- Selected/Active -->
     <item android:color="#FF9966" android:state_checked="true"/>
     <!-- Normal/Inactive -->
     <item android:color="#999999"/>
+=======
+    <item android:color="@color/orange_primary" android:state_checked="true" />
+    <item android:color="@color/text_secondary" />
+>>>>>>> e9babd3d5e6463477cb758221fac66bfffdba5f8
 </selector>
